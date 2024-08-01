@@ -11,7 +11,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import GlobalStyle from "./font/GlobalStyle";
 import Login from "./pages/Login";
-
+import Support from "./pages/supportpage/support";
 function App() {
   return (
     <>
@@ -23,6 +23,7 @@ function App() {
           <Route path="/" element={<Navigate to="/lend" />} />
           <Route path="/lend" element={<Mainpage />} />
           <Route path="/lend/login" element={<Login />} />
+          <Route path="/lend/support" element={<Support/>}/>
         </Routes>
       </Router>
     </>
