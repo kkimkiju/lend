@@ -7,18 +7,18 @@ const Footer = () => {
         <NameSNSBOX>
           <IconContainer>
             <a
-              href="https://github.com/kkimkiju"
+              href="https://github.com/kkimkiju/lend  "
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaGithub size={30} color="#333" />
+              <FaGithub size={40} color="#333" />
             </a>
             <a
               href="https://instagram.com/kijusomuch"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaInstagram size={30} color="#E4405F" />
+              <FaInstagram size={40} color="#E4405F" />
             </a>
           </IconContainer>
           <NameBox>Always Lend</NameBox>
@@ -47,13 +47,14 @@ const Container = styled.div`
   align-items: center;
   height: auto;
   @media (max-width: 500px) {
+    margin-top: 500px;
     width: 100vw;
     height: 10vw;
   }
 `;
 const Box = styled.div`
   width: 100%;
-  height: 500px;
+  height: 4 00px;
   background-color: rgba(41, 197, 85, 0.3);
 `;
 
@@ -80,6 +81,10 @@ const NameBox = styled.div`
   color: rgba(0, 0, 0, 0.7);
   padding: 40px;
   font-weight: bold;
+
+  @media (max-width: 500px) {
+    font-size: 20px;
+  }
 `;
 
 const InfoBox = styled.div`

@@ -86,6 +86,7 @@ export default Section;
 
 const Body = styled.div`
   width: auto;
+
   @media (max-width: 500px) {
     height: auto;
     padding: 5vh 0;
@@ -97,21 +98,23 @@ const Container = styled.div`
   flex-direction: row;
   width: 100%;
   height: auto;
+
   align-items: center;
   justify-content: center;
   margin-top: 10vh;
   margin-bottom: -20vh;
+
   @media (max-width: 500px) {
-    flex-direction: column;
     height: 20vh;
-    margin-bottom: 20vh;
+    margin-bottom: 10vh;
+    margin-top: 0;
   }
 `;
 
 const Box = styled.div`
   display: flex;
   justify-content: center;
-  width: 40%;
+  width: 50%;
 `;
 
 const ImageBox = styled.div`
@@ -120,10 +123,6 @@ const ImageBox = styled.div`
   align-items: center;
   height: auto;
   background-color: white;
-  @media (max-width: 500px) {
-    order: 2;
-    margin: 0 0;
-  }
 `;
 
 const Img = styled.img`
@@ -131,20 +130,34 @@ const Img = styled.img`
   height: 60%;
   object-fit: fill;
   animation: ${tiltAnimation} 3s ease-in-out infinite;
+
+  @media (max-width: 500px) {
+    width: 100px;
+    height: 50%;
+  }
 `;
 
 const GrowImg = styled.img`
   width: 100%;
   height: auto;
   object-fit: fill;
+  @media (max-width: 500px) {
+    width: 300px;
+    height: auto;
+  }
 `;
 
 const Item = styled.div`
   font-size: 2.5vw;
+  font-weight: bold;
   color: black;
   margin-bottom: 20px;
   & > div {
     word-wrap: break-word;
+  }
+  @media (max-width: 500px) {
+    font-size: 4vw;
+    white-space: nowrap;
   }
 `;
 
@@ -168,5 +181,14 @@ const TreeContent = styled.div`
   }
   p {
     margin: 0.2em 0; /* Adjust the margin as needed */
+  }
+
+  @media (max-width: 500px) {
+    margin-top: 30vh;
+    font-size: small;
+  }
+  @media (max-width: 400px) {
+    margin-top: 50vh;
+    font-size: small;
   }
 `;

@@ -29,33 +29,43 @@ const Mainpage = () => {
 };
 
 const Body = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: auto;
-  margin: 0 15vw;
+  width: 100%;
   border: 3px solid rgba(41, 197, 85, 0.1);
   border-top: none;
+  border-bottom: none;
+  @media (max-width: 500px) {
+  }
 `;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   max-width: 1920px;
   height: auto;
   @media (max-width: 500px) {
-    width: 100dvw;
+    width: 99%;
   }
 `;
 
 const MainImage = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   margin-bottom: 200px;
   background-image: url(${forest});
   background-size: cover;
   background-position: center; /* 가운데 정렬 */
   height: 400px; /* 필요에 따라 조정 */
-  display: flex;
-  align-self: center;
-  justify-content: center;
+
+  @media (max-width: 500px) {
+    margin-bottom: 100px;
+    height: 300px;
+    margin-top: 20px;
+  }
 `;
 
 const TextOverlay = styled.div`
@@ -69,6 +79,10 @@ const TextOverlay = styled.div`
   font-size: 24px;
   font-weight: bold;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+
+  @media (max-width: 500px) {
+    font-size: 18px;
+  }
 `;
 
 const TryBtn = styled.div`
@@ -86,6 +100,9 @@ const TryBtn = styled.div`
   &&:hover {
     background-color: white;
     color: #29c555;
+  }
+  @media (max-width: 500px) {
+    font-size: 18px;
   }
 `;
 export default Mainpage;

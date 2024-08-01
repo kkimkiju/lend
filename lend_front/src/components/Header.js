@@ -22,12 +22,18 @@ export default Header;
 
 const Body = styled.div`
   display: flex;
+
   align-items: center;
   justify-content: center;
   height: auto;
-  margin: 0 15vw;
+
   margin-top: 20px;
   margin-bottom: 20px;
+
+  @media (max-width: 500px) {
+    margin: 0;
+    margin-top: 20px;
+  }
 `;
 
 const Container = styled.div`
@@ -37,10 +43,6 @@ const Container = styled.div`
   justify-content: space-between;
   align-items: center;
   height: auto;
-  @media (max-width: 500px) {
-    width: 100vw;
-    height: 10vw;
-  }
 `;
 
 const Box = styled.div`
@@ -53,6 +55,11 @@ const LOGO = styled.div`
   color: #29c555;
   cursor: pointer;
   font-weight: bold;
+  margin-left: 20px;
+  @media (max-width: 500px) {
+    font-size: 30px;
+    margin-left: 0;
+  }
 `;
 
 const Menu = styled.div`
@@ -63,6 +70,10 @@ const Menu = styled.div`
   font-size: 1.5vw;
   caret-color: transparent;
   cursor: pointer;
-
   margin: 0 30px; /* Add some spacing between menu items */
+  white-space: nowrap;
+  @media (max-width: 500px) {
+    font-size: 4vw;
+    margin-left: 8vw;
+  }
 `;

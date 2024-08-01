@@ -16,6 +16,7 @@ function App() {
   return (
     <>
       <GlobalStyle />
+
       <Router>
         <ConditionalHeader />
         <Routes>
