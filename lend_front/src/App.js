@@ -12,6 +12,10 @@ import Footer from "./components/Footer";
 import GlobalStyle from "./font/GlobalStyle";
 import Login from "./pages/Login";
 import Support from "./pages/supportpage/support";
+import ChatList from "./pages/chatting/ChatList";
+import ChatRoomCreate from "./pages/chatting/ChatRoomCreate";
+import Chatting from "./pages/chatting/Chatting";
+
 function App() {
   return (
     <>
@@ -23,7 +27,10 @@ function App() {
           <Route path="/" element={<Navigate to="/lend" />} />
           <Route path="/lend" element={<Mainpage />} />
           <Route path="/lend/login" element={<Login />} />
-          <Route path="/lend/support" element={<Support/>}/>
+          <Route path="/lend/support" element={<Support />} />
+          <Route path="/lend/chatlist" element={<ChatList />} />
+          <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
+          <Route path="/lend/chatting" element={<Chatting />} />
         </Routes>
       </Router>
     </>
