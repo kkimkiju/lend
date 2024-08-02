@@ -13,7 +13,7 @@ import styled from "styled-components";
 import SingUpContainer from "../components/SingUpContainer";
 const LoginContainer = styled.div`
   margin: 0 10%;
-  width: 850px;
+  width: 800px;
   height: 650px;
 `;
 const Login = () => {
@@ -30,9 +30,10 @@ const Login = () => {
         <Row>
           <Col isSignIn={!isSignIn}>
             <SingUpContainer isSignIn={isSignIn}></SingUpContainer>
+
             <p>
               <span> 이미 계정이 있나요? </span>
-              <Pointer onClick={toggleForm}> 여기서 로그인 </Pointer>
+              <Pointer onClick={toggleForm} isLogin = [응아니야]> 여기서 로그인 </Pointer>
             </p>
           </Col>
           <Col isSignIn={isSignIn}>
