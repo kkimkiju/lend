@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import emailjs from "@emailjs/browser";
+import AxiosApi from "../axios/AxiosApi";
 const Container = styled.div`
   width: 800px;
   height: 650px;
@@ -29,13 +30,17 @@ const InputContainer = styled.div`
   input:focus {
     outline: 2px solid #29c555;
   }
-  /* .success {
-    display: none;
-  }
-  .error{
-    
-  } */
 `;
+const Input = styled.input`
+  all: unset;
+  text-align: start;
+  width: 80%;
+  height: 20px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+`;
+
 const WithMsg = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,15 +56,7 @@ const WithMsg = styled.div`
     width: 80%;
   }
 `;
-const Input = styled.input`
-  all: unset;
-  text-align: start;
-  width: 80%;
-  height: 20px;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-`;
+
 const CertificationInput = styled.input`
   all: unset;
   text-align: start;
@@ -87,6 +84,21 @@ const Button = styled.div`
   cursor: pointer;
   user-select: none;
 `;
+const CompelteButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 86%;
+  height: 47px;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  color: ${(props) => (props.isComplete ? "#fff" : "#6b6a6a")};
+  background-color: ${(props) => (props.isComplete ? "#29c555" : "#c3cbd1")};
+
+  cursor: pointer;
+  user-select: none;
+`;
 const CheckBox = styled.input``;
 
 const SingUpContainer = ({ isSignIn }) => {
@@ -109,8 +121,10 @@ const SingUpContainer = ({ isSignIn }) => {
   const [pwdValid, setPwdValid] = useState(false); // 비밀번호 유효성 검사
   const [passwordError, setPasswordError] = useState("");
   //
-  const [allChecked, setAllChecked] = useState(false);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(false);
+  // 이메일 중복 여부
+  const [emailError, setEmailError] = useState("");
+  const [emailExist, setEmailExist] = useState(false);
   const onChangeEmail = (e) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     setInputEmail(e.target.value);
@@ -123,13 +137,31 @@ const SingUpContainer = ({ isSignIn }) => {
       setIsId(true);
     }
   };
+  // 회원정보 중복체크
+  useEffect(() => {
+    if (isId) {
+      const checkMem = async (email) => {
+        try {
+          const rsp = await AxiosApi.userCheck(email);
+          console.log("중복1", rsp.data);
+          if (rsp.data === false) {
+            setEmailError("가입 가능한 아이디입니다.");
+            setEmailExist(true);
+          } else if (rsp.data === true) {
+            setEmailError("중복된 이메일 입니다.");
+            setEmailExist(false);
+            console.log("중복2", emailExist, emailError);
+          }
+        } catch (e) {}
+      };
+      checkMem(inputEmail);
+    }
+  }, [isId]);
+  // 회원가입 컨테이너 띄우기
   useEffect(() => {
     setIsTrue(isSignIn);
   }, [isSignIn]);
 
-  // const onCerClick = () => {
-  //   setIsClicked(true);
-  // };
   const onClickCert = async () => {
     setIsClicked(true);
     console.log("!");
@@ -193,6 +225,85 @@ const SingUpContainer = ({ isSignIn }) => {
   const handleDateChange = (e) => {
     setDate(e.target.value);
   };
+  const [allChecked, setAllChecked] = useState(false);
+  const [privacyIsChecked, setPrivacyIsChecked] = useState(false);
+  const [privacyIsChecked2, setPrivacyIsChecked2] = useState(false);
+  const [privacyIsChecked3, setPrivacyIsChecked3] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  // 약관 체크
+  const handlePrivacyAllCheckboxChange = (e) => {
+    const { checked } = e.target;
+
+    setAllChecked(checked);
+    setPrivacyIsChecked(checked);
+    setPrivacyIsChecked2(checked);
+    setPrivacyIsChecked3(checked);
+  };
+  const handlePrivacyCheckboxChange = (e) => {
+    setPrivacyIsChecked(e.target.checked);
+  };
+  const handlePrivacyCheckboxChange2 = (e) => {
+    setPrivacyIsChecked2(e.target.checked);
+  };
+  const handlePrivacyCheckboxChange3 = (e) => {
+    setPrivacyIsChecked3(e.target.checked);
+  };
+  useEffect(() => {
+    if (
+      privacyIsChecked &&
+      privacyIsChecked2 &&
+      password.length > 0 &&
+      pwdValid === true &&
+      date
+    ) {
+      setIsComplete(true);
+    } else if (
+      !privacyIsChecked ||
+      !privacyIsChecked2 ||
+      pwdValid === false ||
+      !date
+    ) {
+      setIsComplete(false);
+    }
+  }, [
+    date.length,
+    password.length,
+    privacyIsChecked,
+    privacyIsChecked2,
+    isComplete,
+    pwdValid,
+    date,
+  ]);
+  const regist = async () => {
+    const user = {
+      email: inputEmail,
+      password: password,
+      //date,
+    };
+    try {
+      const response = await AxiosApi.signup(user);
+      if (response.data) {
+        alert("회원가입에 성공했습니다.");
+        console.log(response.data);
+        // navigate("/apueda/login");
+      } else {
+        console.log(response.data);
+        alert("비밀번호, 주민번호, 이름, 스킬 필수 입력");
+      }
+    } catch (e) {
+      console.log(e);
+      alert("비밀번호, 주민번호, 이름, 스킬 필수 입력");
+    }
+  };
+
+  const handleSignUp = () => {
+    if (isComplete) {
+      console.log("성공", isComplete);
+      regist();
+    } else {
+      console.log("실패", isComplete);
+    }
+  };
   return (
     <Container>
       {!isCerCheck ? (
@@ -208,13 +319,17 @@ const SingUpContainer = ({ isSignIn }) => {
                   {idMessage}
                 </div>
               )}
+              {emailExist === false && isConfirmCer === true ? (
+                <div className={`${isId ? "success" : "error"}`}>
+                  {emailError}
+                </div>
+              ) : null}
             </WithMsg>
             {isClicked && isId ? (
               <>
                 <CertificationInput
                   type="text"
                   placeholder="4자리의 인증번호를 입력해주세요"
-                  // onChange={(e) => setInputCert(e.target.value)}
                   onChange={(e) => handleChange(e)}
                   maxLength="4"
                 />
@@ -260,31 +375,62 @@ const SingUpContainer = ({ isSignIn }) => {
                 </div>
               )}
             </WithMsg>
-            <Input
-              type="date"
-              onChange={(e) => handleDateChange(e)}
-              // Convert date to 'yyyy-MM-dd' format for input
-              value={date}
-              min="1900-06-05"
-              max={"2199-12-31"}
-              placeholder="생년월일"
-            />
+            <WithMsg>
+              <Input
+                type="date"
+                onChange={(e) => handleDateChange(e)}
+                // Convert date to 'yyyy-MM-dd' format for input
+                value={date}
+                min="1900-06-05"
+                max={"2199-12-31"}
+                placeholder="생년월일"
+              />
+              {!date && (
+                <div className={date ? "success" : "error"}>
+                  생년월일을 입력해주세요.
+                </div>
+              )}
+            </WithMsg>
             <label>
-              <CheckBox type="checkbox" />* 개인정보 수집 및 이용 동의
-            </label>
-            <label>
-              <CheckBox type="checkbox" />* 서비스 이용약관 동의
-            </label>
-            <label>
-              <CheckBox type="checkbox" />
-              서비스 홍보 및 마케팅 목적의 개인정보 수집 및 이용에 동의합니다.
-            </label>
-            <label>
-              <CheckBox type="checkbox" />
+              <CheckBox
+                type="checkbox"
+                onClick={handlePrivacyAllCheckboxChange}
+                checked={allChecked}
+              />
               전체 동의
             </label>
-            <Button>가입하기</Button>
-            <Button>뒤로가기</Button>
+            <label>
+              <CheckBox
+                type="checkbox"
+                onClick={handlePrivacyCheckboxChange}
+                checked={privacyIsChecked}
+              />
+              * 개인정보 수집 및 이용 동의
+            </label>
+            <label>
+              <CheckBox
+                type="checkbox"
+                onClick={handlePrivacyCheckboxChange2}
+                checked={privacyIsChecked2}
+              />
+              * 서비스 이용약관 동의
+            </label>
+            <label>
+              <CheckBox
+                type="checkbox"
+                onClick={handlePrivacyCheckboxChange3}
+                checked={privacyIsChecked3}
+              />
+              서비스 홍보 및 마케팅 목적의 개인정보 수집 및 이용에 동의합니다.
+            </label>
+
+            <CompelteButton
+              isComplete={isComplete}
+              onClick={() => handleSignUp()}
+            >
+              가입하기
+            </CompelteButton>
+            <Button isConfirmCer={true}>뒤로가기</Button>
           </InputContainer>
         </SignContainer>
       )}

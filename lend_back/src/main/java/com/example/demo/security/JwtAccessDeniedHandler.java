@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+// 미권한 접속자의 접근 차단 : 403에러 처리
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
