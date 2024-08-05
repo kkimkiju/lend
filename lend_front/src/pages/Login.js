@@ -33,7 +33,7 @@ const Login = () => {
 
             <p>
               <span> 이미 계정이 있나요? </span>
-              <Pointer onClick={toggleForm} isLogin = [응아니야]> 여기서 로그인 </Pointer>
+              <Pointer onClick={toggleForm}> 여기서 로그인 </Pointer>
             </p>
           </Col>
           <Col isSignIn={isSignIn}>

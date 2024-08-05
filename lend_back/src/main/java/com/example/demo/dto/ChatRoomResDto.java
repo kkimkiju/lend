@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ChatRoomResDto {
     private String roomId; // 채팅방 ID
-    private String name; // 채팅방 이름
+    private String roomName; // 채팅방 이름
     private LocalDateTime regDate; // 채팅방 생성 시간
 
     @JsonIgnore // 이 어노테이션으로 WebSocketSession의 직렬화를 방지
@@ -27,9 +27,9 @@ public class ChatRoomResDto {
     }
 
     @Builder // 빌더 패턴 적용
-    public ChatRoomResDto(String roomId, String name, LocalDateTime regDate) {
+    public ChatRoomResDto(String roomId, String roomName, LocalDateTime regDate) {
         this.roomId = roomId;
-        this.name = name;
+        this.roomName = roomName;
         this.regDate = regDate;
         this.sessions = Collections.newSetFromMap(new ConcurrentHashMap<>()); // 동시성 문제를 해결하기 위해 ConcurrentHashMap 사용
     }

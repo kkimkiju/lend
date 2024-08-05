@@ -2,6 +2,8 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ChatMessageDto;
 import com.example.demo.dto.ChatRoomResDto;
+import com.example.demo.entity.ChatRoom;
+import com.example.demo.repository.ChatRoomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,7 @@ import java.util.*;
 public class ChatService {
     private final ObjectMapper objectMapper; // JSON 문자열로 변환하기 위한 객체
     private Map<String, ChatRoomResDto> chatRooms; // 채팅방 정보를 담을 맵
-
+    private final ChatRoomRepository chatRoomRepository;
     @PostConstruct // 의존성 주입 이후 초기화를 수행하는 메소드
     private void init() { // 채팅방 정보를 담을 맵을 초기화
         chatRooms = new LinkedHashMap<>(); // 채팅방 정보를 담을 맵
@@ -33,15 +35,23 @@ public class ChatService {
     }
 
     // 방 개설하기
-    public ChatRoomResDto createRoom(String name) {
+    public ChatRoomResDto createRoom(String email) {
         String randomId = UUID.randomUUID().toString();
         log.info("UUID : " + randomId);
         ChatRoomResDto chatRoom = ChatRoomResDto.builder() // 채팅방 생성
                 .roomId(randomId)
-                .name(name)
+                .roomName(email)
                 .regDate(LocalDateTime.now())
                 .build();
         chatRooms.put(randomId, chatRoom);  // 방 생성, 키를 UUID로 하고 방 정보를 값으로 저장
+
+        ChatRoom chatroom = new ChatRoom();
+        chatroom.setRoomId(chatRoom.getRoomId());
+        chatroom.setRoomName(chatRoom.getRoomName());
+        chatroom.setRegDate(chatroom.getRegDate());
+        chatRoomRepository.save(chatroom);
+
+
         return chatRoom;
     }
     public void removeRoom(String roomId) { // 방 삭제

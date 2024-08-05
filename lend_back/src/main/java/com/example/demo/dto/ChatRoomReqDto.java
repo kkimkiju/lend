@@ -7,5 +7,4 @@ import lombok.Setter;
 @Setter
 public class ChatRoomReqDto {
     private String email;
-    private String name;
 }

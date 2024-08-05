@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ChatRoomReqDto;
 import com.example.demo.dto.ChatRoomResDto;
+import com.example.demo.entity.ChatRoom;
 import com.example.demo.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,11 +19,11 @@ import java.util.List;
 public class ChatController {
     private final ChatService chatService;
     @PostMapping("/new")
-    public ResponseEntity<String> createRoom(@RequestBody ChatRoomReqDto chatRoomDto) {
-        log.warn("chatRoomDto : {}", chatRoomDto);
-        ChatRoomResDto room = chatService.createRoom(chatRoomDto.getName());
-        System.out.println(room.getRoomId());
-        return new ResponseEntity<>(room.getRoomId(), HttpStatus.OK);
+    public ResponseEntity<ChatRoomResDto> createRoom(@RequestBody ChatRoomReqDto chatRoomReqDto) {
+        log.warn("email : {}", chatRoomReqDto);
+//        ChatRoomResDto room = chatService.createRoom(chatRoomReqDto.getEmail());
+//        System.out.println(room.getRoomId());
+        return ResponseEntity.ok(chatService.createRoom(chatRoomReqDto.getEmail()));
     }
     @GetMapping("/list")
     public List<ChatRoomResDto> findAllRoom() {
