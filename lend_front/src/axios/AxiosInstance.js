@@ -21,7 +21,7 @@ AxiosInstance.interceptors.request.use(
 );
 
 AxiosInstance.interceptors.response.use(
-  // 응답 인터셉터 추가
+  // 응답 인터셉터 추가a
   (response) => {
     return response;
   },
