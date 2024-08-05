@@ -105,11 +105,7 @@ function ChatList() {
   const enterChatRoom = (roomId) => {
     // 채팅방으로 이동하는 로직 작성
     console.log(`Entering chat room ${roomId}`);
-    navigate(`/chatting/${roomId}`);
-  };
-
-  const createChatRoom = () => {
-    navigate("/chat-create");
+    navigate(`/lend/chatting/${roomId}`);
   };
 
   return (
@@ -121,12 +117,11 @@ function ChatList() {
             key={room.roomId}
             onClick={() => enterChatRoom(room.roomId)}
           >
-            <ChatName>{room.name}</ChatName>
+            <ChatName>{room.roomName}</ChatName>
             <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
           </ChatRoom>
         ))}
       </ChatUl>
-      <CircleFixedButton onClick={createChatRoom}></CircleFixedButton>
     </ChatListContainer>
   );
 }

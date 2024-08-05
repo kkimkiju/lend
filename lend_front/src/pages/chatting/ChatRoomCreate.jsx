@@ -48,13 +48,9 @@ function ChatRoomCreate() {
   const navigate = useNavigate();
   const email = "test";
   const handleCreateChatRoom = async () => {
-    const chatRoom = {
-      email: email,
-      name: chatRoomTitle,
-    };
-    const response = await AxiosApi.chatCreate(chatRoom);
+    const response = await AxiosApi.chatCreate(email);
     console.log(response.data);
-    navigate(`/chatting/${response.data}`);
+    navigate(`/lend/chatlist/${response.data}`);
   };
 
   const handleCancel = () => {
@@ -64,14 +60,14 @@ function ChatRoomCreate() {
   return (
     <Container>
       <Title>채팅방 생성</Title>
-      <Input
+      {/* <Input
         type="text"
         value={chatRoomTitle}
         onChange={(e) => setChatRoomTitle(e.target.value)}
-      />
+      /> */}
       <ButtonContainer>
         <Button onClick={handleCreateChatRoom}>확인</Button>
-        <Button onClick={handleCancel}>취소</Button>
+        {/* <Button onClick={handleCancel}>취소</Button> */}
       </ButtonContainer>
     </Container>
   );

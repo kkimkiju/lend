@@ -55,8 +55,12 @@ const AxiosApi = {
     return await axios.get(`${LEND_DOMAIN}/chat/room/${roomId}`);
   },
   // 채팅방 생성
-  chatCreate: async (chatRoom) => {
-    return await axios.post(LEND_DOMAIN + "/chat/new", chatRoom);
+  chatCreate: async (email) => {
+    return await axios.post(
+      LEND_DOMAIN + "/chat/new",
+      { email }, // JSON 데이터 형태
+      { headers: { "Content-Type": "application/json" } }
+    );
   },
   // 회원 가입
   signup: async (user) => {
