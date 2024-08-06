@@ -41,6 +41,7 @@ public class AuthService {
         if (memberRepository.existsByEmail(requestDto.getEmail())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
+        System.out.println("비번" + requestDto.getPassword());
         Member member = requestDto.toEntity(passwordEncoder);
         return MemberResDto.of(memberRepository.save(member));
     }

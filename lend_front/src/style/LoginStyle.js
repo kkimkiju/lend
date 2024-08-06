@@ -5,7 +5,6 @@ export const Container = styled.div`
   position: relative;
   min-height: 100vh;
   overflow: auto;
-  transition: 1s ease-in-out;
 
   &::before {
     content: "";
@@ -185,6 +184,10 @@ export const Img = styled.div`
   }
 `;
 
+export const PointerBox = styled.div`
+  transform: ${(props) => (props.isSignIn ? "scale(1)" : "scale(0)")};
+  transition: 0.5s ease-in-out;
+`;
 export const Pointer = styled.b`
   cursor: pointer;
 `;

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import emailjs from "@emailjs/browser";
 import AxiosApi from "../axios/AxiosApi";
+import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   width: 800px;
   height: 650px;
@@ -78,11 +79,41 @@ const Button = styled.div`
   padding: 0.75rem;
   border: none;
   border-radius: 5px;
-  color: ${(props) => (props.isConfirmCer ? "#fff" : "#6b6a6a")};
-  background-color: ${(props) => (props.isConfirmCer ? "#29c555" : "#c3cbd1")};
-
+  color: ${(props) =>
+    props.isConfirmCer && props.emailExist ? "#fff" : "#6b6a6a"};
+  background-color: ${(props) =>
+    props.isConfirmCer && props.emailExist ? "#29c555" : "#c3cbd1"};
+  // 조건 맞지 않을때 버튼 클릭 비활성화
+  pointer-events: ${(props) =>
+    props.isConfirmCer && props.emailExist ? "auto" : "none"};
   cursor: pointer;
-  user-select: none;
+  /* user-select: none; */
+`;
+const ConfirmButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 86%;
+  height: 47px;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #29c555;
+  cursor: pointer;
+`;
+const BackButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 86%;
+  height: 47px;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  background-color: #29c555;
+  cursor: pointer;
 `;
 const CompelteButton = styled.div`
   display: flex;
@@ -95,17 +126,25 @@ const CompelteButton = styled.div`
   border-radius: 5px;
   color: ${(props) => (props.isComplete ? "#fff" : "#6b6a6a")};
   background-color: ${(props) => (props.isComplete ? "#29c555" : "#c3cbd1")};
-
   cursor: pointer;
   user-select: none;
+`;
+const AgreementContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
 `;
 const CheckBox = styled.input``;
 
 const SingUpContainer = ({ isSignIn }) => {
+  // 회원가입 컨테이너의 상태관리(표시,비표시)
   const [isTrue, setIsTrue] = useState(true);
+  // 입력한 이메일
   const [inputEmail, setInputEmail] = useState("");
+  // 이메일 형식이 올바른지 체크
   const [isConfirmCer, setIsConfirmCer] = useState(false);
-  // 오류 메시지
+  // 이메일 형식 틀릴 경우오류 메시지
   const [idMessage, setIdMessage] = useState("");
   // 인증번호 성공시 true
   const [isCerCheck, setIsCerCheck] = useState(false);
@@ -125,6 +164,8 @@ const SingUpContainer = ({ isSignIn }) => {
   // 이메일 중복 여부
   const [emailError, setEmailError] = useState("");
   const [emailExist, setEmailExist] = useState(false);
+  const navigate = useNavigate();
+
   const onChangeEmail = (e) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     setInputEmail(e.target.value);
@@ -150,13 +191,14 @@ const SingUpContainer = ({ isSignIn }) => {
           } else if (rsp.data === true) {
             setEmailError("중복된 이메일 입니다.");
             setEmailExist(false);
+
             console.log("중복2", emailExist, emailError);
           }
         } catch (e) {}
       };
       checkMem(inputEmail);
     }
-  }, [isId]);
+  }, [emailError, emailExist, inputEmail, isId]);
   // 회원가입 컨테이너 띄우기
   useEffect(() => {
     setIsTrue(isSignIn);
@@ -164,11 +206,9 @@ const SingUpContainer = ({ isSignIn }) => {
 
   const onClickCert = async () => {
     setIsClicked(true);
-    console.log("!");
     if (isId) {
       const certification = Math.floor(Math.random() * 9000) + 1000;
       setCheckCert(certification);
-
       const templateParams = {
         email: inputEmail,
         certification: certification,
@@ -192,10 +232,11 @@ const SingUpContainer = ({ isSignIn }) => {
       setCertMessage("");
       // 인증번호 성공시 true
       setIsCerCheck(true);
-      alert("성공");
+      //alert("성공");
     } else {
+      setIsCerCheck(false);
       setCertMessage("인증번호를 정확하게 다시 입력해 주세요.");
-      alert("실패");
+      //alert("실패");
     }
   };
 
@@ -304,9 +345,16 @@ const SingUpContainer = ({ isSignIn }) => {
       console.log("실패", isComplete);
     }
   };
+  const BackBtt = () => {
+    const confirmMessage =
+      "뒤로 가면 변경 사항이 저장되지 않습니다. 계속 하시겠습니까?";
+    if (window.confirm(confirmMessage)) {
+    } else {
+    }
+  };
   return (
     <Container>
-      {!isCerCheck ? (
+      {isCerCheck === false ? (
         <SignContainer isTrue={isTrue}>
           <InputContainer>
             <WithMsg>
@@ -319,12 +367,13 @@ const SingUpContainer = ({ isSignIn }) => {
                   {idMessage}
                 </div>
               )}
-              {emailExist === false && isConfirmCer === true ? (
-                <div className={`${isId ? "success" : "error"}`}>
+              {emailExist === false ? (
+                <div className={`${emailExist ? "success" : "error"}`}>
                   {emailError}
                 </div>
               ) : null}
             </WithMsg>
+
             {isClicked && isId ? (
               <>
                 <CertificationInput
@@ -333,24 +382,28 @@ const SingUpContainer = ({ isSignIn }) => {
                   onChange={(e) => handleChange(e)}
                   maxLength="4"
                 />
+                {isCerCheck ? null : (
+                  <div style={{ color: "red" }}>{certMessage}</div>
+                )}
               </>
             ) : null}
 
             {isClicked && isId ? (
-              <Button
+              <ConfirmButton
                 onClick={onClick}
                 isConfirmCer={isConfirmCer}
                 // 4자리 입력
                 isCerCheck={isCerCheck}
               >
                 확인
-              </Button>
+              </ConfirmButton>
             ) : (
               <Button
                 onClick={() => onClickCert()}
                 isConfirmCer={isConfirmCer}
                 // 4자리 입력
                 isCerCheck={isCerCheck}
+                emailExist={emailExist}
               >
                 인증번호 보내기
               </Button>
@@ -391,46 +444,47 @@ const SingUpContainer = ({ isSignIn }) => {
                 </div>
               )}
             </WithMsg>
-            <label>
-              <CheckBox
-                type="checkbox"
-                onClick={handlePrivacyAllCheckboxChange}
-                checked={allChecked}
-              />
-              전체 동의
-            </label>
-            <label>
-              <CheckBox
-                type="checkbox"
-                onClick={handlePrivacyCheckboxChange}
-                checked={privacyIsChecked}
-              />
-              * 개인정보 수집 및 이용 동의
-            </label>
-            <label>
-              <CheckBox
-                type="checkbox"
-                onClick={handlePrivacyCheckboxChange2}
-                checked={privacyIsChecked2}
-              />
-              * 서비스 이용약관 동의
-            </label>
-            <label>
-              <CheckBox
-                type="checkbox"
-                onClick={handlePrivacyCheckboxChange3}
-                checked={privacyIsChecked3}
-              />
-              서비스 홍보 및 마케팅 목적의 개인정보 수집 및 이용에 동의합니다.
-            </label>
-
+            <AgreementContainer>
+              <label>
+                <CheckBox
+                  type="checkbox"
+                  onClick={handlePrivacyAllCheckboxChange}
+                  checked={allChecked}
+                />
+                전체 동의
+              </label>
+              <label>
+                <CheckBox
+                  type="checkbox"
+                  onClick={handlePrivacyCheckboxChange}
+                  checked={privacyIsChecked}
+                />
+                * 개인정보 수집 및 이용 동의
+              </label>
+              <label>
+                <CheckBox
+                  type="checkbox"
+                  onClick={handlePrivacyCheckboxChange2}
+                  checked={privacyIsChecked2}
+                />
+                * 서비스 이용약관 동의
+              </label>
+              <label>
+                <CheckBox
+                  type="checkbox"
+                  onClick={handlePrivacyCheckboxChange3}
+                  checked={privacyIsChecked3}
+                />
+                서비스 홍보 및 마케팅 목적의 개인정보 수집 및 이용에 동의합니다.
+              </label>
+            </AgreementContainer>
             <CompelteButton
               isComplete={isComplete}
               onClick={() => handleSignUp()}
             >
               가입하기
             </CompelteButton>
-            <Button isConfirmCer={true}>뒤로가기</Button>
+            <BackButton onClick={() => BackBtt()}>뒤로가기</BackButton>
           </InputContainer>
         </SignContainer>
       )}

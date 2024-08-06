@@ -7,6 +7,7 @@ import {
   Img,
   Pointer,
   GlobalStyle,
+  PointerBox,
 } from "../style/LoginStyle";
 import LoginMain from "../components/LoginMain";
 import styled from "styled-components";
@@ -30,18 +31,22 @@ const Login = () => {
         <Row>
           <Col isSignIn={!isSignIn}>
             <SingUpContainer isSignIn={isSignIn}></SingUpContainer>
-            <p>
-              <span> 이미 계정이 있나요? </span>
-              <Pointer onClick={toggleForm}> 여기서 로그인 </Pointer>
-            </p>
+            <PointerBox isSignIn={!isSignIn}>
+              <p>
+                <span> 이미 계정이 있나요? </span>
+                <Pointer onClick={toggleForm}> 여기서 로그인 </Pointer>
+              </p>
+            </PointerBox>
           </Col>
           <Col isSignIn={isSignIn}>
             <LoginContainer>
               <LoginMain isSignIn={isSignIn}></LoginMain>
-              <p>
-                <span> 계정이 없으신가요? </span>
-                <Pointer onClick={toggleForm}> 여기서 회원가입 </Pointer>
-              </p>
+              <PointerBox isSignIn={isSignIn}>
+                <p>
+                  <span> 계정이 없으신가요? </span>
+                  <Pointer onClick={toggleForm}> 여기서 회원가입 </Pointer>
+                </p>
+              </PointerBox>
             </LoginContainer>
           </Col>
         </Row>
