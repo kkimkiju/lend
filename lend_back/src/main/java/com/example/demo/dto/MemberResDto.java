@@ -22,10 +22,10 @@ public class MemberResDto {
     public static MemberResDto of(Member member) {
         return MemberResDto.builder()
                 .email(member.getEmail())
-//                .name(member.getName())
+                .name(member.getName())
                 .password(member.getPassword())
+                .identityNumber(member.getIdentityNumber())
 //                .nickname(member.getNickname())
-//                .identityNumber(member.getIdentityNumber())
 //                .profileImgPath(member.getProfileImgPath())
 //                .skill(member.getSkill())
 //                .myInfo(member.getMyInfo())

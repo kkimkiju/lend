@@ -23,6 +23,8 @@ public class AuthController {
     }
     @PostMapping("/signup")
     public ResponseEntity<MemberResDto> signup(@RequestBody MemberReqDto requestDto) {
+        System.out.println("주번" + requestDto.getIdentityNumber());
+        System.out.println("주번" + requestDto.getName());
         return ResponseEntity.ok(authService.signup(requestDto));
     }
 //    @PostMapping("/login")

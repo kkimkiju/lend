@@ -28,13 +28,9 @@ public class MemberReqDto {
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .email(email)
-
                 .password(passwordEncoder.encode(password))
-
-                //.identityNumber(identityNumber)
-
-
-
+                .identityNumber(identityNumber)
+                .name(name)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

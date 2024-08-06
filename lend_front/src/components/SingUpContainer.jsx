@@ -15,7 +15,6 @@ const SignContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  gap: 2rem;
   border-radius: 100px;
   border: solid 0.75px #c7c7c7;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -25,7 +24,7 @@ const SignContainer = styled.div`
 const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   align-items: center;
   width: 50%;
   input:focus {
@@ -36,7 +35,7 @@ const Input = styled.input`
   all: unset;
   text-align: start;
   width: 80%;
-  height: 20px;
+  height: 16px;
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -57,7 +56,12 @@ const WithMsg = styled.div`
     width: 80%;
   }
 `;
-
+const DateOfBirth = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 27px;
+`;
 const CertificationInput = styled.input`
   all: unset;
   text-align: start;
@@ -132,8 +136,9 @@ const CompelteButton = styled.div`
 const AgreementContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+
   text-align: start;
+  padding: 0 24px;
 `;
 const CheckBox = styled.input``;
 
@@ -157,10 +162,15 @@ const SingUpContainer = ({ isSignIn }) => {
   // 유효성 검사
   const [isId, setIsId] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
   const [pwdValid, setPwdValid] = useState(false); // 비밀번호 유효성 검사
   const [passwordError, setPasswordError] = useState("");
-  //
-  const [date, setDate] = useState(false);
+  const [passwordheckError, setPasswordCheckError] = useState("");
+
+  // 생년월일
+  const [date, setDate] = useState("");
+  const [identifyNum, setIdentifyNum] = useState("");
+  const [name, setName] = useState("");
   // 이메일 중복 여부
   const [emailError, setEmailError] = useState("");
   const [emailExist, setEmailExist] = useState(false);
@@ -242,7 +252,7 @@ const SingUpContainer = ({ isSignIn }) => {
 
   const handleChange = (event) => {
     setInputCert(event.target.value);
-    //setIsCerCheck(true);
+    // 숫자만 입력받기
     const value = event.target.value
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
@@ -263,9 +273,57 @@ const SingUpContainer = ({ isSignIn }) => {
       setPwdValid(true);
     }
   };
-  const handleDateChange = (e) => {
-    setDate(e.target.value);
+  // 비번 중복 체크
+
+  // const PwDoubleCheck = (e) => {
+  //   setPasswordCheck(e.target.value);
+  //   console.log(password, "passwd");
+  //   console.log(passwordCheck, "passwordCheck");
+  //   if (password !== passwordCheck) {
+  //     setPasswordCheckError("비밀번호가 다릅니다.");
+  //     setPwdValid(false);
+  //   } else {
+  //     setPasswordCheckError("");
+  //     setPwdValid(true);
+  //   }
+  // };
+  useEffect(() => {
+    if (passwordCheck.length > 0) {
+      if (password !== passwordCheck) {
+        setPasswordCheckError("비밀번호가 다릅니다.");
+        setPwdValid(false);
+      } else {
+        setPasswordCheckError("");
+        setPwdValid(true);
+      }
+    }
+  }, [password, passwordCheck]);
+
+  const handlePwCheck = (e) => {
+    setPasswordCheck(e.target.value);
   };
+
+  const handleDateChange = (e) => {
+    const value = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*)\./g, "$1");
+    setDate(value);
+  };
+  const handleIDNumChange = (e) => {
+    const value = e.target.value.replace(/[^0-9.]/g, "");
+    // .replace(/(\..*)\./g, "$1");
+    console.log(value, "vale");
+    if (value === "" || (parseInt(value) > 0 && parseInt(value) < 5)) {
+      setIdentifyNum(value);
+    } else {
+      alert("?");
+      return;
+    }
+  };
+  const handleName = (e) => {
+    setName(e.target.value);
+  };
+  useEffect(() => {}, [date, identifyNum]);
   const [allChecked, setAllChecked] = useState(false);
   const [privacyIsChecked, setPrivacyIsChecked] = useState(false);
   const [privacyIsChecked2, setPrivacyIsChecked2] = useState(false);
@@ -319,12 +377,15 @@ const SingUpContainer = ({ isSignIn }) => {
     const user = {
       email: inputEmail,
       password: password,
-      //date,
+      identityNumber: date + identifyNum,
+      name: name,
     };
+    console.log(user, "user");
     try {
       const response = await AxiosApi.signup(user);
       if (response.data) {
         alert("회원가입에 성공했습니다.");
+        window.location.reload();
         console.log(response.data);
         // navigate("/apueda/login");
       } else {
@@ -349,6 +410,8 @@ const SingUpContainer = ({ isSignIn }) => {
     const confirmMessage =
       "뒤로 가면 변경 사항이 저장되지 않습니다. 계속 하시겠습니까?";
     if (window.confirm(confirmMessage)) {
+      console.log("!");
+      window.location.reload();
     } else {
     }
   };
@@ -415,6 +478,12 @@ const SingUpContainer = ({ isSignIn }) => {
       ) : (
         <SignContainer isTrue={isTrue}>
           <InputContainer>
+            <Input
+              type="text"
+              placeholder="이름"
+              onChange={(e) => handleName(e)}
+            ></Input>
+
             <WithMsg>
               <Input
                 type="password"
@@ -430,19 +499,38 @@ const SingUpContainer = ({ isSignIn }) => {
             </WithMsg>
             <WithMsg>
               <Input
-                type="date"
-                onChange={(e) => handleDateChange(e)}
-                // Convert date to 'yyyy-MM-dd' format for input
-                value={date}
-                min="1900-06-05"
-                max={"2199-12-31"}
-                placeholder="생년월일"
-              />
-              {!date && (
+                type="password"
+                placeholder="비밀번호 확인 "
+                onChange={handlePwCheck}
+              ></Input>
+              {passwordCheck.length > 0 && (
+                <div className={pwdValid ? "success" : "error"}>
+                  {passwordheckError}
+                </div>
+              )}
+            </WithMsg>
+            <WithMsg>
+              <DateOfBirth>
+                <Input
+                  onChange={(e) => handleDateChange(e)}
+                  maxLength="6"
+                  placeholder="생년월일"
+                  value={date}
+                />
+                -
+                <Input
+                  maxLength="1"
+                  style={{ width: "10%" }}
+                  onChange={(e) => handleIDNumChange(e)}
+                  value={identifyNum}
+                />
+                ●●●●●●
+              </DateOfBirth>
+              {!date && date.length > 0 ? (
                 <div className={date ? "success" : "error"}>
                   생년월일을 입력해주세요.
                 </div>
-              )}
+              ) : null}
             </WithMsg>
             <AgreementContainer>
               <label>
