@@ -42,19 +42,25 @@ public class AuthService {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
         Member member = requestDto.toEntity(passwordEncoder);
+        System.out.println(member + " password 인코더" + " , " + member.getPassword());
         return MemberResDto.of(memberRepository.save(member));
     }
 
     public TokenDto login(MemberReqDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+        System.out.println(managerBuilder.getObject().authenticate(requestDto.toAuthentication())+ " managerBuilder 확인 " );
+        System.out.println(authenticationToken.getName()+ " token 확인 " );
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+        System.out.println(authentication + "authentication 확인");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 토큰으로 아이디 불러오기
         log.error("사용자 값 : {}", SecurityContextHolder.getContext().getAuthentication().getName());
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+        System.out.println("tokenDto " + tokenDto);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(SecurityContextHolder.getContext().getAuthentication() + "SecurityContextHolder확인");
         log.warn("Token Entity 저장할 email : {}", email);
         Token token = Token.builder()
                 .email(email)
@@ -89,18 +95,18 @@ public class AuthService {
 
 
     // RefreshToken 이용하여 AccessToken 재발급
-//    public AccessTokenDto reissuedToken(String refreshToken) {
-//        Optional<Token> optionalToken = tokenRepository.findByRefreshToken(refreshToken);
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        log.warn("사용자 email : {}", SecurityContextHolder.getContext().getAuthentication());
-//        log.warn("사용자 refreshToken : {}", optionalToken.get().getRefreshToken());
-//        if (optionalToken.isPresent()) {
-//            if (email.equals(optionalToken.get().getEmail())) {
-//                AccessTokenDto reissuedAccessToken = tokenProvider.generateAccessTokenDto(tokenProvider.getAuthentication(refreshToken));
-//                log.info("재발행 accessToken 값 {}", reissuedAccessToken);
-//                return reissuedAccessToken;
-//            }
-//        }
-//        return null;
-//    }
+    public AccessTokenDto reissuedToken(String refreshToken) {
+        Optional<Token> optionalToken = tokenRepository.findByRefreshToken(refreshToken);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.warn("사용자 email : {}", SecurityContextHolder.getContext().getAuthentication());
+        log.warn("사용자 refreshToken : {}", optionalToken.get().getRefreshToken());
+        if (optionalToken.isPresent()) {
+            if (email.equals(optionalToken.get().getEmail())) {
+                AccessTokenDto reissuedAccessToken = tokenProvider.generateAccessTokenDto(tokenProvider.getAuthentication(refreshToken));
+                log.info("재발행 accessToken 값 {}", reissuedAccessToken);
+                return reissuedAccessToken;
+            }
+        }
+        return null;
+    }
 }

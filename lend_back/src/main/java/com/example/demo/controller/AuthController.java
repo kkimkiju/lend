@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AccessTokenDto;
 import com.example.demo.dto.MemberReqDto;
 import com.example.demo.dto.MemberResDto;
+import com.example.demo.dto.TokenDto;
 import com.example.demo.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,15 +25,14 @@ public class AuthController {
     }
     @PostMapping("/signup")
     public ResponseEntity<MemberResDto> signup(@RequestBody MemberReqDto requestDto) {
-        System.out.println("주번" + requestDto.getIdentityNumber());
-        System.out.println("주번" + requestDto.getName());
         return ResponseEntity.ok(authService.signup(requestDto));
     }
-//    @PostMapping("/login")
-//    public ResponseEntity<TokenDto> login(@RequestBody MemberReqDto requestDto) {
-//        return ResponseEntity.ok(authService.login(requestDto));
-//    }
-//
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@RequestBody MemberReqDto requestDto) {
+        System.out.println(requestDto.getPassword() + "pw");
+        return ResponseEntity.ok(authService.login(requestDto));
+    }
+
 //    // 아이디 찾기
 //    @PostMapping("/findid")
 //    public ResponseEntity <String> findId(@RequestBody MemberDto memberDto) {
@@ -45,9 +46,9 @@ public class AuthController {
 //        return ResponseEntity.ok(authService.findPassword(memberReqDto));
 //    }
 //
-//    @PostMapping("/reissued")
-//    public ResponseEntity<AccessTokenDto> newToken(@RequestBody String refreshToken) {
-//        log.info("refreshToken : {}", refreshToken);
-//        return ResponseEntity.ok(authService.reissuedToken(refreshToken));
-//    }
+    @PostMapping("/reissued")
+    public ResponseEntity<AccessTokenDto> newToken(@RequestBody String refreshToken) {
+        log.info("refreshToken : {}", refreshToken);
+        return ResponseEntity.ok(authService.reissuedToken(refreshToken));
+    }
 }

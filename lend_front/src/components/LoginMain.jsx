@@ -1,6 +1,10 @@
 import styled, { css } from "styled-components";
 import ThirdLogin from "./ThirdLogin";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import LogoImg from "../image/로고.png";
+import Login from "../pages/Login";
+import LoginComponent from "./LoginComponent";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -15,9 +19,11 @@ const Container = styled.div`
   transition: 0.5s ease-in-out;
   transform: ${(props) => (props.isTrue ? "scale(1)" : "scale(0)")};
 `;
-const Logo = styled.div`
-  font-size: 50px;
-  color: #504f4f;
+const Logo = styled.img`
+  width: 180px;
+  height: 110px;
+  object-fit: fill;
+  cursor: pointer;
 `;
 const InputContainer = styled.div`
   display: flex;
@@ -30,6 +36,15 @@ const InputContainer = styled.div`
   }
 `;
 const EmailInput = styled.input`
+  all: unset;
+  width: 80%;
+  height: 20px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: start;
+`;
+const PasswordInput = styled.input`
   all: unset;
   width: 80%;
   height: 20px;
@@ -73,6 +88,11 @@ const LoginMain = ({ isSignIn }) => {
   // 오류 메시지
   const [idMessage, setIdMessage] = useState("");
   const [isTrue, setIsTrue] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
+
+  const [pw, setPw] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsTrue(isSignIn);
@@ -87,13 +107,19 @@ const LoginMain = ({ isSignIn }) => {
       setIdMessage("이메일 형식이 올바르지 않습니다.");
       setIsId(false);
     } else {
-      setIdMessage("올바른 형식 입니다.");
+      setIdMessage("");
       setIsId(true);
     }
   };
+  useEffect(() => {
+    console.log(pw, "pw");
+  }, [pw]);
+  const handleLogin = () => {
+    setIsLogin(!isLogin);
+  };
   return (
     <Container isTrue={isTrue}>
-      <Logo>로고</Logo>
+      <Logo src={LogoImg} onClick={() => navigate("/lend")}></Logo>
       <InputContainer>
         <WithMsg>
           <EmailInput placeholder="Email" onChange={onChangeEmail}></EmailInput>
@@ -101,8 +127,19 @@ const LoginMain = ({ isSignIn }) => {
             <div className={`${isId ? "success" : "error"}`}>{idMessage}</div>
           )}
         </WithMsg>
-        <EmailInput type="password" placeholder="Password"></EmailInput>
-        <LoginBtt>로그인</LoginBtt>
+        <PasswordInput
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPw(e.target.value)}
+        ></PasswordInput>
+        <LoginBtt onClick={handleLogin}>
+          <LoginComponent
+            isLogin={isLogin}
+            pw={pw}
+            email={inputEmail}
+          ></LoginComponent>
+          로그인
+        </LoginBtt>
         <LoginEtc>
           <>아이디/비밀번호 찾기</>
           <>회원가입</>

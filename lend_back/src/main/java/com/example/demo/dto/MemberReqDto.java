@@ -18,11 +18,7 @@ public class MemberReqDto {
     private String email;
     private String password;
     private String name;
-    private String nickname;
     private String identityNumber;
-    private String profileImgPath;
-    private List<String> skill;
-    private String myInfo;
 
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
@@ -34,6 +30,7 @@ public class MemberReqDto {
                 .authority(Authority.ROLE_USER)
                 .build();
     }
+
 
 
     public void updateMember(Member member, PasswordEncoder passwordEncoder) {
@@ -50,6 +47,7 @@ public class MemberReqDto {
 
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
+        System.out.println("UsernamePasswordAuthenticationToken 실행");
         return new UsernamePasswordAuthenticationToken(email, password);
     }
 }

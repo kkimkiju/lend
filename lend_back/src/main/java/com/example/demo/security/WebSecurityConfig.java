@@ -46,7 +46,8 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**", "/static/**", "/ws/**", "/elastic/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers( "/static/**", "/ws/**", "/elastic/**").permitAll()
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/favicon.ico","/manifest.json").permitAll()
@@ -57,20 +58,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
         return http.build();
     }
-//                // board 로직 시험해보려고 추가해놓음 나중에 삭제 필요
-//                .antMatchers("/auth/**", "/email/**","/friends/**","/payments/subscriptions","/payments/save","/payments/info","/kakaologin/**").permitAll()
-//                .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception","/unsubmodal/**","/mysub/**","/Unsubmodal/**","/Mysub/**").permitAll()
-//                // 웹소켓 확인을 위한 예외 처리주소
-//                .antMatchers("/ws/**", "app/**","/api/sample", "/swagger-ui.html#/**").permitAll()
-//                .antMatchers("/chat/**").authenticated() // 채팅시 jwt 검증 추가
-//                .anyRequest().authenticated()
-//                .and()
-//                .apply(new JwtSecurityConfig(tokenProvider))
-//                .and()
-//                .cors(); // .and().cors() 추가 된 부분
-//
-//        return http.build();
-//    }
+
     @Override  // 메소드 오버라이딩, localhost:3000 번으로 들어오는 요청 허가
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")

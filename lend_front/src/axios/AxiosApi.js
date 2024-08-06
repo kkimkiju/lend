@@ -62,9 +62,19 @@ const AxiosApi = {
       { headers: { "Content-Type": "application/json" } }
     );
   },
+
+  // 로그인
+  login: async (email, password) => {
+    const user = {
+      email: email,
+      password: password,
+    };
+    console.log(user, "login");
+    return await axios.post(LEND_DOMAIN + "/auth/login", user);
+  },
   // 회원 가입
   signup: async (user) => {
-    return await AxiosInstance.post("/auth/signup", user);
+    return await axios.post(LEND_DOMAIN + "/auth/signup", user);
   },
   // 회원 가입 여부 체크
   userCheck: async (email) => {
