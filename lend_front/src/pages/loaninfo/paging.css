@@ -1,0 +1,40 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  align-items: center; /* 모든 버튼을 수직으로 가운데 정렬 */
+}
+
+.pagination > li {
+  display: inline-block;
+  margin: 0 5px;
+}
+
+.pagination > li > a {
+  padding: 5px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  color: #333;
+  text-decoration: none;
+  background-color: #fff;
+  transition: background-color 0.3s, border-color 0.3s;
+  line-height: 1.5; /* 버튼 높이 조절 */
+}
+
+.pagination > li > a:hover {
+  background-color: #f0f0f0;
+  border-color: #d0d0d0;
+}
+
+.pagination > .active > a {
+  background-color: #d9d9d9;
+  color: #333;
+  border-color: #bdbdbd;
+}
+
+.pagination > .disabled > a {
+  pointer-events: none;
+  color: #999;
+  background-color: #f9f9f9;
+  border-color: #e0e0e0;
+}

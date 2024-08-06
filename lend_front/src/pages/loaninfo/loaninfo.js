@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import SimpleSlider from "../../components/SimpleSlider";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
+import LoaninfoList from "./loaninfoList";
+import Paging from "./paging";
 
 const Container = styled.div`
   display: flex;
@@ -53,8 +58,46 @@ const Title = styled.div`
   font-size: 15px;
   text-align: center;
 `;
+const Loan = styled.div`
+  width: 100%;
+  height: 550px;
+`;
+
+const Testbu = styled.button`
+  width: 200px;
+  height: 15px;
+`;
 
 const Loaninfo = () => {
+  const [loanitem, setLoanitem] = useState([]);
+  const [page, setPage] = useState(1); // 현재 페이지 상태
+  const [totalItemsCount, setTotalItemsCount] = useState(0); // 총 아이템 갯수 상태
+  const itemsCountPerPage = 10; // 한 페이지당 보여줄 아이템 갯수
+
+  const fetchData = async (page) => {
+    try {
+      const response = await ElasticsearchAxios.GetElastic(
+        page,
+        itemsCountPerPage
+      );
+      console.log("Fetched data:", response.data);
+      const { hits } = response.data.hits;
+      setLoanitem(hits);
+      setTotalItemsCount(response.data.hits.total.value);
+    } catch (error) {
+      console.error("Error fetching list:", error);
+    }
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setPage(pageNumber);
+    fetchData(pageNumber);
+  };
+
+  useEffect(() => {
+    fetchData(page);
+  }, [page]);
+
   return (
     <Container>
       <Adbox>
@@ -73,6 +116,7 @@ const Loaninfo = () => {
           <option value="환승론">환승론</option>
         </CategorySelect>
         <Textinput placeholder="연봉을 입력해주세요" />
+        <Testbu>눌러</Testbu>
       </Sett>
       <Loanbox>
         <Loantit>
@@ -80,6 +124,15 @@ const Loaninfo = () => {
           <Title style={{ flex: 1 }}>대출 상품명</Title>
           <Title style={{ flex: 1 }}>자본 목적</Title>
         </Loantit>
+        <Loan>
+          <LoaninfoList loanitem={loanitem} />
+        </Loan>
+        <Paging
+          page={page}
+          itemsCountPerPage={itemsCountPerPage}
+          totalItemsCount={totalItemsCount}
+          onPageChange={handlePageChange}
+        />
       </Loanbox>
     </Container>
   );
