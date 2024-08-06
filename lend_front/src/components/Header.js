@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
-
+import Logo from "../image/로고.png";
 const Header = () => {
   const navigate = useNavigate();
 
   return (
     <Body>
       <Container>
-        <LOGO onClick={() => navigate("/lend")}>Lend</LOGO>
+        <LOGO src={Logo} onClick={() => navigate("/lend")}></LOGO>
         <Box>
           <Menu>대출 상품</Menu>
           <Menu>문의 게시판</Menu>
@@ -52,16 +52,15 @@ const Box = styled.div`
   display: flex;
 `;
 
-const LOGO = styled.div`
-  font-size: 50px;
-  caret-color: transparent;
-  color: #29c555;
+const LOGO = styled.img`
+  width: 8%;
+  height: 8%;
+  object-fit: fill;
   cursor: pointer;
-  font-weight: bold;
-  margin-left: 20px;
+  caret-color: transparent;
   @media (max-width: 500px) {
-    font-size: 30px;
-    margin-left: 0;
+    width: 18%;
+    height: 18%;
   }
 `;
 
