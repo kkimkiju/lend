@@ -9,7 +9,9 @@ const DetLi = styled.li`
     border-bottom: none;
     margin-bottom: 0;
   }
+  cursor: pointer;
 `;
+
 const TiContain = styled.div`
   align-items: center;
   margin: 0px 22% 9px 12%;
@@ -23,6 +25,7 @@ const TiContain = styled.div`
     width: 33%;
   }
 `;
+
 const DetTitle = styled.h3`
   width: 450px;
   color: black;
@@ -35,6 +38,7 @@ const DetTitle = styled.h3`
     font-size: 17px;
   }
 `;
+
 const Detamo = styled.p`
   color: #444;
   font-size: 13px;
@@ -43,6 +47,7 @@ const Detamo = styled.p`
     width: 13%;
   }
 `;
+
 const Detdate = styled.p`
   color: #777;
   font-size: 13px;
@@ -53,13 +58,13 @@ const Detdate = styled.p`
   }
 `;
 
-const LoaninfoListitem = ({ loanitem }) => {
+const LoaninfoListitem = ({ loanitem, onClickde }) => {
   const truncateTitle = (title) => {
-    return title && title.length > 25 ? title.substring(0, 25) + "..." : title;
+    return title.length > 25 ? title.substring(0, 25) + "..." : title;
   };
 
   return (
-    <DetLi>
+    <DetLi onClick={() => onClickde(loanitem)}>
       <TiContain>
         <Detdate>{loanitem._source["금융회사 명"]}</Detdate>
       </TiContain>

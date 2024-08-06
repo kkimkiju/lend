@@ -8,14 +8,18 @@ const LoanUl = styled.ul`
   margin: 0;
 `;
 
-const LoaninfoList = ({ loanitem }) => {
+const LoaninfoList = ({ loanitem, onClickde }) => {
   return (
-    <LoanUl>
-      {loanitem &&
-        loanitem.map((item, index) => (
-          <LoaninfoListitem key={index} loanitem={item} />
-        ))}
-    </LoanUl>
+    <ul>
+      {loanitem.map((item) => (
+        <LoaninfoListitem
+          key={item._id}
+          loanitem={item}
+          onClickde={onClickde}
+        />
+      ))}
+    </ul>
   );
 };
+
 export default LoaninfoList;

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
 import LoaninfoList from "./loaninfoList";
 import Paging from "./paging";
+import Detail from "./loanDetail";
 
 const Container = styled.div`
   display: flex;
@@ -63,16 +64,22 @@ const Loan = styled.div`
   height: 550px;
 `;
 
-const Testbu = styled.button`
-  width: 200px;
-  height: 15px;
-`;
-
 const Loaninfo = () => {
   const [loanitem, setLoanitem] = useState([]);
-  const [page, setPage] = useState(1); // 현재 페이지 상태
-  const [totalItemsCount, setTotalItemsCount] = useState(0); // 총 아이템 갯수 상태
-  const itemsCountPerPage = 10; // 한 페이지당 보여줄 아이템 갯수
+  const [page, setPage] = useState(1);
+  const [totalItemsCount, setTotalItemsCount] = useState(0);
+  const itemsCountPerPage = 10;
+  const [deOpen, setDeOpen] = useState(false);
+  const [demodalOpen, setDemodalOpen] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);
+
+  const onClickde = (loan) => {
+    setSelectedLoan(loan);
+    setDeOpen(true);
+  };
+  const closeDe = () => {
+    setDeOpen(false);
+  };
 
   const fetchData = async (page) => {
     try {
@@ -116,7 +123,6 @@ const Loaninfo = () => {
           <option value="환승론">환승론</option>
         </CategorySelect>
         <Textinput placeholder="연봉을 입력해주세요" />
-        <Testbu>눌러</Testbu>
       </Sett>
       <Loanbox>
         <Loantit>
@@ -125,7 +131,7 @@ const Loaninfo = () => {
           <Title style={{ flex: 1 }}>자본 목적</Title>
         </Loantit>
         <Loan>
-          <LoaninfoList loanitem={loanitem} />
+          <LoaninfoList loanitem={loanitem} onClickde={onClickde} />
         </Loan>
         <Paging
           page={page}
@@ -134,6 +140,12 @@ const Loaninfo = () => {
           onPageChange={handlePageChange}
         />
       </Loanbox>
+      <Detail
+        open={deOpen}
+        close={closeDe}
+        setModalOpen={setDemodalOpen}
+        loan={selectedLoan}
+      />
     </Container>
   );
 };
