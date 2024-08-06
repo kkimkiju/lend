@@ -16,6 +16,7 @@ import ChatList from "./pages/chatting/ChatList";
 import ChatRoomCreate from "./pages/chatting/ChatRoomCreate";
 import Chatting from "./pages/chatting/Chatting";
 import Loaninfo from "./pages/loaninfo/loaninfo";
+import WishList from "./pages/WishList";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
           <Route path="/lend/chatting" element={<Chatting />} />
           <Route path="/lend/Loaninfo" element={<Loaninfo />} />
+          <Route path="/lend/wishlist" element={<WishList />} />
         </Routes>
       </Router>
     </>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -11,6 +11,9 @@ const Header = () => {
         <Box>
           <Menu>대출 상품</Menu>
           <Menu>문의 게시판</Menu>
+          <Menu as={Link} to="/lend/wishlist">
+            찜 목록
+          </Menu>
           <Menu>마이 페이지</Menu>
         </Box>
       </Container>
@@ -69,11 +72,13 @@ const Menu = styled.div`
   width: 10vw;
   font-size: 1.5vw;
   caret-color: transparent;
+  color: black;
   cursor: pointer;
   margin: 0 30px; /* Add some spacing between menu items */
   white-space: nowrap;
+  text-decoration: none;
   @media (max-width: 500px) {
-    font-size: 4vw;
-    margin-left: 8vw;
+    font-size: 3vw;
+    margin-left: 3vw;
   }
 `;
