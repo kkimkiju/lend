@@ -49,47 +49,12 @@ const ChatDate = styled.p`
   margin: 0;
   text-align: right;
 `;
-const CircleFixedButton = styled.button`
-  position: fixed; // 버튼을 부모 컨테이너에 대해 절대적 위치로 설정
-  bottom: 24px;
-  right: 30px;
-  z-index: 10;
-
-  width: 60px; // 버튼의 크기를 정사각형으로 설정
-  height: 60px; // 버튼의 크기를 정사각형으로 설정
-  border-radius: 50%; // 동그란 모양으로 만들기 위해 반지름을 50%로 설정
-
-  display: flex; // Flexbox 레이아웃 사용
-  justify-content: center; // 가로 중앙 정렬
-  align-items: center; // 세로 중앙 정렬
-
-  background-color: #1da1f2; // 트위터 색상
-  color: white;
-  font-size: 30px; // 플러스 기호 크기
-  line-height: 1; // 기본 라인 높이 제거
-  // 그림자 효과
-  box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.4);
-
-  border: none; // 기본 테두리 제거
-  cursor: pointer;
-  outline: none; // 클릭 시 테두리 제거
-
-  &:hover {
-    background-color: #1991db; // 호버 시 배경색 변경
-  }
-
-  &:before {
-    // 가상 요소로 플러스 기호 생성
-    content: "+";
-  }
-`;
 
 function ChatList() {
   const [chatRooms, setChatRooms] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 서버로부터 채팅방 목록을 가져오는 API 호출
     const getChatRoom = async () => {
       try {
         const rsp = await AxiosApi.chatList();
@@ -103,8 +68,6 @@ function ChatList() {
   }, []);
 
   const enterChatRoom = (roomId) => {
-    // 채팅방으로 이동하는 로직 작성
-    console.log(`Entering chat room ${roomId}`);
     navigate(`/lend/chatting/${roomId}`);
   };
 

@@ -81,10 +81,8 @@ const Chatting = () => {
   const [inputMsg, setInputMsg] = useState("");
   const [chatList, setChatList] = useState([]);
   const { roomId } = useParams();
-  const [sender, setSender] = useState("");
-  const [roomName, setRoomName] = useState(""); // 채팅방 이름
   const ws = useRef(null);
-  const navigate = useNavigate(); // useNavigate 훅 추가
+  const navigate = useNavigate();
 
   const onChangMsg = (e) => {
     setInputMsg(e.target.value);
@@ -118,7 +116,7 @@ const Chatting = () => {
       })
     );
     ws.current.close();
-    navigate("/Chat");
+    navigate(-1);
   };
 
   // useEffect(() => {
@@ -134,15 +132,13 @@ const Chatting = () => {
   //   };
   //   getMember();
   // });
-  const email = "test";
+  const sender = "test";
 
   useEffect(() => {
     // 채팅방 정보 가져 오기
     const getChatRoom = async () => {
       try {
-        const rsp = await AxiosApi.chatDetail(roomId);
-        console.log(rsp.data.name);
-        setRoomName(rsp.data.name);
+        await AxiosApi.chatDetail(roomId);
       } catch (error) {
         console.log(error);
       }
@@ -188,7 +184,7 @@ const Chatting = () => {
 
   return (
     <ChatContainer>
-      <ChatHeader>채팅방 {roomName}</ChatHeader>
+      <ChatHeader>문의하기</ChatHeader>
       <MessagesContainer ref={chatContainerRef}>
         {chatList.map((chat, index) => (
           <Message key={index} isSender={chat.sender === sender}>

@@ -11,18 +11,6 @@ const Container = styled.div`
   padding: 20px;
 `;
 
-const Title = styled.h1`
-  color: #333;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  width: 300px;
-`;
-
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -44,30 +32,18 @@ const Button = styled.button`
 `;
 
 function ChatRoomCreate() {
-  const [chatRoomTitle, setChatRoomTitle] = useState("");
   const navigate = useNavigate();
   const email = "test";
   const handleCreateChatRoom = async () => {
     const response = await AxiosApi.chatCreate(email);
     console.log(response.data);
-    navigate(`/lend/chatlist/${response.data}`);
-  };
-
-  const handleCancel = () => {
-    navigate(-1);
+    navigate(`/lend/chatting/${response.data.roomId}`);
   };
 
   return (
     <Container>
-      <Title>채팅방 생성</Title>
-      {/* <Input
-        type="text"
-        value={chatRoomTitle}
-        onChange={(e) => setChatRoomTitle(e.target.value)}
-      /> */}
       <ButtonContainer>
-        <Button onClick={handleCreateChatRoom}>확인</Button>
-        {/* <Button onClick={handleCancel}>취소</Button> */}
+        <Button onClick={handleCreateChatRoom}>상담원연결</Button>
       </ButtonContainer>
     </Container>
   );
