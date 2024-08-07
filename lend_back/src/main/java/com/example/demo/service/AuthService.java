@@ -47,59 +47,60 @@ public class AuthService {
         return MemberResDto.of(memberRepository.save(member));
     }
     //로그인
-//    public TokenDto login(MemberReqDto requestDto) {
-//        UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-//        log.info("Authentication Token: {}", authenticationToken);
-//
-//        try {
-//            // 비밀번호 검증을 위한 로그 추가
-//            log.info("Raw Password: {}", requestDto.getPassword());
-//            log.info("Encoded Password in DB: {}", memberRepository.findByEmail(requestDto.getEmail())
-//                    .map(Member::getPassword).orElse("Not Found"));
-//
-//            Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-//            log.info("Authentication successful: {}", authentication);
-//
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//
-//            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-//            log.info("Token DTO: {}", tokenDto);
-//
-//            Token token = Token.builder()
-//                    .email(authentication.getName())
-//                    .refreshToken(tokenDto.getRefreshToken())
-//                    .build();
-//            tokenRepository.save(token);
-//
-//            return tokenDto;
-//        } catch (BadCredentialsException ex) {
-//            log.error("Bad credentials provided for user: {}", requestDto.getEmail());
-//            throw ex;
-//        } catch (Exception ex) {
-//            log.error("Authentication failed", ex);
-//            throw ex;
-//        }
-//    }
-
-
     public TokenDto login(MemberReqDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("Authentication Token: {}", authenticationToken);
 
-        // 토큰으로 아이디 불러오기
-        log.error("사용자 값 : {}", SecurityContextHolder.getContext().getAuthentication().getName());
+        try {
+            // 비밀번호 검증을 위한 로그 추가
+            log.info("Raw Password: {}", requestDto.getPassword());
+            log.info("Encoded Password in DB: {}", memberRepository.findByEmail(requestDto.getEmail())
+                    .map(Member::getPassword).orElse("Not Found"));
 
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.warn("Token Entity 저장할 email : {}", email);
-        Token token = Token.builder()
-                .email(email)
-                .refreshToken(tokenDto.getRefreshToken())
-                .build();
-        tokenRepository.save(token);
-        return tokenDto;
+            Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+            log.info("Authentication successful: {}", authentication);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+            log.info("Token DTO: {}", tokenDto);
+
+            Token token = Token.builder()
+                    .email(authentication.getName())
+                    .refreshToken(tokenDto.getRefreshToken())
+                    .build();
+            tokenRepository.save(token);
+
+            return tokenDto;
+        } catch (BadCredentialsException ex) {
+            log.error("Bad credentials provided for user: {}", requestDto.getEmail());
+            throw ex;
+        } catch (Exception ex) {
+            log.error("Authentication failed", ex);
+            throw ex;
+        }
     }
+
+
+//    public TokenDto login(MemberReqDto requestDto) {
+//        UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+//        log.error("authenticationToken 값 : {}", managerBuilder.getObject().authenticate(authenticationToken));
+//        Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        // 토큰으로 아이디 불러오기
+//        log.error("사용자 값 : {}", SecurityContextHolder.getContext().getAuthentication().getName());
+//
+//        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        log.warn("Token Entity 저장할 email : {}", email);
+//        Token token = Token.builder()
+//                .email(email)
+//                .refreshToken(tokenDto.getRefreshToken())
+//                .build();
+//        tokenRepository.save(token);
+//        return tokenDto;
+//    }
 //
 //    // 아이디 찾기
 //    public String findId(MemberDto memberDto) {

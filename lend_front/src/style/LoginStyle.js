@@ -1,5 +1,5 @@
 // StyledComponents.js
-import styled, { css, createGlobalStyle } from "styled-components";
+import styled, { css, createGlobalStyle, keyframes } from "styled-components";
 
 export const Container = styled.div`
   position: relative;
@@ -132,7 +132,17 @@ export const Button = styled.button`
   font-size: 1.2rem;
   outline: none;
 `;
-
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+export const TextAnimation = styled.div`
+  animation: ${fadeIn} 0.8s ease-in-out forwards;
+`;
 export const Text = styled.div`
   margin: 4rem;
   color: var(--white);
@@ -157,7 +167,9 @@ export const Text = styled.div`
     transition: opacity 1s ease-in-out;
     transition-delay: 0.2s;
   }
-
+  text {
+    transition: 1s ease-in-out;
+  }
   @media only screen and (max-width: 425px) {
     margin: 0;
 
@@ -185,6 +197,9 @@ export const Img = styled.div`
 `;
 
 export const PointerBox = styled.div`
+  opacity: 0;
+  animation: ${fadeIn} 0.8s ease-in-out forwards;
+  animation-delay: ${(props) => props.delay || "0.5s"};
   transform: ${(props) => (props.isSignIn ? "scale(1)" : "scale(0)")};
   transition: 0.5s ease-in-out;
 `;

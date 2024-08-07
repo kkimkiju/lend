@@ -274,19 +274,6 @@ const SingUpContainer = ({ isSignIn }) => {
     }
   };
   // 비번 중복 체크
-
-  // const PwDoubleCheck = (e) => {
-  //   setPasswordCheck(e.target.value);
-  //   console.log(password, "passwd");
-  //   console.log(passwordCheck, "passwordCheck");
-  //   if (password !== passwordCheck) {
-  //     setPasswordCheckError("비밀번호가 다릅니다.");
-  //     setPwdValid(false);
-  //   } else {
-  //     setPasswordCheckError("");
-  //     setPwdValid(true);
-  //   }
-  // };
   useEffect(() => {
     if (passwordCheck.length > 0) {
       if (password !== passwordCheck) {
@@ -302,6 +289,7 @@ const SingUpContainer = ({ isSignIn }) => {
   const handlePwCheck = (e) => {
     setPasswordCheck(e.target.value);
   };
+  // 주민번호 앞자리
 
   const handleDateChange = (e) => {
     const value = e.target.value
@@ -309,6 +297,7 @@ const SingUpContainer = ({ isSignIn }) => {
       .replace(/(\..*)\./g, "$1");
     setDate(value);
   };
+  // 주민번호 뒷자리
   const handleIDNumChange = (e) => {
     const value = e.target.value.replace(/[^0-9.]/g, "");
     // .replace(/(\..*)\./g, "$1");
@@ -373,6 +362,7 @@ const SingUpContainer = ({ isSignIn }) => {
     pwdValid,
     date,
   ]);
+  // 회원가입 버튼 클릭시
   const regist = async () => {
     const user = {
       email: inputEmail,

@@ -2,8 +2,19 @@ import styled from "styled-components";
 import forest from "../image/숲사진.jpg";
 import Section from "../components/Section";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserStore";
+import { useContext } from "react";
 const Mainpage = () => {
+  const context = useContext(UserContext);
+  const { loginStatus, setLoginStatus } = context;
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    setLoginStatus(false);
+    localStorage.clear();
+    navigate("/");
+    setLoginStatus("");
+  };
   return (
     <>
       <Body>
@@ -15,9 +26,19 @@ const Mainpage = () => {
               <br />
               ever lend
               <br />
-              <TryBtn as={Link} to="/lend/login">
-                Try it
-              </TryBtn>
+              {loginStatus ? (
+                <TryBtn
+                  as={Link}
+                  to="/lend/login"
+                  onClick={() => handleLogout()}
+                >
+                  로그아웃
+                </TryBtn>
+              ) : (
+                <TryBtn as={Link} to="/lend/login">
+                  Try it
+                </TryBtn>
+              )}
             </TextOverlay>
           </MainImage>
           <Section />

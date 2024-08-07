@@ -8,6 +8,7 @@ import {
   Pointer,
   GlobalStyle,
   PointerBox,
+  TextAnimation,
 } from "../style/LoginStyle";
 import LoginMain from "../components/LoginMain";
 import styled from "styled-components";
@@ -54,7 +55,9 @@ const Login = () => {
           <Col>
             <Text isSignIn={isSignIn}>
               <div className="sign-in">
-                <h2>환영합니다</h2>
+                <TextAnimation>
+                  <h2>환영합니다</h2>
+                </TextAnimation>
               </div>
             </Text>
             <Img />
