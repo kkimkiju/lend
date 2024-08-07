@@ -18,29 +18,32 @@ import ChatRoomCreate from "./pages/chatting/ChatRoomCreate";
 import Chatting from "./pages/chatting/Chatting";
 import Loaninfo from "./pages/loaninfo/loaninfo";
 import WishList from "./pages/WishList";
+import UserStore from "./context/UserStore";
 
 function App() {
   return (
     <>
       <GlobalStyle />
-      <Router>
-        <ConditionalHeader />
-        <SlideWrapper>
+      <UserStore>
+        <Router>
+          <ConditionalHeader />
+          <SlideWrapper>
+            <Routes>
+              <Route path="/" element={<Navigate to="/lend" />} />
+              <Route path="/lend" element={<Mainpage />} />
+            </Routes>
+          </SlideWrapper>
           <Routes>
-            <Route path="/" element={<Navigate to="/lend" />} />
-            <Route path="/lend" element={<Mainpage />} />
             <Route path="/lend/login" element={<Login />} />
+            <Route path="/lend/support" element={<Support />} />
+            <Route path="/lend/chatlist" element={<ChatList />} />
+            <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
+            <Route path="/lend/chatting" element={<Chatting />} />
+            <Route path="/lend/Loaninfo" element={<Loaninfo />} />
+            <Route path="/lend/wishlist" element={<WishList />} />
           </Routes>
-        </SlideWrapper>
-        <Routes>
-          <Route path="/lend/support" element={<Support />} />
-          <Route path="/lend/chatlist" element={<ChatList />} />
-          <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
-          <Route path="/lend/chatting/:roomId" element={<Chatting />} />
-          <Route path="/lend/Loaninfo" element={<Loaninfo />} />
-          <Route path="/lend/wishlist" element={<WishList />} />
-        </Routes>
-      </Router>
+        </Router>
+      </UserStore>
     </>
   );
 }
