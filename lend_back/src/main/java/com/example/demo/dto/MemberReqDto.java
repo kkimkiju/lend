@@ -7,13 +7,14 @@ import lombok.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
+
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class MemberReqDto {
     private String email;
     private String password;
@@ -47,7 +48,7 @@ public class MemberReqDto {
 
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        System.out.println("UsernamePasswordAuthenticationToken 실행");
+        System.out.println("UsernamePasswordAuthenticationToken 실행"+ password);
         return new UsernamePasswordAuthenticationToken(email, password);
     }
 }

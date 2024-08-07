@@ -12,11 +12,7 @@ public class MemberResDto {
     private String email;
     private String password;
     private String name;
-    private String nickname;
     private String identityNumber;
-    private String profileImgPath;
-    private String skill;
-    private String myInfo;
 
 
     public static MemberResDto of(Member member) {

@@ -11,6 +11,7 @@ import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -45,22 +46,52 @@ public class AuthService {
         System.out.println(member + " password 인코더" + " , " + member.getPassword());
         return MemberResDto.of(memberRepository.save(member));
     }
+    //로그인
+//    public TokenDto login(MemberReqDto requestDto) {
+//        UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
+//        log.info("Authentication Token: {}", authenticationToken);
+//
+//        try {
+//            // 비밀번호 검증을 위한 로그 추가
+//            log.info("Raw Password: {}", requestDto.getPassword());
+//            log.info("Encoded Password in DB: {}", memberRepository.findByEmail(requestDto.getEmail())
+//                    .map(Member::getPassword).orElse("Not Found"));
+//
+//            Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+//            log.info("Authentication successful: {}", authentication);
+//
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+//            log.info("Token DTO: {}", tokenDto);
+//
+//            Token token = Token.builder()
+//                    .email(authentication.getName())
+//                    .refreshToken(tokenDto.getRefreshToken())
+//                    .build();
+//            tokenRepository.save(token);
+//
+//            return tokenDto;
+//        } catch (BadCredentialsException ex) {
+//            log.error("Bad credentials provided for user: {}", requestDto.getEmail());
+//            throw ex;
+//        } catch (Exception ex) {
+//            log.error("Authentication failed", ex);
+//            throw ex;
+//        }
+//    }
+
 
     public TokenDto login(MemberReqDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-        System.out.println(managerBuilder.getObject().authenticate(requestDto.toAuthentication())+ " managerBuilder 확인 " );
-        System.out.println(authenticationToken.getName()+ " token 확인 " );
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
-        System.out.println(authentication + "authentication 확인");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 토큰으로 아이디 불러오기
         log.error("사용자 값 : {}", SecurityContextHolder.getContext().getAuthentication().getName());
 
         TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-        System.out.println("tokenDto " + tokenDto);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println(SecurityContextHolder.getContext().getAuthentication() + "SecurityContextHolder확인");
         log.warn("Token Entity 저장할 email : {}", email);
         Token token = Token.builder()
                 .email(email)
@@ -94,19 +125,19 @@ public class AuthService {
     }
 
 
-    // RefreshToken 이용하여 AccessToken 재발급
-    public AccessTokenDto reissuedToken(String refreshToken) {
-        Optional<Token> optionalToken = tokenRepository.findByRefreshToken(refreshToken);
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.warn("사용자 email : {}", SecurityContextHolder.getContext().getAuthentication());
-        log.warn("사용자 refreshToken : {}", optionalToken.get().getRefreshToken());
-        if (optionalToken.isPresent()) {
-            if (email.equals(optionalToken.get().getEmail())) {
-                AccessTokenDto reissuedAccessToken = tokenProvider.generateAccessTokenDto(tokenProvider.getAuthentication(refreshToken));
-                log.info("재발행 accessToken 값 {}", reissuedAccessToken);
-                return reissuedAccessToken;
-            }
-        }
-        return null;
-    }
+//    // RefreshToken 이용하여 AccessToken 재발급
+//    public AccessTokenDto reissuedToken(String refreshToken) {
+//        Optional<Token> optionalToken = tokenRepository.findByRefreshToken(refreshToken);
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+//        log.warn("사용자 email : {}", SecurityContextHolder.getContext().getAuthentication());
+//        log.warn("사용자 refreshToken : {}", optionalToken.get().getRefreshToken());
+//        if (optionalToken.isPresent()) {
+//            if (email.equals(optionalToken.get().getEmail())) {
+//                AccessTokenDto reissuedAccessToken = tokenProvider.generateAccessTokenDto(tokenProvider.getAuthentication(refreshToken));
+//                log.info("재발행 accessToken 값 {}", reissuedAccessToken);
+//                return reissuedAccessToken;
+//            }
+//        }
+//        return null;
+//    }
 }

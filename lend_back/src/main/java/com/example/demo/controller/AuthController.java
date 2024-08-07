@@ -46,9 +46,9 @@ public class AuthController {
 //        return ResponseEntity.ok(authService.findPassword(memberReqDto));
 //    }
 //
-    @PostMapping("/reissued")
-    public ResponseEntity<AccessTokenDto> newToken(@RequestBody String refreshToken) {
-        log.info("refreshToken : {}", refreshToken);
-        return ResponseEntity.ok(authService.reissuedToken(refreshToken));
-    }
+//    @PostMapping("/reissued")
+//    public ResponseEntity<AccessTokenDto> newToken(@RequestBody String refreshToken) {
+//        log.info("refreshToken : {}", refreshToken);
+//        return ResponseEntity.ok(authService.reissuedToken(refreshToken));
+//    }
 }

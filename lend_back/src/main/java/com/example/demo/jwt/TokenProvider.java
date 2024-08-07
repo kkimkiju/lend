@@ -111,6 +111,7 @@ public class TokenProvider {
     }
 
     public Authentication getAuthentication(String accessToken) {
+        System.out.println("복호화");
         // 토큰 복호화(디코딩 : 사람이 읽을수있는 형태로 되돌리는것)
         Claims claims = parseClaims(accessToken);
         // 토큰 복호화 실패시

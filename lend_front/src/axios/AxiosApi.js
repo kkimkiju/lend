@@ -69,7 +69,6 @@ const AxiosApi = {
       email: email,
       password: password,
     };
-    console.log(user, "login");
     return await axios.post(LEND_DOMAIN + "/auth/login", user);
   },
   // 회원 가입
