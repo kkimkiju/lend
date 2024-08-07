@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -22,13 +23,16 @@ function App() {
   return (
     <>
       <GlobalStyle />
-
       <Router>
         <ConditionalHeader />
+        <SlideWrapper>
+          <Routes>
+            <Route path="/" element={<Navigate to="/lend" />} />
+            <Route path="/lend" element={<Mainpage />} />
+            <Route path="/lend/login" element={<Login />} />
+          </Routes>
+        </SlideWrapper>
         <Routes>
-          <Route path="/" element={<Navigate to="/lend" />} />
-          <Route path="/lend" element={<Mainpage />} />
-          <Route path="/lend/login" element={<Login />} />
           <Route path="/lend/support" element={<Support />} />
           <Route path="/lend/chatlist" element={<ChatList />} />
           <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
@@ -44,10 +48,24 @@ function App() {
 function ConditionalHeader() {
   const location = useLocation();
 
-  // Check if the current location is the login page
   const isLoginPage = location.pathname === "/lend/login";
 
   return <>{!isLoginPage && <Header />}</>;
+}
+
+function SlideWrapper({ children }) {
+  const location = useLocation();
+
+  useEffect(() => {
+    const element = document.getElementById("slide-wrapper");
+    if (element) {
+      element.classList.remove("slide-in");
+      void element.offsetWidth; // 트리거를 위해 강제 리플로우
+      element.classList.add("slide-in");
+    }
+  }, [location]);
+
+  return <div id="slide-wrapper">{children}</div>;
 }
 
 export default App;

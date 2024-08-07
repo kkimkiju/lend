@@ -76,6 +76,11 @@ const Menu = styled.div`
   margin: 0 30px; /* Add some spacing between menu items */
   white-space: nowrap;
   text-decoration: none;
+
+  &&:hover {
+    color: #29c555;
+  }
+
   @media (max-width: 500px) {
     font-size: 3vw;
     margin-left: 3vw;
