@@ -38,7 +38,7 @@ function App() {
             <Route path="/lend/support" element={<Support />} />
             <Route path="/lend/chatlist" element={<ChatList />} />
             <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
-            <Route path="/lend/chatting" element={<Chatting />} />
+            <Route path="/lend/chatting/:roomId" element={<Chatting />} />
             <Route path="/lend/Loaninfo" element={<Loaninfo />} />
             <Route path="/lend/wishlist" element={<WishList />} />
           </Routes>
