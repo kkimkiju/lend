@@ -133,6 +133,7 @@ const LoginMain = ({ isSignIn }) => {
   }, [pw]);
   const handleLogin = () => {
     setIsLogin(!isLogin);
+    localStorage.setItem("email", inputEmail);
   };
   const handleLoginFail = () => {
     setIsLogin(false);

@@ -132,7 +132,7 @@ const Chatting = () => {
   //   };
   //   getMember();
   // });
-  const sender = "test";
+  const sender = localStorage.getItem("email");
 
   useEffect(() => {
     // 채팅방 정보 가져 오기

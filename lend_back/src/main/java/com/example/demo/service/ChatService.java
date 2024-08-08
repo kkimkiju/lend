@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.ChatMessageDto;
-import com.example.demo.dto.ChatRoomResDto;
+import com.example.demo.dto.ChatRoomDto;
 import com.example.demo.entity.ChatRoom;
 import com.example.demo.repository.ChatRoomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,7 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -21,41 +22,54 @@ import java.util.*;
 @Service
 public class ChatService {
     private final ObjectMapper objectMapper; // JSON 문자열로 변환하기 위한 객체
-    private Map<String, ChatRoomResDto> chatRooms; // 채팅방 정보를 담을 맵
+    private Map<String, ChatRoomDto> chatRooms; // 채팅방 정보를 담을 맵
     private final ChatRoomRepository chatRoomRepository;
     @PostConstruct // 의존성 주입 이후 초기화를 수행하는 메소드
     private void init() { // 채팅방 정보를 담을 맵을 초기화
         chatRooms = new LinkedHashMap<>(); // 채팅방 정보를 담을 맵
     }
-    public List<ChatRoomResDto> findAllRoom() { // 채팅방 리스트 반환
-        return new ArrayList<>(chatRooms.values());
+
+    public List<ChatRoomDto> findAllRoom() { // 채팅방 리스트 반환
+        List<ChatRoom> chatrooms = chatRoomRepository.findAll();
+        List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
+        for(ChatRoom chatRoom : chatrooms) {
+            ChatRoomDto dto = new ChatRoomDto(
+                    chatRoom.getRoomId(),
+                    chatRoom.getRoomName(),
+                    chatRoom.getRegDate()
+            );
+            chatRoomDtos.add(dto);
+        }
+        return chatRoomDtos;
     }
-    public ChatRoomResDto findRoomById(String roomId) {
+    public ChatRoomDto findRoomById(String roomId) {
         return chatRooms.get(roomId);
     }
 
     // 방 개설하기
-    public ChatRoomResDto createRoom(String email) {
+    public ChatRoomDto createRoom(String email) {
         String randomId = UUID.randomUUID().toString();
         log.info("UUID : " + randomId);
-        ChatRoomResDto chatRoom = ChatRoomResDto.builder() // 채팅방 생성
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        String regDateStr = LocalDateTime.now().format(formatter);
+
+        ChatRoomDto chatRoom = ChatRoomDto.builder()
                 .roomId(randomId)
                 .roomName(email)
-                .regDate(LocalDateTime.now())
+                .regDate(regDateStr)
                 .build();
-        chatRooms.put(randomId, chatRoom);  // 방 생성, 키를 UUID로 하고 방 정보를 값으로 저장
-
         ChatRoom chatroom = new ChatRoom();
         chatroom.setRoomId(chatRoom.getRoomId());
         chatroom.setRoomName(chatRoom.getRoomName());
-        chatroom.setRegDate(chatroom.getRegDate());
-        chatRoomRepository.save(chatroom);
+        chatroom.setRegDate(chatRoom.getRegDate());
 
+        chatRoomRepository.save(chatroom);
 
         return chatRoom;
     }
+
     public void removeRoom(String roomId) { // 방 삭제
-        ChatRoomResDto room = chatRooms.get(roomId); // 방 정보 가져오기
+        ChatRoomDto room = chatRooms.get(roomId); // 방 정보 가져오기
         if (room != null) { // 방이 존재하면
             if (room.isSessionEmpty()) { // 방에 세션이 없으면
                 chatRooms.remove(roomId); // 방 삭제
@@ -64,7 +78,7 @@ public class ChatService {
     }
     // 채팅방에 입장한 세션 추가
     public void addSessionAndHandleEnter(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {
-        ChatRoomResDto room = findRoomById(roomId);
+        ChatRoomDto room = findRoomById(roomId);
         if (room != null) {
             room.getSessions().add(session); // 채팅방에 입장한 세션 추가
             if (chatMessage.getSender() != null) { // 채팅방에 입장한 사용자가 있으면
@@ -76,7 +90,7 @@ public class ChatService {
     }
     // 채팅방에서 퇴장한 세션 제거
     public void removeSessionAndHandleExit(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {
-        ChatRoomResDto room = findRoomById(roomId); // 채팅방 정보 가져오기
+        ChatRoomDto room = findRoomById(roomId); // 채팅방 정보 가져오기
         if (room != null) {
             room.getSessions().remove(session); // 채팅방에서 퇴장한 세션 제거
             if (chatMessage.getSender() != null) { // 채팅방에서 퇴장한 사용자가 있으면
@@ -91,7 +105,7 @@ public class ChatService {
     }
 
     public void sendMessageToAll(String roomId, ChatMessageDto message) {
-        ChatRoomResDto room = findRoomById(roomId);
+        ChatRoomDto room = findRoomById(roomId);
         if (room != null) {
             for (WebSocketSession session : room.getSessions()) {
                 sendMessage(session, message);

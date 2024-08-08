@@ -33,7 +33,7 @@ const Button = styled.button`
 
 function ChatRoomCreate() {
   const navigate = useNavigate();
-  const email = "test";
+  const email = localStorage.getItem("email");
   const handleCreateChatRoom = async () => {
     const response = await AxiosApi.chatCreate(email);
     console.log(response.data);
