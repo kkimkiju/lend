@@ -1,4 +1,5 @@
 import styled, { keyframes } from "styled-components";
+import KaKaoLogin from "./KaKaoLogin";
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -21,7 +22,10 @@ const LogoImg = styled.div``;
 const ThirdLogin = () => {
   return (
     <Container>
-      <LogoImg>카카오</LogoImg>
+      <KaKaoLogin>
+        <LogoImg>카카오</LogoImg>
+      </KaKaoLogin>
+
       <LogoImg>네이버</LogoImg>
     </Container>
   );

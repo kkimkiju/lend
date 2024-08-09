@@ -1,21 +1,41 @@
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../image/로고.png";
+import { useContext } from "react";
+import { UserContext } from "../context/UserStore";
 const Header = () => {
   const navigate = useNavigate();
-
+  const context = useContext(UserContext);
+  const { loginStatus } = context;
   return (
     <Body>
       <Container>
         <LOGO src={Logo} onClick={() => navigate("/lend")}></LOGO>
-        <Box>
-          <Menu>대출 상품</Menu>
-          <Menu as={Link} to="/lend/support">문의 게시판</Menu>
-          <Menu as={Link} to="/lend/wishlist">
-            찜 목록
-          </Menu>
-          <Menu>마이 페이지</Menu>
-        </Box>
+        {loginStatus ? (
+          <Box>
+            <Menu>대출 상품</Menu>
+            <Menu as={Link} to="/lend/support">
+              문의 게시판
+            </Menu>
+            <Menu as={Link} to="/lend/wishlist">
+              찜 목록
+            </Menu>
+            <Menu>마이 페이지</Menu>
+          </Box>
+        ) : (
+          <Box>
+            <Menu>대출 상품</Menu>
+            <Menu as={Link} to="/lend/login">
+              문의 게시판
+            </Menu>
+            <Menu as={Link} to="/lend/login">
+              찜 목록
+            </Menu>
+            <Menu as={Link} to="/lend/login">
+              마이 페이지
+            </Menu>
+          </Box>
+        )}
       </Container>
     </Body>
   );
