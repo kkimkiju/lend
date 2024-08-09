@@ -21,6 +21,7 @@ public class Member {
     @Column(nullable = false)
     private String name;
     private String password;
+    private Boolean memberType;
 
 //    @Column
 //    private String nickname;

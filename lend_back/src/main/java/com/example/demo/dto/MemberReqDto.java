@@ -20,6 +20,7 @@ public class MemberReqDto {
     private String password;
     private String name;
     private String identityNumber;
+    private Boolean memberType;
 
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
@@ -28,6 +29,7 @@ public class MemberReqDto {
                 .password(passwordEncoder.encode(password))
                 .identityNumber(identityNumber)
                 .name(name)
+                .memberType(memberType)
                 .authority(Authority.ROLE_USER)
                 .build();
     }
