@@ -1,15 +1,9 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../axios/AxiosApi";
 
 // 스타일 컴포넌트 정의
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-`;
 
 const ButtonContainer = styled.div`
   width: 70%;
@@ -48,16 +42,14 @@ function ChatRoomCreate() {
   };
 
   return (
-    <Container>
-      <ButtonContainer>
-        <SpanContainer>
-          <span>사용 중 궁금한 점을 알려주시면, </span>
-          <span>꼼꼼히 확인 후 해결을 도와 드리겠습니다.</span>
-        </SpanContainer>
+    <ButtonContainer>
+      <SpanContainer>
+        <span>사용 중 궁금한 점을 알려주시면, </span>
+        <span>꼼꼼히 확인 후 해결을 도와 드리겠습니다.</span>
+      </SpanContainer>
 
-        <Button onClick={handleCreateChatRoom}>상담원연결</Button>
-      </ButtonContainer>
-    </Container>
+      <Button onClick={handleCreateChatRoom}>상담원연결</Button>
+    </ButtonContainer>
   );
 }
 

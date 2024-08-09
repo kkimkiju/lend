@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ChatMessageDto;
 import com.example.demo.dto.ChatRoomDto;
+import com.example.demo.entity.ChatMessage;
 import com.example.demo.entity.ChatRoom;
+import com.example.demo.repository.ChatMessageRepository;
 import com.example.demo.repository.ChatRoomRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class ChatService {
     private final ObjectMapper objectMapper; // JSON 문자열로 변환하기 위한 객체
     private Map<String, ChatRoomDto> chatRooms; // 채팅방 정보를 담을 맵
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
     @PostConstruct // 의존성 주입 이후 초기화를 수행하는 메소드
     private void init() { // 채팅방 정보를 담을 맵을 초기화
         chatRooms = new LinkedHashMap<>(); // 채팅방 정보를 담을 맵
@@ -108,11 +111,17 @@ public class ChatService {
 
     public void sendMessageToAll(String roomId, ChatMessageDto message) {
         ChatRoomDto room = findRoomById(roomId);
+//        List<String> room2 = chatRoomRepository.findByRoomId(roomId);
+
         if (room != null) {
             for (WebSocketSession session : room.getSessions()) {
                 sendMessage(session, message);
             }
         }
+//        ChatMessage msg = new ChatMessage();
+//        msg.setRoomId(room2.get(0));
+//        msg.setMessage(message.getMessage());
+//        chatMessageRepository.save(msg);
     }
 
     public <T> void sendMessage(WebSocketSession session, T message) {

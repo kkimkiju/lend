@@ -35,4 +35,11 @@ public class ChatController {
     public ChatRoomDto findRoomById(@PathVariable String roomId) {
         return chatService.findRoomById(roomId);
     }
+
+    // 방 삭제
+//    @GetMapping("/delete")
+//    public ResponseEntity<Boolean> deleteRoom(@PathVariable String roomId) {
+//        boolean isTrue = chatService.removeRoom(roomId);
+//        return ResponseEntity.ok(isTrue);
+//    }
 }
