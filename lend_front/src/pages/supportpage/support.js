@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import DropdownComponent from "./dropdowncomponent";
 import ChatRoomCreate from "../chatting/ChatRoomCreate";
+import AxiosApi from "../../axios/AxiosApi";
 
 export default function Support() {
-  const [questionBoard, showQuestionBoard] = useState(null);
-  const [FAQBoard, showFAQBoard] = useState(null);
+  const [questionBoard, showQuestionBoard] = useState(true);
+  const [FAQBoard, showFAQBoard] = useState(false);
   const BoardHandler = (number) => () => {
     if (number === 1) {
       showQuestionBoard(true);
@@ -19,6 +20,31 @@ export default function Support() {
   const [dropDown, setDropDown] = useState(null);
   const DropDownHandler = (number) => () => {
     setDropDown(dropDown === number ? null : number);
+  };
+  const [questionList, setQuestionList] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  useEffect(() => {
+    const fetchQuestionList = async (page =0) => {
+      try {
+        const response = await AxiosApi.getQuestionList(page);
+        if (response.data && Array.isArray(response.data.boards)) {
+          setQuestionList(response.data.boards);
+          setTotalPages(response.data.totalPages);
+        } else {
+          console.error("Unexpected response format", response.data);
+        }
+      } catch (error) {
+        console.log(error);
+        console.log(error.response);
+      }
+    };
+    fetchQuestionList(currentPage);
+  }, [currentPage]);
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
@@ -34,7 +60,13 @@ export default function Support() {
           <Box>
             <Item>
               <div>번호 제목 + 댓글 수 작성자 작성일 </div>
-              <div>목록</div>
+              {questionList.map((question) => (
+            <div key={question.id}>
+              <div>
+                {question.id} {question.title} {question.commentList ? question.commentList.length : 0} {question.memberReqDto.name} {/* 작성일 정보가 없으므로 생략 */}
+              </div>
+            </div>
+          ))}
             </Item>
           </Box>
         )}
@@ -56,6 +88,8 @@ export default function Support() {
             </ListItem>
           </Box>
         )}
+        <Button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>이전 페이지</Button>
+        <Button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>다음 페이지</Button>
       </Container>
     </Body>
   );

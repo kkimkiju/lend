@@ -80,6 +80,41 @@ const AxiosApi = {
     console.log(email, "email");
     return await axios.get(`${LEND_DOMAIN}/auth/check?email=${email}`);
   },
+  // 문의게시판 ----------------------
+  // 글생성
+  createQuestion: async (questionDto) =>{
+    return await AxiosInstance.post(`${LEND_DOMAIN}/support/create-question`, questionDto)
+  },
+  // 글조회
+  getQuestionList: async (page) =>{
+    return await AxiosInstance.get(`${LEND_DOMAIN}/support/question-list?page=${page}&size=10`);
+
+  },
+  // 글수정
+  modifyQuestion : async ()=>{
+    return await AxiosInstance.put(`${LEND_DOMAIN}/support/modify-question`)
+  },
+  // 글삭제
+  deleteQuestion : async (id)=> {
+    return await AxiosInstance.delete(`${LEND_DOMAIN}/support/modify-question/${id}`)
+  },
+  // 댓글생성
+  createComment: async ()=>{
+    return await AxiosInstance.post(`${LEND_DOMAIN}/support/create-comment`)
+  },
+  // 댓글조회
+  getComment: async (questionId) =>{
+    return await AxiosInstance.get(`${LEND_DOMAIN}/support/question/${questionId}`)
+  },
+  // 댓글수정
+  modifyCommnet: async (commnetDto)=>{
+    return await AxiosInstance.put(`${LEND_DOMAIN}/support/modify-comment`, commnetDto)
+  },
+  // 댓글가상삭제
+  deleteCommnet: async (id) =>{
+    return await AxiosInstance.put(`${LEND_DOMAIN}/support/delete-comment/${id}`)
+  },
+  // 문의게시판 ----------------------
 };
 
 export default AxiosApi;
