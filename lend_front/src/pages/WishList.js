@@ -1,10 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+// Chart.js 등록
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 // styled-components 사용하여 스타일 정의
 const Container = styled.div`
   padding: 20px;
-  background-color: #f9f9f9;
+  background: linear-gradient(to right, #f9f9f9, #e0e0e0);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -12,100 +32,184 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  background-color: #29c555;
+  background: #29c555;
   color: #fff;
-  padding: 15px 20px;
+  padding: 20px 30px;
   text-align: center;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
+  margin-top: 20px;
+  position: relative;
 
   @media (max-width: 500px) {
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 15px 20px;
+    border-radius: 8px;
   }
 `;
 
-const Title = styled.h1`
+const Title1 = styled.h1`
   margin: 0;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
+
+  @media (max-width: 500px) {
+    font-size: 24px;
+  }
+`;
+
+const List = styled.div`
+  margin-top: 40px;
+  width: 100%;
+  max-width: 600px;
+
+  @media (max-width: 500px) {
+    margin-top: 30px;
+  }
+`;
+
+const Item = styled.div`
+  background-color: #fff;
+  padding: 25px;
+  margin: 20px 0;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  @media (max-width: 500px) {
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 8px;
+  }
+`;
+
+const ItemTitle = styled.h2`
+  margin: 0 0 10px;
+  font-size: 22px;
+  color: #333;
+  font-weight: 600;
 
   @media (max-width: 500px) {
     font-size: 20px;
   }
 `;
 
-const List = styled.div`
-  margin-top: 30px;
-  width: 100%;
-  max-width: 500px;
-
-  @media (max-width: 500px) {
-    margin-top: 20px;
-  }
-`;
-
-const Item = styled.div`
-  background-color: #fff;
-  padding: 20px;
-  margin: 15px 0;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-
-  &:hover {
-    transform: scale(1.02);
-  }
-
-  @media (max-width: 500px) {
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 5px;
-  }
-`;
-
-const ItemTitle = styled.h2`
-  margin: 0 0 10px;
-  font-size: 20px;
-  color: #333;
-
-  @media (max-width: 500px) {
-    font-size: 18px;
-  }
-`;
-
 const ItemDescription = styled.p`
   margin: 0;
-  font-size: 16px;
-  color: #666;
+  font-size: 18px;
+  color: #555;
 
   @media (max-width: 500px) {
-    font-size: 14px;
+    font-size: 16px;
   }
 `;
 
 const EmptyMessage = styled.div`
   text-align: center;
   color: #666;
-  margin-top: 30px;
-  font-size: 18px;
+  margin-top: 40px;
+  font-size: 20px;
 
   @media (max-width: 500px) {
-    margin-top: 20px;
-    font-size: 16px;
+    margin-top: 30px;
+    font-size: 18px;
   }
 `;
 
+const GraphContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  max-width: 1000px;
+  margin-top: 40px;
+`;
+
 const WishList = () => {
-  // 찜목록 데이터
-  const wishList = [];
+  // 찜목록 데이터 예시
+  const [wishList, setWishList] = useState([
+    { title: "대출 상품 1", rate: 3.5, limit: 5000 },
+    { title: "대출 상품 2", rate: 4.2, limit: 3000 },
+    { title: "대출 상품 3", rate: 2.9, limit: 7000 },
+  ]);
+
+  // 금리 데이터를 위한 차트 설정
+  const rateData = {
+    labels: wishList.map((item) => item.title),
+    datasets: [
+      {
+        label: "금리 (%)",
+        data: wishList.map((item) => item.rate),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // 한도 데이터를 위한 차트 설정
+  const limitData = {
+    labels: wishList.map((item) => item.title),
+    datasets: [
+      {
+        label: "한도 (만원)",
+        data: wishList.map((item) => item.limit),
+        backgroundColor: "rgba(255, 99, 132, 0.6)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "대출 상품 비교",
+        font: {
+          size: 20,
+          weight: "bold",
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label}: ${context.raw} ${
+              context.dataset.label === "금리 (%)" ? "%" : "만원"
+            }`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+        },
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "rgba(0, 0, 0, 0.1)",
+        },
+      },
+    },
+  };
 
   return (
     <Container>
       <Header>
-        <Title>찜목록</Title>
+        <Title1>찜목록</Title1>
       </Header>
       <List>
         {wishList.length === 0 ? (
@@ -114,11 +218,41 @@ const WishList = () => {
           wishList.map((item, index) => (
             <Item key={index}>
               <ItemTitle>{item.title}</ItemTitle>
-              <ItemDescription>{item.description}</ItemDescription>
+              <ItemDescription>
+                금리: {item.rate}%, 한도: {item.limit}만원
+              </ItemDescription>
             </Item>
           ))
         )}
       </List>
+      {wishList.length > 1 && (
+        <>
+          <GraphContainer>
+            <Bar
+              data={rateData}
+              options={{
+                ...options,
+                plugins: {
+                  ...options.plugins,
+                  title: { display: true, text: "금리 비교 (%)" },
+                },
+              }}
+            />
+          </GraphContainer>
+          <GraphContainer>
+            <Bar
+              data={limitData}
+              options={{
+                ...options,
+                plugins: {
+                  ...options.plugins,
+                  title: { display: true, text: "한도 비교 (만원)" },
+                },
+              }}
+            />
+          </GraphContainer>
+        </>
+      )}
     </Container>
   );
 };
