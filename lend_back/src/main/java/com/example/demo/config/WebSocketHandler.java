@@ -29,9 +29,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // JSON 문자열을 ChatMessageDto 객체로 변환
         ChatMessageDto chatMessage = objectMapper.readValue(payload, ChatMessageDto.class);
         String roomId = chatMessage.getRoomId(); // 채팅방 ID
-
+        sessionRoomIdMap.put(session, chatMessage.getRoomId()); // 세션과 채팅방 ID를 매핑
         if (chatMessage.getType() == ChatMessageDto.MessageType.ENTER) { // 메시지 타입이 ENTER이면
-            sessionRoomIdMap.put(session, chatMessage.getRoomId()); // 세션과 채팅방 ID를 매핑
             chatService.addSessionAndHandleEnter(roomId, session, chatMessage); // 채팅방에 입장한 세션 추가
         } else if (chatMessage.getType() == ChatMessageDto.MessageType.CLOSE) {
             chatService.removeSessionAndHandleExit(roomId, session, chatMessage);

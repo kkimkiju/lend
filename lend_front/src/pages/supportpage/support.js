@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
 import DropdownComponent from "./dropdowncomponent";
+import ChatRoomCreate from "../chatting/ChatRoomCreate";
 
 export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(null);
@@ -24,6 +25,7 @@ export default function Support() {
     <Body>
       <Container>
         {/* <SearchBox> 검색기능 일단 보류<SearchInput /></SearchBox> */}
+        <ChatRoomCreate />
         <ButtonBox>
           <Button onClick={BoardHandler(1)}>질문 게시판</Button>
           <Button onClick={BoardHandler(2)}>자주 묻는 질문</Button>
@@ -31,10 +33,9 @@ export default function Support() {
         {questionBoard && (
           <Box>
             <Item>
-              <div>번호 제목 + 댓글 수 작성자 작성일  </div>
+              <div>번호 제목 + 댓글 수 작성자 작성일 </div>
               <div>목록</div>
             </Item>
-            
           </Box>
         )}
         {FAQBoard && (

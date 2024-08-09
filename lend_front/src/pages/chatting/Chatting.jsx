@@ -148,7 +148,9 @@ const Chatting = () => {
 
   useEffect(() => {
     console.log("방번호 : " + roomId);
+    // const accessToken = localStorage.getItem("accessToken");
     if (!ws.current) {
+      // const socketUrl = `${Common.SOCKET_URL}?token=${accessToken}`;
       ws.current = new WebSocket(Common.SOCKET_URL);
       ws.current.onopen = () => {
         console.log("connected to " + Common.SOCKET_URL);

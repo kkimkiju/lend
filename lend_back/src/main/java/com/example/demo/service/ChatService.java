@@ -58,6 +58,8 @@ public class ChatService {
                 .roomName(email)
                 .regDate(regDateStr)
                 .build();
+        chatRooms.put(randomId, chatRoom);
+
         ChatRoom chatroom = new ChatRoom();
         chatroom.setRoomId(chatRoom.getRoomId());
         chatroom.setRoomName(chatRoom.getRoomName());

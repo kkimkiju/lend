@@ -12,9 +12,16 @@ const Container = styled.div`
 `;
 
 const ButtonContainer = styled.div`
+  width: 70%;
   display: flex;
-  justify-content: center;
-  gap: 10px; // 버튼 사이의 간격
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid black;
+`;
+
+const SpanContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const Button = styled.button`
@@ -43,6 +50,11 @@ function ChatRoomCreate() {
   return (
     <Container>
       <ButtonContainer>
+        <SpanContainer>
+          <span>사용 중 궁금한 점을 알려주시면, </span>
+          <span>꼼꼼히 확인 후 해결을 도와 드리겠습니다.</span>
+        </SpanContainer>
+
         <Button onClick={handleCreateChatRoom}>상담원연결</Button>
       </ButtonContainer>
     </Container>

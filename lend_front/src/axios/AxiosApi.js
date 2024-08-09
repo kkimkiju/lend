@@ -48,16 +48,16 @@ const AxiosApi = {
   },
   // 채팅방 목록 보기
   chatList: async () => {
-    return await axios.get(LEND_DOMAIN + "/chat/list");
+    return await AxiosInstance.get("/chat/list");
   },
   // 채팅방 정보 보기
   chatDetail: async (roomId) => {
-    return await axios.get(`${LEND_DOMAIN}/chat/room/${roomId}`);
+    return await AxiosInstance.get(`/chat/room/${roomId}`);
   },
   // 채팅방 생성
   chatCreate: async (email) => {
-    return await axios.post(
-      LEND_DOMAIN + "/chat/new",
+    return await AxiosInstance.post(
+      "/chat/new",
       { email }, // JSON 데이터 형태
       { headers: { "Content-Type": "application/json" } }
     );
