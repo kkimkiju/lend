@@ -5,6 +5,8 @@ const KaKaoLogin = () => {
   const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
   const handleLogin = () => {
     window.location.href = kakaoURL;
+    const code = new URL(window.location.href).searchParams.get("code");
+    getAccessToken(code);
   };
   const getAccessToken = async (code) => {
     const response = await fetch("https://kauth.kakao.com/oauth/token", {
@@ -24,7 +26,6 @@ const KaKaoLogin = () => {
     return data.access_token;
   };
 
-  const code = new URL(window.location.href).searchParams.get("code");
   return (
     <>
       <button onClick={handleLogin}>카카오 로그인</button>
