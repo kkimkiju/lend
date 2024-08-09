@@ -2,6 +2,7 @@
 package com.example.demo.entity;
 import com.example.demo.constant.Authority;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -21,7 +22,6 @@ public class Member {
     @Column(nullable = false)
     private String name;
     private String password;
-    private Boolean memberType;
 
 //    @Column
 //    private String nickname;

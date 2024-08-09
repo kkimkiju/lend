@@ -1,6 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.controller;
 
 import com.example.demo.dto.CommentDto;
+import com.example.demo.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,22 +15,21 @@ public class CommentController {
     private final CommentService commentService;
 
     // 댓글 생성
-    @PostMapping("create-comment/{questionId}")
-    public ResponseEntity<CommentDto> createComment(@PathVariable("questionId") Long questionId,
-                                                    @RequestBody CommentDto commentDto) {
-        CommentDto createdComment = commentService.createComment(questionId, commentDto.getEmail(), commentDto.getParentId(), commentDto.getContent());
+    @PostMapping("create-comment")
+    public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto) {
+        CommentDto createdComment = commentService.createComment(commentDto.getQuestionId(), commentDto.getEmail(), commentDto.getParentId(), commentDto.getContent());
         return ResponseEntity.ok(createdComment);
     }
     // 댓글 수정
-    @PutMapping("/modify-comment/{id}")
-    public ResponseEntity<Boolean> modifyComment(@PathVariable("id") Long id, @RequestBody CommentDto commentDto){
-        boolean isTure = commentService.modifyComment(id, commentDto);
+    @PutMapping("/modify-comment")
+    public ResponseEntity<Boolean> modifyComment(@RequestBody CommentDto commentDto){
+        boolean isTure = commentService.modifyComment(commentDto.getId(), commentDto);
         return ResponseEntity.ok(isTure);
     }
     // 댓글 삭제 실제로는 삭제되지 않고 DeletedStatus만 true로 변경
-    @PutMapping("delete-comment/{id}")
-    public ResponseEntity<Boolean> deleteComment(@PathVariable("id") Long id, @RequestBody CommentDto commentDto){
-        boolean isTure = commentService.modifyComment(id, commentDto);
+    @PutMapping("delete-comment")
+    public ResponseEntity<Boolean> deleteComment(@RequestBody CommentDto commentDto){
+        boolean isTure = commentService.modifyComment(commentDto.getId(), commentDto);
         return ResponseEntity.ok(isTure);
     }
 

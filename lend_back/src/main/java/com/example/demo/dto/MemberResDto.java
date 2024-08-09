@@ -13,7 +13,6 @@ public class MemberResDto {
     private String password;
     private String name;
     private String identityNumber;
-    private Boolean memberType;
 
 
     public static MemberResDto of(Member member) {
@@ -22,7 +21,6 @@ public class MemberResDto {
                 .name(member.getName())
                 .password(member.getPassword())
                 .identityNumber(member.getIdentityNumber())
-                .memberType(member.getMemberType())
 //                .nickname(member.getNickname())
 //                .profileImgPath(member.getProfileImgPath())
 //                .skill(member.getSkill())

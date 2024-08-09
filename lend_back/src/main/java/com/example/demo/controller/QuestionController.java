@@ -24,9 +24,9 @@ public class QuestionController {
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 수정
-    @PutMapping("/modify-question/{id}") // id는 수정하려는 게시글의 id @PathVariable("id") Long id 중요
-    public ResponseEntity<Boolean> modifyQuestion(@PathVariable("id") Long id, @RequestBody QuestionDto questionDto) {
-        boolean isTrue = questionService.modifyQuestion(id, questionDto);
+    @PutMapping("/modify-question") // id는 수정하려는 게시글의 id @PathVariable("id") Long id 중요
+    public ResponseEntity<Boolean> modifyQuestion(@RequestBody QuestionDto questionDto) {
+        boolean isTrue = questionService.modifyQuestion(questionDto.getId(), questionDto);
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 삭제
