@@ -10,7 +10,7 @@ const Header = () => {
         <LOGO src={Logo} onClick={() => navigate("/lend")}></LOGO>
         <Box>
           <Menu>대출 상품</Menu>
-          <Menu>문의 게시판</Menu>
+          <Menu as={Link} to="/lend/support">문의 게시판</Menu>
           <Menu as={Link} to="/lend/wishlist">
             찜 목록
           </Menu>
