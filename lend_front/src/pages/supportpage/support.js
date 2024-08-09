@@ -21,13 +21,15 @@ export default function Support() {
   const DropDownHandler = (number) => () => {
     setDropDown(dropDown === number ? null : number);
   };
+  // 페이지 관련
   const [questionList, setQuestionList] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 10; // 페이지당 글 수
   useEffect(() => {
-    const fetchQuestionList = async (page =0) => {
+    const fetchQuestionList = async (page = 0) => {
       try {
-        const response = await AxiosApi.getQuestionList(page);
+        const response = await AxiosApi.getQuestionList(page + 1);
         if (response.data && Array.isArray(response.data.boards)) {
           setQuestionList(response.data.boards);
           setTotalPages(response.data.totalPages);
@@ -39,12 +41,28 @@ export default function Support() {
         console.log(error.response);
       }
     };
-    fetchQuestionList(currentPage);
+    fetchQuestionList(currentPage - 1 );
   }, [currentPage]);
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+  // 페이지 번호 버튼 생성
+  const renderPageButtons = () => {
+    const buttons = [];
+    for (let i = 1; i <= totalPages; i++) {
+      buttons.push(
+        <PageButton
+          key={i}
+          onClick={() => handlePageChange(i)}
+          active={i === currentPage}
+        >
+          {i}
+        </PageButton>
+      );
+    }
+    return buttons;
   };
 
   return (
@@ -60,13 +78,15 @@ export default function Support() {
           <Box>
             <Item>
               <div>번호 제목 + 댓글 수 작성자 작성일 </div>
-              {questionList.map((question) => (
-            <div key={question.id}>
-              <div>
-                {question.id} {question.title} {question.commentList ? question.commentList.length : 0} {question.memberReqDto.name} {/* 작성일 정보가 없으므로 생략 */}
-              </div>
-            </div>
-          ))}
+              {questionList.map((question, index) => (
+                <div key={question.id}>
+                  <div>
+                  {((currentPage - 1) * pageSize) + (index + 1)} {question.title}{" "}
+                    {question.commentList ? question.commentList.length : 0}{" "}
+                    {question.memberReqDto.name} {question.createTime}
+                  </div>
+                </div>
+              ))}
             </Item>
           </Box>
         )}
@@ -88,8 +108,21 @@ export default function Support() {
             </ListItem>
           </Box>
         )}
-        <Button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>이전 페이지</Button>
-        <Button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>다음 페이지</Button>
+        <ButtonBox>
+          <Button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            이전 페이지
+          </Button>
+          {renderPageButtons()}
+          <Button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            다음 페이지
+          </Button>
+        </ButtonBox>
       </Container>
     </Body>
   );
@@ -143,4 +176,8 @@ const DropDownButton = styled.button`
   background-color: transparent;
   padding: 2vw; /* 여백 추가 */
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
+`;
+
+const PageButton = styled(Button)`
+  background-color: ${({ active }) => (active ? '#ddd' : '#f5f5f5')};
 `;

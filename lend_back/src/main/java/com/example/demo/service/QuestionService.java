@@ -136,6 +136,7 @@ public class QuestionService {
         dto.setTitle(question.getTitle());
         dto.setContent(question.getContent());
         dto.setMemberReqDto(convertUserToDto(question.getMember()));
+        dto.setCreateTime(question.getCreateTime());
         return dto;
     }
     private MemberReqDto convertUserToDto(Member member) {
