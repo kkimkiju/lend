@@ -88,19 +88,22 @@ const AxiosApi = {
   // 글조회
   getQuestionList: async (page) =>{
     return await AxiosInstance.get(`${LEND_DOMAIN}/support/question-list?page=${page}&size=10`);
-
+  },
+  // 글 입장 글 세부 정보
+  getDetailedPost: async (id) =>{
+    return await AxiosInstance.get(`${LEND_DOMAIN}/support/detailed-question/${id}`)
   },
   // 글수정
-  modifyQuestion : async ()=>{
-    return await AxiosInstance.put(`${LEND_DOMAIN}/support/modify-question`)
+  modifyQuestion : async (questionDto)=>{
+    return await AxiosInstance.put(`${LEND_DOMAIN}/support/modify-question`, questionDto)
   },
   // 글삭제
   deleteQuestion : async (id)=> {
     return await AxiosInstance.delete(`${LEND_DOMAIN}/support/modify-question/${id}`)
   },
   // 댓글생성
-  createComment: async ()=>{
-    return await AxiosInstance.post(`${LEND_DOMAIN}/support/create-comment`)
+  createComment: async (commentDto)=>{
+    return await AxiosInstance.post(`${LEND_DOMAIN}/support/create-comment`, commentDto)
   },
   // 댓글조회
   getComment: async (questionId) =>{

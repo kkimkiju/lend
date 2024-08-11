@@ -3,6 +3,7 @@ import styled from "styled-components";
 import DropdownComponent from "./dropdowncomponent";
 import ChatRoomCreate from "../chatting/ChatRoomCreate";
 import AxiosApi from "../../axios/AxiosApi";
+import WritePost from "./writepost";
 
 export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(true);
@@ -10,10 +11,14 @@ export default function Support() {
   const BoardHandler = (number) => () => {
     if (number === 1) {
       showQuestionBoard(true);
+      showDetailedPost(false);
       showFAQBoard(false);
+      setEditMode(false);
     } else if (number === 2) {
       showQuestionBoard(false);
+      showDetailedPost(false);
       showFAQBoard(true);
+      setEditMode(false);
     }
     console.log(questionBoard, FAQBoard);
   };
@@ -24,12 +29,12 @@ export default function Support() {
   // 페이지 관련
   const [questionList, setQuestionList] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1); // 초기값 1페이지
   const pageSize = 10; // 페이지당 글 수
   useEffect(() => {
-    const fetchQuestionList = async (page = 0) => {
+    const fetchQuestionList = async (page) => {
       try {
-        const response = await AxiosApi.getQuestionList(page + 1);
+        const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
         if (response.data && Array.isArray(response.data.boards)) {
           setQuestionList(response.data.boards);
           setTotalPages(response.data.totalPages);
@@ -41,7 +46,7 @@ export default function Support() {
         console.log(error.response);
       }
     };
-    fetchQuestionList(currentPage - 1 );
+    fetchQuestionList(currentPage);
   }, [currentPage]);
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -64,6 +69,74 @@ export default function Support() {
     }
     return buttons;
   };
+  // 세부 게시글에 대한 댓글 조회
+  const [commentList, setCommentList] = useState([]);
+  const fetchCommentList = async (id) => {
+    try {
+      const response = await AxiosApi.getComment(id);
+      if (response.data && Array.isArray(response.data)) {
+        setCommentList(response.data);
+        console.info("Fetched comments:", response.data); // 추가된 로그
+      } else {
+        console.warn("Unexpected response format:", response.data); // 잘못된 형식 확인
+      }
+    } catch (error) {
+      console.error(error.response);
+    }
+  };
+  // 세부 게시글 조회 코드
+  const [detailedPost, showDetailedPost] = useState(false);
+  const [currentPost, setCurrentPost] = useState(null);
+  const handleOpenPost = async (id) => {
+    try {
+      const response = await AxiosApi.getDetailedPost(id);
+      if (response.data) {
+        showDetailedPost(true);
+        showQuestionBoard(false);
+        setCurrentPost(response.data);
+        fetchCommentList(id);
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error(error.response);
+    }
+  };
+
+  //글 작성 컴포넌트 활성화
+
+  // 글 수정 & 저장
+  const [editMode, setEditMode] = useState(false);
+  const [editedTitle, setEditedTitle] = useState("");
+  const [editedContent, setEditedContent] = useState("");
+  // 수정 모드
+  const handelEditPost = () => {
+    if (currentPost) {
+      setEditedTitle(currentPost.title);
+      setEditedContent(currentPost.content);
+      setEditMode(true);
+    }
+  };
+  // 저장 요청
+  const handleSavePost = async () => {
+    if (!currentPost) return;
+    const questionDto = {
+      id: currentPost.id,
+      title: editedTitle,
+      content: editedContent,
+      memberReqDto: {
+        email: localStorage.getItem("email"),
+      },
+    };
+    try {
+      const response = await AxiosApi.modifyQuestion(questionDto);
+      if (response.data) {
+        console.log(response.data);
+        setEditMode(false);
+      }
+    } catch (error) {
+      console.error(error.response);
+    }
+  };
 
   return (
     <Body>
@@ -73,18 +146,75 @@ export default function Support() {
         <ButtonBox>
           <Button onClick={BoardHandler(1)}>질문 게시판</Button>
           <Button onClick={BoardHandler(2)}>자주 묻는 질문</Button>
+          <WritePost
+            showQuestionBoard={showQuestionBoard}
+            showFAQBoard={showFAQBoard}
+          />
         </ButtonBox>
         {questionBoard && (
+          <>
+            <Box>
+              <Item>
+                <div>번호 제목 + 댓글 수 작성자 작성일 </div>
+                {questionList.map((question, index) => (
+                  <div key={question.id}>
+                    <div onClick={() => handleOpenPost(question.id)}>
+                      {(currentPage - 1) * pageSize + (index + 1)}{" "}
+                      {question.title}{" "}
+                      {question.commentList ? question.commentList.length : 0}{" "}
+                      {question.memberReqDto.name} {question.createTime}
+                    </div>
+                  </div>
+                ))}
+              </Item>
+            </Box>
+            <ButtonBox>
+              <PageButton
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                이전 페이지
+              </PageButton>
+              {renderPageButtons()}
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                다음 페이지
+              </Button>
+            </ButtonBox>
+          </>
+        )}
+        {detailedPost && (
           <Box>
             <Item>
-              <div>번호 제목 + 댓글 수 작성자 작성일 </div>
-              {questionList.map((question, index) => (
-                <div key={question.id}>
-                  <div>
-                  {((currentPage - 1) * pageSize) + (index + 1)} {question.title}{" "}
-                    {question.commentList ? question.commentList.length : 0}{" "}
-                    {question.memberReqDto.name} {question.createTime}
-                  </div>
+              <button onClick={() => handelEditPost()}> 수정</button>
+              <button onClick={() => handleSavePost()}> 저장 </button>
+              {editMode ? (
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                />
+              ) : (
+                <div>제목: {currentPost.title}</div>
+              )}
+              <div>작성자: {currentPost.memberReqDto.name}</div>
+              <div>작성일: {currentPost.createTime}</div>
+              <div>수정일: {currentPost.modifyTime}</div>
+              {editMode ? (
+                <textarea
+                  value={editedContent}
+                  onChange={(e) => setEditedContent(e.target.value)}
+                />
+              ) : (
+                <div>내용: {currentPost.content}</div>
+              )}
+              <div>댓글조회 등록 수정 삭제 대댓글 등록 수정 삭제</div>
+              {commentList.map((comment, index) => (
+                <div key={comment.id}>
+                  <div>{comment.memberReqDto.name}</div>
+                  <div>{comment.content}</div>
                 </div>
               ))}
             </Item>
@@ -108,21 +238,6 @@ export default function Support() {
             </ListItem>
           </Box>
         )}
-        <ButtonBox>
-          <Button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            이전 페이지
-          </Button>
-          {renderPageButtons()}
-          <Button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            다음 페이지
-          </Button>
-        </ButtonBox>
       </Container>
     </Body>
   );
@@ -179,5 +294,5 @@ const DropDownButton = styled.button`
 `;
 
 const PageButton = styled(Button)`
-  background-color: ${({ active }) => (active ? '#ddd' : '#f5f5f5')};
+  background-color: ${({ active }) => (active ? "#ddd" : "#f5f5f5")};
 `;

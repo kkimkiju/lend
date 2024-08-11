@@ -37,6 +37,7 @@ public class QuestionService {
             question.setTitle(questionDto.getTitle());
             question.setContent(questionDto.getContent());
             question.setMember(member);
+            question.setIsPrivate(questionDto.getIsPrivate());
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
@@ -45,9 +46,9 @@ public class QuestionService {
         }
     }
     // 게시글 수정
-    public boolean modifyQuestion(Long id, QuestionDto questionDto) {
+    public boolean modifyQuestion(QuestionDto questionDto) {
         try {
-            Question question = questionRepository.findById(id).orElseThrow(
+            Question question = questionRepository.findById(questionDto.getId()).orElseThrow(
                     () -> new RuntimeException("해당 게시글이 존재하지 않습니다.")
             );
             Member member = memberRepository.findByEmail(questionDto.getMemberReqDto().getEmail()).orElseThrow(
@@ -57,6 +58,7 @@ public class QuestionService {
             question.setContent(questionDto.getContent());
             question.setModifyTime(String.valueOf(LocalDateTime.now()));
             question.setMember(member);
+            question.setIsPrivate(questionDto.getIsPrivate());
             questionRepository.save(question);
             return true;
         } catch (Exception e) {
@@ -79,7 +81,7 @@ public class QuestionService {
     }
     // 게시글 전체 조회
     public Map<String, Object> getQuestionList(int page, int size){
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createTime").descending());
         List<Question> list = questionRepository.findAll(pageable).getContent();
         List<QuestionDto> listDto = new ArrayList<>();
         for(Question question : list) {
@@ -135,8 +137,10 @@ public class QuestionService {
         dto.setId(question.getId());
         dto.setTitle(question.getTitle());
         dto.setContent(question.getContent());
+        dto.setIsPrivate(question.getIsPrivate());
         dto.setMemberReqDto(convertUserToDto(question.getMember()));
         dto.setCreateTime(question.getCreateTime());
+        dto.setModifyTime(question.getModifyTime());
         return dto;
     }
     private MemberReqDto convertUserToDto(Member member) {

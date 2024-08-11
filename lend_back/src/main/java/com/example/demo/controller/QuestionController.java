@@ -24,9 +24,9 @@ public class QuestionController {
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 수정
-    @PutMapping("/modify-question") // id는 수정하려는 게시글의 id @PathVariable("id") Long id 중요
+    @PutMapping("/modify-question") // 서비스 단에 questionid와 member email content, title을 전달해야함
     public ResponseEntity<Boolean> modifyQuestion(@RequestBody QuestionDto questionDto) {
-        boolean isTrue = questionService.modifyQuestion(questionDto.getId(), questionDto);
+        boolean isTrue = questionService.modifyQuestion(questionDto);
         return ResponseEntity.ok(isTrue);
     }
     // 게시글 삭제

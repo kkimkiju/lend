@@ -15,6 +15,7 @@ public class QuestionDto {
     private String content;
     private String createTime;
     private String modifyTime;
+    private Boolean isPrivate;
     private List<Comment> commentList;
     private MemberReqDto MemberReqDto;
 }

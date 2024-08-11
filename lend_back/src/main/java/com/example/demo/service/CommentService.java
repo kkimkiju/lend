@@ -25,19 +25,19 @@ public class CommentService {
     private final QuestionRepository questionRepository;
     private final MemberRepository memberRepository;
     @Transactional
-    public CommentDto createComment(Long questionId, String email, Long parentId, String content) {
-        Question question = questionRepository.findById(questionId)
+    public CommentDto createComment(CommentDto commentDto) { // questionId, email, parentId를 확인
+        Question question = questionRepository.findById(commentDto.getQuestionId())
                 .orElseThrow(() -> new EntityNotFoundException("Question not found"));
-        log.info("Searching for user with commenterId: {}", email);
+        log.info("Searching for user with commenterId: {}", commentDto.getMemberReqDto().getEmail());
 
-        Member commenter = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User with ID " + email + " not found"));
+        Member commenter = memberRepository.findByEmail(commentDto.getMemberReqDto().getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + commentDto.getMemberReqDto().getEmail() + " not found"));
 
-        Comment parent = parentId != null ? commentRepository.findById(parentId)
+        Comment parent = commentDto.getParentId() != null ? commentRepository.findById(commentDto.getParentId())
                 .orElseThrow(() -> new EntityNotFoundException("Parent comment not found")) : null;
 
         Comment comment = new Comment();
-        comment.setContent(content);
+        comment.setContent(commentDto.getContent());
         comment.setDeletedStatus(false);
         comment.setQuestion(question);
         comment.setMember(commenter);
@@ -45,7 +45,7 @@ public class CommentService {
 
         Comment savedComment = commentRepository.save(comment);
 
-        return CommentDto.fromEntity(savedComment);
+        return CommentDto.convertEntityToDto(savedComment);
     }
     // 댓글 수정
     public boolean modifyComment(Long id, CommentDto commentDto) {
@@ -96,14 +96,14 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentDto> getCommentsByQuestionId(Long questionId) {
         return commentRepository.findByQuestionId(questionId)
-                .stream().map(CommentDto::fromEntity)
+                .stream().map(CommentDto::convertEntityToDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public CommentDto getCommentById(Long commentId) {
         return commentRepository.findById(commentId)
-                .map(CommentDto::fromEntity)
+                .map(CommentDto::convertEntityToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
     }
 }

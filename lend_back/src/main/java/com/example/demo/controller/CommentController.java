@@ -17,7 +17,7 @@ public class CommentController {
     // 댓글 생성
     @PostMapping("create-comment")
     public ResponseEntity<CommentDto> createComment(@RequestBody CommentDto commentDto) {
-        CommentDto createdComment = commentService.createComment(commentDto.getQuestionId(), commentDto.getEmail(), commentDto.getParentId(), commentDto.getContent());
+        CommentDto createdComment = commentService.createComment(commentDto);
         return ResponseEntity.ok(createdComment);
     }
     // 댓글 수정
@@ -39,6 +39,7 @@ public class CommentController {
         boolean isTure = commentService.deletePhysicalComment(id);
         return ResponseEntity.ok(isTure);
     }
+    // questionId로 댓글 조회
     @GetMapping("/question/{questionId}") ///주소 대소문자 꼭확인 ! @PathVariable 랑 대소문자 안맞추면 적용 안됨
     public ResponseEntity<List<CommentDto>> getCommentsByQuestionId(@PathVariable("questionId") Long questionId) {
         List<CommentDto> comments = commentService.getCommentsByQuestionId(questionId);

@@ -2,6 +2,8 @@ package com.example.demo.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -19,11 +21,14 @@ public class Question {
     private String content;
     private String createTime;
     private String modifyTime;
+    @ColumnDefault("FALSE")
+    private Boolean isPrivate;
     @OneToMany(mappedBy = "question")
     private List<Comment> commentList;
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
     // 시간 미입력시 자동 생성
     @PrePersist
     protected void onCreate() {
