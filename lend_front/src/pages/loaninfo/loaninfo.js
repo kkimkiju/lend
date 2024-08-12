@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import SimpleSlider from "../../components/SimpleSlider";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
 import LoaninfoList from "./loaninfoList";
 import Paging from "./paging";
@@ -16,6 +16,7 @@ const Adbox = styled.div`
 `;
 const Sett = styled.div`
   margin: 10px;
+  display: flex;
 `;
 const CategorySelect = styled.select`
   padding: 10px;
@@ -63,6 +64,15 @@ const Loan = styled.div`
   width: 100%;
   height: 550px;
 `;
+const Categbut = styled.button`
+  padding: 10px 20px;
+  margin: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+`;
 
 const Loaninfo = () => {
   const [loanitem, setLoanitem] = useState([]);
@@ -70,24 +80,44 @@ const Loaninfo = () => {
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const itemsCountPerPage = 10;
   const [deOpen, setDeOpen] = useState(false);
-  const [demodalOpen, setDemodalOpen] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState(null);
+  const [categorybu, setCategorybu] = useState("일반신용대출");
 
   const onClickde = (loan) => {
     setSelectedLoan(loan);
     setDeOpen(true);
   };
+
   const closeDe = () => {
     setDeOpen(false);
+    setSelectedLoan(null); // 선택된 대출 상품 초기화
   };
 
   const fetchData = async (page) => {
     try {
-      const response = await ElasticsearchAxios.GetElastic(
-        page,
-        itemsCountPerPage
-      );
-      console.log("Fetched data:", response.data);
+      let response;
+      if (categorybu === "일반신용대출") {
+        response = await ElasticsearchAxios.Getcredit_loan(
+          page,
+          itemsCountPerPage
+        );
+      } else if (categorybu === "전세자금대출") {
+        response = await ElasticsearchAxios.Getjeonse_loan(
+          page,
+          itemsCountPerPage
+        );
+      } else if (categorybu === "주택담보대출") {
+        response = await ElasticsearchAxios.Getmortgage_loan(
+          page,
+          itemsCountPerPage
+        );
+      } else {
+        response = await ElasticsearchAxios.Getpeoplefinloan(
+          page,
+          itemsCountPerPage
+        );
+      }
+      console.log("대출상품리스트", response.data);
       const { hits } = response.data.hits;
       setLoanitem(hits);
       setTotalItemsCount(response.data.hits.total.value);
@@ -98,12 +128,17 @@ const Loaninfo = () => {
 
   const handlePageChange = (pageNumber) => {
     setPage(pageNumber);
-    fetchData(pageNumber);
   };
 
   useEffect(() => {
     fetchData(page);
-  }, [page]);
+  }, [page, categorybu]);
+
+  const handleCategoryChange = (category) => {
+    setCategorybu(category);
+    setPage(1);
+    console.log(categorybu);
+  };
 
   return (
     <Container>
@@ -111,18 +146,30 @@ const Loaninfo = () => {
         <SimpleSlider />
       </Adbox>
       <Sett>
-        <CategorySelect>
-          <option value="대출상품 종류">대출상품 종류</option>
-          <option value="마이너스 한도 대출">마이너스 한도 대출</option>
-          <option value="서민대출">서민대출</option>
-          <option value="신용대출(일반)">신용대출(일반)</option>
-          <option value="오토론">오토론</option>
-          <option value="장기카드대출">장기카드대출</option>
-          <option value="전세자금대출">전세자금대출</option>
-          <option value="주택담보대출">주택담보대출</option>
-          <option value="환승론">환승론</option>
-        </CategorySelect>
-        <Textinput placeholder="연봉을 입력해주세요" />
+        <Categbut
+          onClick={() => handleCategoryChange("일반신용대출")}
+          active={categorybu === "일반신용대출"}
+        >
+          일반신용대출
+        </Categbut>
+        <Categbut
+          onClick={() => handleCategoryChange("전세자금대출")}
+          active={categorybu === "전세자금대출"}
+        >
+          전세자금대출
+        </Categbut>
+        <Categbut
+          onClick={() => handleCategoryChange("주택담보대출")}
+          active={categorybu === "주택담보대출"}
+        >
+          주택담보대출
+        </Categbut>
+        <Categbut
+          onClick={() => handleCategoryChange("서민금융진흥원대출")}
+          active={categorybu === "서민금융진흥원대출"}
+        >
+          서민금융진흥원대출
+        </Categbut>
       </Sett>
       <Loanbox>
         <Loantit>
@@ -143,10 +190,11 @@ const Loaninfo = () => {
       <Detail
         open={deOpen}
         close={closeDe}
-        setModalOpen={setDemodalOpen}
         loan={selectedLoan}
+        categorybu={categorybu}
       />
     </Container>
   );
 };
+
 export default Loaninfo;
