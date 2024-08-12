@@ -32,6 +32,15 @@ public class ChatService {
         chatRooms = new LinkedHashMap<>(); // 채팅방 정보를 담을 맵
     }
 
+    // 방 있는지 확인(방 개설 가능 여부 확인)
+    public boolean isRoom(String roomName) {return chatRoomRepository.existsByRoomName(roomName);}
+
+    // 방 정보 가져오기
+    public String roomInfo(String roomName) {
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByRoomName(roomName);
+        return chatRoom.get().getRoomId();
+    }
+
     public List<ChatRoomDto> findAllRoom() { // 채팅방 리스트 반환
         List<ChatRoom> chatrooms = chatRoomRepository.findAll();
         List<ChatRoomDto> chatRoomDtos = new ArrayList<>();
@@ -55,6 +64,8 @@ public class ChatService {
         log.info("UUID : " + randomId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         String regDateStr = LocalDateTime.now().format(formatter);
+
+
 
         ChatRoomDto chatRoom = ChatRoomDto.builder()
                 .roomId(randomId)

@@ -23,7 +23,7 @@ public class ChatMessage {
     private Long chatId;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "room_id")
     @JsonBackReference
     private ChatRoom roomId;
 

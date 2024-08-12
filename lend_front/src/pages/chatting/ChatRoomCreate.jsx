@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../axios/AxiosApi";
 
@@ -35,10 +35,17 @@ const Button = styled.button`
 function ChatRoomCreate() {
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
+
   const handleCreateChatRoom = async () => {
-    const response = await AxiosApi.chatCreate(email);
-    console.log(response.data);
-    navigate(`/lend/chatting/${response.data.roomId}`);
+    const response = await AxiosApi.getChatroomName(email);
+    if (response.data === null) {
+      const rsp = await AxiosApi.chatCreate(email);
+      console.log(rsp.data.roomId);
+      navigate(`/lend/chatting/${rsp.data.roomId}`);
+    } else if (response.data !== null) {
+      console.log(response.data);
+      navigate(`/lend/chatting/${response.data}`);
+    }
   };
 
   return (

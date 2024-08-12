@@ -17,6 +17,21 @@ import java.util.List;
 @RequestMapping("/chat")
 public class ChatController {
     private final ChatService chatService;
+
+    // 채팅방 유무 확인
+    @GetMapping("/check")
+    public ResponseEntity<String> isRoom(@RequestParam String roomName) {
+        boolean isTrue = chatService.isRoom(roomName);
+        String roomId = "null";
+        if (isTrue == true) {
+            roomId = chatService.roomInfo(roomName);
+            log.warn("roomId : {}", roomId);
+        } else {log.warn("roomId : {}", roomId);}
+        return ResponseEntity.ok(roomId);
+    }
+
+
+
     @PostMapping("/new")
     public ResponseEntity<ChatRoomDto> createRoom(@RequestBody ChatRoomReqDto chatRoomReqDto) {
         log.warn("email : {}", chatRoomReqDto.getEmail());

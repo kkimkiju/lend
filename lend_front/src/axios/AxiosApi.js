@@ -54,6 +54,12 @@ const AxiosApi = {
   chatDetail: async (roomId) => {
     return await AxiosInstance.get(`/chat/room/${roomId}`);
   },
+  // 채팅방 생성 전 유무 확인
+  getChatroomName: async (email) => {
+    return await AxiosInstance.get(`/chat/check`, {
+      params: { roomName: email },
+    });
+  },
   // 채팅방 생성
   chatCreate: async (email) => {
     return await AxiosInstance.post(
@@ -82,40 +88,62 @@ const AxiosApi = {
   },
   // 문의게시판 ----------------------
   // 글생성
-  createQuestion: async (questionDto) =>{
-    return await AxiosInstance.post(`${LEND_DOMAIN}/support/create-question`, questionDto)
+  createQuestion: async (questionDto) => {
+    return await AxiosInstance.post(
+      `${LEND_DOMAIN}/support/create-question`,
+      questionDto
+    );
   },
   // 글조회
-  getQuestionList: async (page) =>{
-    return await AxiosInstance.get(`${LEND_DOMAIN}/support/question-list?page=${page}&size=10`);
+  getQuestionList: async (page) => {
+    return await AxiosInstance.get(
+      `${LEND_DOMAIN}/support/question-list?page=${page}&size=10`
+    );
   },
   // 글 입장 글 세부 정보
-  getDetailedPost: async (id) =>{
-    return await AxiosInstance.get(`${LEND_DOMAIN}/support/detailed-question/${id}`)
+  getDetailedPost: async (id) => {
+    return await AxiosInstance.get(
+      `${LEND_DOMAIN}/support/detailed-question/${id}`
+    );
   },
   // 글수정
-  modifyQuestion : async (questionDto)=>{
-    return await AxiosInstance.put(`${LEND_DOMAIN}/support/modify-question`, questionDto)
+  modifyQuestion: async (questionDto) => {
+    return await AxiosInstance.put(
+      `${LEND_DOMAIN}/support/modify-question`,
+      questionDto
+    );
   },
   // 글삭제
-  deleteQuestion : async (id)=> {
-    return await AxiosInstance.delete(`${LEND_DOMAIN}/support/modify-question/${id}`)
+  deleteQuestion: async (id) => {
+    return await AxiosInstance.delete(
+      `${LEND_DOMAIN}/support/modify-question/${id}`
+    );
   },
   // 댓글생성
-  createComment: async (commentDto)=>{
-    return await AxiosInstance.post(`${LEND_DOMAIN}/support/create-comment`, commentDto)
+  createComment: async (commentDto) => {
+    return await AxiosInstance.post(
+      `${LEND_DOMAIN}/support/create-comment`,
+      commentDto
+    );
   },
   // 댓글조회
-  getComment: async (questionId) =>{
-    return await AxiosInstance.get(`${LEND_DOMAIN}/support/question/${questionId}`)
+  getComment: async (questionId) => {
+    return await AxiosInstance.get(
+      `${LEND_DOMAIN}/support/question/${questionId}`
+    );
   },
   // 댓글수정
-  modifyCommnet: async (commnetDto)=>{
-    return await AxiosInstance.put(`${LEND_DOMAIN}/support/modify-comment`, commnetDto)
+  modifyCommnet: async (commnetDto) => {
+    return await AxiosInstance.put(
+      `${LEND_DOMAIN}/support/modify-comment`,
+      commnetDto
+    );
   },
   // 댓글가상삭제
-  deleteCommnet: async (id) =>{
-    return await AxiosInstance.put(`${LEND_DOMAIN}/support/delete-comment/${id}`)
+  deleteCommnet: async (id) => {
+    return await AxiosInstance.put(
+      `${LEND_DOMAIN}/support/delete-comment/${id}`
+    );
   },
   // 문의게시판 ----------------------
 };

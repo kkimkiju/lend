@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository <ChatRoom, String>{
     @Query("SELECT r.roomId FROM ChatRoom r WHERE r.roomId = :roomId")
     List<String> findByRoomId(String roomId);
+    boolean existsByRoomName(String roomName);
+    Optional<ChatRoom> findByRoomName(String roomName);
 }
 
