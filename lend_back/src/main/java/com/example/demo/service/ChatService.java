@@ -14,6 +14,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -84,11 +86,20 @@ public class ChatService {
         return chatRoom;
     }
 
-    public void removeRoom(String roomId) { // 방 삭제
-        ChatRoomDto room = chatRooms.get(roomId); // 방 정보 가져오기
-        if (room != null) { // 방이 존재하면
-            if (room.isSessionEmpty()) { // 방에 세션이 없으면
-                chatRooms.remove(roomId); // 방 삭제
+
+
+
+    @Transactional
+    public void removeRoom(String roomId) {
+        ChatRoomDto room = chatRooms.get(roomId);
+        if (room != null) {
+            if (room.isSessionEmpty()) {
+                try {
+                    chatRooms.remove(roomId);
+                    chatRoomRepository.deleteByRoomId(roomId);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -105,6 +116,7 @@ public class ChatService {
         }
     }
     // 채팅방에서 퇴장한 세션 제거
+    @Transactional
     public void removeSessionAndHandleExit(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {
         ChatRoomDto room = findRoomById(roomId); // 채팅방 정보 가져오기
         if (room != null) {
