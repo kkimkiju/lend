@@ -1,4 +1,4 @@
-package com.totalprj.movieverse.entity;
+package com.example.demo.entity;
 
 
 import lombok.*;

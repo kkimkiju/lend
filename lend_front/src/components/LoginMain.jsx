@@ -138,6 +138,7 @@ const LoginMain = ({ isSignIn }) => {
   const handleLoginFail = () => {
     setIsLogin(false);
   };
+
   return (
     <Container isTrue={isTrue}>
       <Logo src={LogoImg} onClick={() => navigate("/lend")}></Logo>
@@ -168,17 +169,6 @@ const LoginMain = ({ isSignIn }) => {
         </LoginEtc>
       </InputContainer>
       <ThirdLogin></ThirdLogin>
-      {/* <WithMsg>
-              <Input
-                placeholder="Email"
-                onChange={(e) => onChangeEmail(e)}
-              ></Input>
-              {inputEmail.length > 0 && (
-                <div className={`${isId ? "success" : "error"}`}>
-                  {idMessage}
-                </div>
-              )}
-            </WithMsg> */}
     </Container>
   );
 };

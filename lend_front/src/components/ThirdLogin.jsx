@@ -22,9 +22,7 @@ const LogoImg = styled.div``;
 const ThirdLogin = () => {
   return (
     <Container>
-      <KaKaoLogin>
-        <LogoImg>카카오</LogoImg>
-      </KaKaoLogin>
+      <KaKaoLogin></KaKaoLogin>
 
       <LogoImg>네이버</LogoImg>
     </Container>

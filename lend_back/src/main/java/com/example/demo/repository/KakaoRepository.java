@@ -1,7 +1,6 @@
-package com.totalprj.movieverse.repository;
+package com.example.demo.repository;
 
-import com.totalprj.movieverse.entity.Kakao;
-import org.springframework.data.domain.Example;
+import com.example.demo.entity.Kakao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

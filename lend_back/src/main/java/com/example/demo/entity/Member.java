@@ -19,18 +19,19 @@ public class Member {
     @Column(name = "member_id")
     private String email;
 
-    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String password;
 
 //    @Column
 //    private String nickname;
 
-    @Column(length = 7, nullable = false)
+   // @Column(length = 7, nullable = false)
+    @Column(length = 7)
     private String identityNumber;
 
-//    @Lob
-//    private String profileImgPath;
+    @Lob
+    private String profileImgPath;
 
 
 //    @Column

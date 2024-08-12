@@ -1,18 +1,21 @@
 package com.example.demo.dto;
 
 
+import com.example.demo.constant.Authority;
+import com.example.demo.entity.Kakao;
+import com.example.demo.entity.Member;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.totalprj.movieverse.entity.Kakao;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Builder
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class KakaoDto {
-    private Long id;
+    private String id;
 
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
@@ -31,11 +34,12 @@ public class KakaoDto {
 
     public KakaoDto() {}
 
-    public Kakao toEntity() {
-        return Kakao.builder()
-                .id(id)
+    public Member toEntity(PasswordEncoder passwordEncoder) {
+        return Member.builder()
+                .password(passwordEncoder.encode(id))
                 .email(kakaoAccount.getEmail())
-                .profile(kakaoAccount.getProfile().getProfileImageUrl())
+                .profileImgPath(kakaoAccount.getProfile().getProfileImageUrl())
+                .authority(Authority.ROLE_USER)
                 .build();
     }
 }

@@ -15,6 +15,7 @@ const Mainpage = () => {
     navigate("/");
     setLoginStatus("");
   };
+
   return (
     <>
       <Body>

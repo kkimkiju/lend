@@ -1,13 +1,14 @@
-package com.totalprj.movieverse.controller;
+package com.example.demo.controller;
 
-import com.totalprj.movieverse.dto.KakaoDto;
-import com.totalprj.movieverse.service.KakaoService;
+import com.example.demo.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j

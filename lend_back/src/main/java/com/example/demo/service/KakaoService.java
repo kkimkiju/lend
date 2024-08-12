@@ -1,19 +1,20 @@
-package com.totalprj.movieverse.service;
+package com.example.demo.service;
 
-import com.totalprj.movieverse.dto.KakaoDto;
-import com.totalprj.movieverse.entity.Kakao;
-import com.totalprj.movieverse.repository.KakaoRepository;
-import com.totalprj.movieverse.repository.MemberRepository;
+import com.example.demo.dto.KakaoDto;
+import com.example.demo.entity.Kakao;
+import com.example.demo.entity.Member;
+import com.example.demo.repository.KakaoRepository;
+import com.example.demo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class KakaoService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final KakaoRepository kakaoRepository;
+    private final PasswordEncoder passwordEncoder;
+
     public Map<String, Object> kakaoUserInfo (String kakaoToken) {
         Map<String, Object> kakaoInfo = new HashMap<>();
 
@@ -43,20 +46,26 @@ public class KakaoService {
                     new HttpEntity<>(headers),
                     KakaoDto.class
             );
+            log.info("responseEntity.getBody value : {}", responseEntity.getBody());
             KakaoDto kakaoDto = responseEntity.getBody();
             boolean isExist = false;
             if (kakaoDto != null) {
-                isExist = kakaoRepository.existsById(kakaoDto.getId());
-                log.info("kakaoId exists? : {}",isExist);
+                isExist = memberRepository.existsByEmail(kakaoDto.getKakaoAccount().getEmail());
 
+                log.info("kakaoId exists? : {}",isExist);
                 String kakaoEmail = kakaoDto.getKakaoAccount().getEmail();
+                log.info("kakaoEmail? : {}",kakaoEmail);
                 if(memberRepository.existsByEmail(kakaoEmail) && !isExist) {
                     log.error("카카오 : 이미 가입된 이메일 입니다.");
                     throw new RuntimeException("카카오 : 이미 가입된 이메일 입니다");
                 }
 
-                if(!isExist)saveKakaoEntity(kakaoDto);
+                if(!isExist){
+                    saveKakaoEntity(kakaoDto);
+
+                }
                 else {
+                    log.info("kakaoDto.getKakaoAccount().getEmail() :" + kakaoDto.getKakaoAccount().getEmail());
                     isExist = memberRepository.existsByEmail(kakaoDto.getKakaoAccount().getEmail());
                 }
             }
@@ -71,8 +80,9 @@ public class KakaoService {
     }
 
     private void saveKakaoEntity(KakaoDto kakaoDto) {
-        Kakao kakao = kakaoDto.toEntity();
-        kakaoRepository.save(kakao);
+        Member member = kakaoDto.toEntity(passwordEncoder);
+        log.info("saveKakaoEntity 실행 : " + member);
+        memberRepository.save(member);
     }
 
 }

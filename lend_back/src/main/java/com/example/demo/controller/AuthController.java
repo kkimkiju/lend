@@ -31,7 +31,7 @@ public class AuthController {
     public ResponseEntity<TokenDto> login(@RequestBody MemberReqDto requestDto) {
         System.out.println(requestDto.getPassword() + "pw");
         return ResponseEntity.ok(authService.login(requestDto));
-    }
+    }  
 
 //    // 아이디 찾기
 //    @PostMapping("/findid")
