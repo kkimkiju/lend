@@ -23,13 +23,9 @@ const Button = styled.button`
   margin: 5px;
   border: none;
   border-radius: 4px;
-  background-color: #4caf50;
+  background-color: #29c555;
   color: white;
   cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-  }
 `;
 
 function ChatRoomCreate() {
