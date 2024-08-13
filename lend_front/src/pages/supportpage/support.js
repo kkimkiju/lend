@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+//support/js
+import { useEffect, useState, useId } from "react";
 import styled from "styled-components";
 import DropdownComponent from "./dropdowncomponent";
 import ChatRoomCreate from "../chatting/ChatRoomCreate";
 import AxiosApi from "../../axios/AxiosApi";
 import WritePost from "./writepost";
+import CommentComponent from "./commentComponent";
 
 export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(true);
@@ -14,11 +16,13 @@ export default function Support() {
       showDetailedPost(false);
       showFAQBoard(false);
       setEditMode(false);
+      setWriteMode(false);
     } else if (number === 2) {
       showQuestionBoard(false);
       showDetailedPost(false);
       showFAQBoard(true);
       setEditMode(false);
+      setWriteMode(false);
     }
     console.log(questionBoard, FAQBoard);
   };
@@ -69,24 +73,10 @@ export default function Support() {
     }
     return buttons;
   };
-  // 세부 게시글에 대한 댓글 조회
-  const [commentList, setCommentList] = useState([]);
-  const fetchCommentList = async (id) => {
-    try {
-      const response = await AxiosApi.getComment(id);
-      if (response.data && Array.isArray(response.data)) {
-        setCommentList(response.data);
-        console.info("Fetched comments:", response.data); // 추가된 로그
-      } else {
-        console.warn("Unexpected response format:", response.data); // 잘못된 형식 확인
-      }
-    } catch (error) {
-      console.error(error.response);
-    }
-  };
   // 세부 게시글 조회 코드
   const [detailedPost, showDetailedPost] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
+  const [currentPostId, setCurrentPostId] =useState(null)
   const handleOpenPost = async (id) => {
     try {
       const response = await AxiosApi.getDetailedPost(id);
@@ -94,7 +84,7 @@ export default function Support() {
         showDetailedPost(true);
         showQuestionBoard(false);
         setCurrentPost(response.data);
-        fetchCommentList(id);
+        setCurrentPostId(id);
         console.log(response.data);
       }
     } catch (error) {
@@ -103,7 +93,11 @@ export default function Support() {
   };
 
   //글 작성 컴포넌트 활성화
-
+  const [writeMode, setWriteMode] = useState(false);
+  const handleWriteMode = () => {
+    setWriteMode(true);
+    showQuestionBoard(false);
+  };
   // 글 수정 & 저장
   const [editMode, setEditMode] = useState(false);
   const [editedTitle, setEditedTitle] = useState("");
@@ -147,12 +141,17 @@ export default function Support() {
           <Button onClick={BoardHandler(1)}>질문 게시판</Button>
           <Button onClick={BoardHandler(2)}>자주 묻는 질문</Button>
           <WritePost
+            writeMode={writeMode}
+            setWriteMode={setWriteMode}
             showQuestionBoard={showQuestionBoard}
             showFAQBoard={showFAQBoard}
           />
         </ButtonBox>
         {questionBoard && (
           <>
+            <ButtonBox>
+              <Button onClick={() => handleWriteMode()}>질문하기</Button>{" "}
+            </ButtonBox>
             <Box>
               <Item>
                 <div>번호 제목 + 댓글 수 작성자 작성일 </div>
@@ -211,12 +210,7 @@ export default function Support() {
                 <div>내용: {currentPost.content}</div>
               )}
               <div>댓글조회 등록 수정 삭제 대댓글 등록 수정 삭제</div>
-              {commentList.map((comment, index) => (
-                <div key={comment.id}>
-                  <div>{comment.memberReqDto.name}</div>
-                  <div>{comment.content}</div>
-                </div>
-              ))}
+              <CommentComponent currentPostId = {currentPostId}/>
             </Item>
           </Box>
         )}

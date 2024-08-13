@@ -34,10 +34,10 @@ public class Comment {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_id")
     private Comment parent; // 부모 댓글
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> children = new ArrayList<>(); // 자식댓글들(대댓글)
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "question_id")
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
     // 시간 미입력시 자동 생성

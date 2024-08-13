@@ -23,13 +23,13 @@ public class CommentController {
     // 댓글 수정
     @PutMapping("/modify-comment")
     public ResponseEntity<Boolean> modifyComment(@RequestBody CommentDto commentDto){
-        boolean isTure = commentService.modifyComment(commentDto.getId(), commentDto);
+        boolean isTure = commentService.modifyComment(commentDto);
         return ResponseEntity.ok(isTure);
     }
     // 댓글 삭제 실제로는 삭제되지 않고 DeletedStatus만 true로 변경
     @PutMapping("delete-comment")
     public ResponseEntity<Boolean> deleteComment(@RequestBody CommentDto commentDto){
-        boolean isTure = commentService.modifyComment(commentDto.getId(), commentDto);
+        boolean isTure = commentService.modifyComment(commentDto);
         return ResponseEntity.ok(isTure);
     }
 
@@ -44,6 +44,12 @@ public class CommentController {
     public ResponseEntity<List<CommentDto>> getCommentsByQuestionId(@PathVariable("questionId") Long questionId) {
         List<CommentDto> comments = commentService.getCommentsByQuestionId(questionId);
         return ResponseEntity.ok(comments);
+    }
+    // questionId로 댓글 트리구조로 호출
+    @GetMapping("/comment-list/{questionId}")
+    public ResponseEntity<List<CommentDto>> getCommentsByQuestionIdForTree(@PathVariable("questionId") Long questionId) {
+        List<CommentDto> commentDtoList = commentService.getCommentsByQuestionIdForTree(questionId);
+        return ResponseEntity.ok(commentDtoList);
     }
 
     @GetMapping("/comment/{commentId}")

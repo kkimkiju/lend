@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,9 +49,9 @@ public class CommentService {
         return CommentDto.convertEntityToDto(savedComment);
     }
     // 댓글 수정
-    public boolean modifyComment(Long id, CommentDto commentDto) {
+    public boolean modifyComment(CommentDto commentDto) {
         try{
-            Comment comment = commentRepository.findById(id).orElseThrow(
+            Comment comment = commentRepository.findById(commentDto.getId()).orElseThrow(
                     () -> new RuntimeException("해당 댓글이 존재하지 않습니다.")
             );
             comment.setContent(commentDto.getContent());
@@ -63,9 +64,9 @@ public class CommentService {
         }
     }
     // 댓글 삭제
-    public boolean deleteComment(Long id, CommentDto commentDto) {
+    public boolean deleteComment(CommentDto commentDto) {
         try{
-            Comment comment = commentRepository.findById(id).orElseThrow(
+            Comment comment = commentRepository.findById(commentDto.getId()).orElseThrow(
                     () -> new RuntimeException("해당 댓글이 존재하지 않습니다.")
             );
             comment.setDeletedStatus(true);
@@ -106,4 +107,22 @@ public class CommentService {
                 .map(CommentDto::convertEntityToDto)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
     }
+
+    // questionId로 댓글 트리구조로 호출
+    @Transactional(readOnly = true)
+    public List<CommentDto> getCommentsByQuestionIdForTree(Long questionId){
+        List<Comment> comments =commentRepository.findByQuestionId((questionId));
+        List<CommentDto> list = new ArrayList<>();
+        comments.stream()
+                .filter(comment -> comment.getParent() == null) // 부모가 없는 댓글 = 최상위 댓글
+                .forEach(comment ->  addCommentWithChildren(list, comment));
+        return list;
+    }
+
+    private void addCommentWithChildren(List<CommentDto> list, Comment comment) {
+        CommentDto commentDto = CommentDto.convertEntityToDto(comment);
+        list.add(commentDto);
+        comment.getChildren().forEach(child -> addCommentWithChildren(list, child)); // 자식 댓글을 반복조회하여 추가
+    }
+
 }

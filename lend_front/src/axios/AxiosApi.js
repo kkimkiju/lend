@@ -129,7 +129,7 @@ const AxiosApi = {
   // 댓글조회
   getComment: async (questionId) => {
     return await AxiosInstance.get(
-      `${LEND_DOMAIN}/support/question/${questionId}`
+      `${LEND_DOMAIN}/support/comment-list/${questionId}`
     );
   },
   // 댓글수정

@@ -2,17 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
-export default function WritePost({ showQuestionBoard, showFAQBoard }) {
-  const [writeMode, setWriteMode] = useState(false);
+export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, showFAQBoard }) {
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const navigate = useNavigate(null);
-  const handleWriteMode = () => {
-    setWriteMode(true);
-    showQuestionBoard(false);
-    showFAQBoard(false);
-    console.log(writeMode);
-  };
   const savePost = async () => {
     const questionDto = {
       title: title,
@@ -39,9 +33,6 @@ export default function WritePost({ showQuestionBoard, showFAQBoard }) {
     <Body>
       <Container>
         <Box>
-          <ButtonBox>
-            <Button onClick={() => handleWriteMode()}>질문하기</Button>
-          </ButtonBox>
           {writeMode && (
             <>
               <Item>
