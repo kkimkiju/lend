@@ -168,29 +168,31 @@ export default function Support() {
         <ButtonBox>
           <Button onClick={BoardHandler(1)}>질문 게시판</Button>
           <Button onClick={BoardHandler(2)}>자주 묻는 질문</Button>
-          <WritePost
+        </ButtonBox>
+        <WritePost
             writeMode={writeMode}
             setWriteMode={setWriteMode}
             showQuestionBoard={showQuestionBoard}
             showFAQBoard={showFAQBoard}
           />
-        </ButtonBox>
         {questionBoard && (
           <>
             <ButtonBox>
-              <Button onClick={handleWriteMode}>질문하기</Button>
+              <Button className="writepost" onClick={handleWriteMode}>질문하기</Button>
             </ButtonBox>
             <Box>
-              <Item>
-                <div>번호 제목 + 댓글 수 작성자 작성일 </div>
+              <Item className="boardArea">
+                <TitleOfPost><div>번호</div><div>제목</div><div>댓글 수</div><div>작성자</div><div>작성일</div></TitleOfPost>
+                
                 {questionList.map((question, index) => (
                   <div key={question.id}>
-                    <div onClick={() => handleOpenPost(question.id)}>
-                      {(currentPage - 1) * pageSize + (index + 1)}{" "}
-                      {question.title}{" "}
-                      {question.commentList ? question.commentList.length : 0}{" "}
-                      {question.memberReqDto.name} {question.createTime}
-                    </div>
+                    <ListOfPost onClick={() => handleOpenPost(question.id)}>
+                      <div>{(currentPage - 1) * pageSize + (index + 1)}</div>
+                      <div>{question.title}</div>
+                      <div>{question.commentList ? question.commentList.length : 0}</div>
+                      <div>{question.memberReqDto.name}</div> 
+                      <div>{question.createTime.slice(0, 11)}</div>
+                    </ListOfPost>
                   </div>
                 ))}
               </Item>
@@ -200,14 +202,14 @@ export default function Support() {
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
               >
-                이전 페이지
+                {"<"}
               </PageButton>
               {renderPageButtons()}
               <Button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
-                다음 페이지
+                {">"}
               </Button>
             </ButtonBox>
           </>
@@ -293,9 +295,27 @@ const SearchInput = styled.input`
 const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  width: 90vw;
+  height: 7vh;
 `;
 const Button = styled.button`
+  width: 20vw;
+  height: auto;
+  border: 0;
+  background-color: transparent;
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
+  border-radius: 1vw;
+  font-size: 2.5vw;
+  margin: 2vw 5vw;
+  .writepost {
+    float: right;
+    margin-left: 50vw;
+  }
+`;
+const PageButton = styled(Button)`
+height: 5vh;
+  background-color: ${({ active }) => (active ? "#ddd" : "#f5f5f5")};
 `;
 const Box = styled.div`
   display: flex;
@@ -311,6 +331,10 @@ const Item = styled.div`
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
+  .boardArea{
+    height: 300px;
+    background-color: aqua;
+  }
 `;
 const DropDownButton = styled.button`
   border: 0;
@@ -320,6 +344,35 @@ const DropDownButton = styled.button`
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
 `;
 
-const PageButton = styled(Button)`
-  background-color: ${({ active }) => (active ? "#ddd" : "#f5f5f5")};
-`;
+
+const TitleOfPost =styled.div`
+  width: 60vw;
+  height: 3vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  border-bottom: 0.2vw solid;
+  margin: 1vw 0 0 0;
+  & div {
+    width: 10vw;
+    font-size: 1.5vw;
+    margin: 0;
+  }
+`
+const ListOfPost = styled.div`
+  width: 60;
+  height: 3vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  & div{
+    width: 10vw;
+    height: auto;
+    font-size: 1.5vw;
+  }
+  :hover{
+    background-color: #DDD;
+  }
+`

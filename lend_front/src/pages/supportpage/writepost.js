@@ -23,7 +23,7 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
         showQuestionBoard(true);
         showFAQBoard(false);
         alert("질문이 등록 되었습니다.");
-        navigate("/");
+        navigate("/lend/support");
       }
     } catch (error) {
       console.error(error.response);
@@ -37,18 +37,18 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
             <>
               <Item>
                 <input
+                  className="TitleInput"
                   type="text"
                   placeholder="제목을 입력해주세요."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
                 <input
+                  className="ContentInput"
                   type="text"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
-              </Item>
-              <Item>
                 <ButtonBox>
                   <button onClick={() => savePost()}>등록</button>
                 </ButtonBox>
@@ -64,6 +64,7 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
 const Body = styled.div`
   width: auto;
   height: auto;
+  margin-top: 10vh;
 `;
 const Container = styled.div`
   display: flex;
@@ -72,8 +73,10 @@ const Container = styled.div`
   align-items: center;
 `;
 const Box = styled.div`
+width: 100vw;
   display: flex;
   flex-direction: row;
+  justify-content: center;
 `;
 const ButtonBox = styled.div`
   display: flex;
@@ -83,10 +86,32 @@ const Button = styled.button`
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
 `;
 const Item = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 50vh;
+  background-color: blueviolet;
   display: ${(props)=> props.writeMode && {
     flex : "none"
   }};
   flex-direction: column;
+  .TitleInput{
+    width: 50vw;
+    height: 3vw;
+    font-size: 30px;
+    border-radius: .5vw;
+    margin: 2vh 0;
+    padding: .1vw 0 0 .5vw;
+  }
+  .ContentInput{
+    width: 50vw;
+    height: 30vw;
+    font-size: 20px;
+    border-radius: .5vw;
+    margin: 2vh 0;
+    padding: .1vw;
+    text-align: left;
+    padding: 0 0 35vh .5vw;
+  }
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
