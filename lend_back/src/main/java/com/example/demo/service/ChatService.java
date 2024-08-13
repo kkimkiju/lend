@@ -4,8 +4,10 @@ import com.example.demo.dto.ChatMessageDto;
 import com.example.demo.dto.ChatRoomDto;
 import com.example.demo.entity.ChatMessage;
 import com.example.demo.entity.ChatRoom;
+import com.example.demo.entity.Member;
 import com.example.demo.repository.ChatMessageRepository;
 import com.example.demo.repository.ChatRoomRepository;
+import com.example.demo.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ public class ChatService {
     private Map<String, ChatRoomDto> chatRooms; // 채팅방 정보를 담을 맵
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final MemberRepository memberRepository;
     @PostConstruct // 의존성 주입 이후 초기화를 수행하는 메소드
     private void init() { // 채팅방 정보를 담을 맵을 초기화
         chatRooms = new LinkedHashMap<>(); // 채팅방 정보를 담을 맵
@@ -86,23 +89,69 @@ public class ChatService {
         return chatRoom;
     }
 
-
+    @Transactional
+    public void removeRoom1(String roomId) {
+        try {
+            chatRoomRepository.deleteByRoomId(roomId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     @Transactional
     public void removeRoom(String roomId) {
         ChatRoomDto room = chatRooms.get(roomId);
+        ChatRoom room1 = chatRoomRepository.findById(roomId).orElse(null);
+        List<ChatMessage> msgList = chatMessageRepository.findByRoomId(room1);
         if (room != null) {
             if (room.isSessionEmpty()) {
                 try {
                     chatRooms.remove(roomId);
-                    chatRoomRepository.deleteByRoomId(roomId);
+                    for (ChatMessage msg : msgList) {
+                        chatMessageRepository.delete(msg);
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+//                if (msgList.isEmpty()) {
+//                    removeRoom1(roomId);
+//                }
             }
         }
     }
+
+
+//    @Transactional
+//    public void removeRoom(String roomId) {
+//        // 채팅방 정보를 가져옵니다.
+//        ChatRoomDto room = chatRooms.get(roomId);
+//        ChatRoom room1 = chatRoomRepository.findById(roomId).orElse(null);
+//        if (room == null) {
+//            return; // 채팅방이 존재하지 않으면 아무 작업도 하지 않습니다.
+//        }
+//
+//        // 채팅방의 메시지를 삭제합니다.
+//        try {
+//            List<ChatMessage> msgList = chatMessageRepository.findByRoomId(room1); // 채팅방의 모든 메시지를 가져옵니다.
+//            for (ChatMessage msg : msgList) {
+//                chatMessageRepository.delete(msg); // 각 메시지를 삭제합니다.
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to delete messages for room: " + roomId, e);
+//        }
+//
+//        // 채팅방 삭제 작업을 수행합니다.
+//        try {
+//            chatRoomRepository.deleteByRoomId(roomId); // 채팅방을 삭제합니다.
+//            chatRooms.remove(roomId); // In-memory 데이터에서도 삭제합니다.
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to delete room: " + roomId, e);
+//        }
+//    }
+
+
+
     // 채팅방에 입장한 세션 추가
     public void addSessionAndHandleEnter(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {
         ChatRoomDto room = findRoomById(roomId);
@@ -118,7 +167,7 @@ public class ChatService {
     // 채팅방에서 퇴장한 세션 제거
     @Transactional
     public void removeSessionAndHandleExit(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {
-        ChatRoomDto room = findRoomById(roomId); // 채팅방 정보 가져오기
+        ChatRoomDto room = findRoomById(roomId);
         if (room != null) {
             room.getSessions().remove(session); // 채팅방에서 퇴장한 세션 제거
             if (chatMessage.getSender() != null) { // 채팅방에서 퇴장한 사용자가 있으면
@@ -128,23 +177,30 @@ public class ChatService {
             log.debug("Session removed: " + session);
             if (room.isSessionEmpty()) {
                 removeRoom(roomId);
+
             }
         }
     }
 
-    public void sendMessageToAll(String roomId, ChatMessageDto message) {
-        ChatRoomDto room = findRoomById(roomId);
-//        List<String> room2 = chatRoomRepository.findByRoomId(roomId);
+    public void sendMessageToAll(String roomId, ChatMessageDto messageDto) {
+        ChatRoomDto roomDto = findRoomById(roomId);
+        ChatRoom room = chatRoomRepository.findById(roomId).orElse(null);
+        Optional<Member> sender = memberRepository.findByEmail(messageDto.getSender());
 
-        if (room != null) {
-            for (WebSocketSession session : room.getSessions()) {
-                sendMessage(session, message);
+        if (roomDto != null) {
+            for (WebSocketSession session : roomDto.getSessions()) {
+                sendMessage(session, messageDto);
             }
         }
-//        ChatMessage msg = new ChatMessage();
-//        msg.setRoomId(room2.get(0));
-//        msg.setMessage(message.getMessage());
-//        chatMessageRepository.save(msg);
+
+        // ChatMessage 엔티티 생성 및 저장
+        ChatMessage msg = new ChatMessage();
+        msg.setRoomId(room);
+        msg.setSender(sender.get());
+        msg.setMessage(messageDto.getMessage());
+
+        // LocalDateTime 필드는 @PrePersist에 의해 자동으로 설정됩니다.
+        chatMessageRepository.save(msg);
     }
 
     public <T> void sendMessage(WebSocketSession session, T message) {
