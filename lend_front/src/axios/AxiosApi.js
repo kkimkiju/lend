@@ -116,7 +116,7 @@ const AxiosApi = {
   // 글삭제
   deleteQuestion: async (id) => {
     return await AxiosInstance.delete(
-      `${LEND_DOMAIN}/support/modify-question/${id}`
+      `${LEND_DOMAIN}/support/delete-question/${id}`
     );
   },
   // 댓글생성
@@ -139,10 +139,11 @@ const AxiosApi = {
       commnetDto
     );
   },
-  // 댓글가상삭제
-  deleteCommnet: async (id) => {
+  // 댓글가상삭제 deletedStatus 가 true로 변경되고 삭제되었습니다. 표시로 구현
+  deleteComment: async (commnetDto) => {
     return await AxiosInstance.put(
-      `${LEND_DOMAIN}/support/delete-comment/${id}`
+      `${LEND_DOMAIN}/support/delete-comment`,
+      commnetDto
     );
   },
   // 문의게시판 ----------------------

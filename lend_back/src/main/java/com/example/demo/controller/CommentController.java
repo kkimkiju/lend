@@ -29,7 +29,7 @@ public class CommentController {
     // 댓글 삭제 실제로는 삭제되지 않고 DeletedStatus만 true로 변경
     @PutMapping("delete-comment")
     public ResponseEntity<Boolean> deleteComment(@RequestBody CommentDto commentDto){
-        boolean isTure = commentService.modifyComment(commentDto);
+        boolean isTure = commentService.deleteComment(commentDto);
         return ResponseEntity.ok(isTure);
     }
 

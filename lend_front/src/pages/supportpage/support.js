@@ -103,7 +103,7 @@ export default function Support() {
   const [editedTitle, setEditedTitle] = useState("");
   const [editedContent, setEditedContent] = useState("");
   // 수정 모드
-  const handelEditPost = () => {
+  const handleEditPost = () => {
     if (currentPost) {
       setEditedTitle(currentPost.title);
       setEditedContent(currentPost.content);
@@ -126,12 +126,40 @@ export default function Support() {
       if (response.data) {
         console.log(response.data);
         setEditMode(false);
+        // 현재 게시글을 갱신
+        setCurrentPost({
+          ...currentPost,
+          title: editedTitle,
+          content: editedContent,
+          modifyTime: response.data.modifyTime,
+        });
       }
     } catch (error) {
       console.error(error.response);
     }
   };
 
+  // 글 삭제
+  const handleDeletePost = async () => {
+    if (!currentPost) return;
+    try {
+      const response = await AxiosApi.deleteQuestion(currentPost.id);
+      
+      if (response.data) {
+        alert("게시글이 삭제되었습니다.");
+        // 삭제 후 게시판 목록으로 돌아가기
+        showDetailedPost(false);
+        showQuestionBoard(true);
+        // 게시글 목록 갱신
+        // fetchQuestionList(currentPage);
+      }
+    } catch (error) {
+      console.log(currentPost.id);
+      console.error(error.response);
+    }
+  };
+  // 현재 로그인된 사용자의 이메일과 글 작성자의 이메일 비교  + 관리자 계정인지 확인 기능 추가 필요
+  const isOwner = localStorage.getItem("email") === currentPost?.memberReqDto?.email;
   return (
     <Body>
       <Container>
@@ -150,7 +178,7 @@ export default function Support() {
         {questionBoard && (
           <>
             <ButtonBox>
-              <Button onClick={() => handleWriteMode()}>질문하기</Button>{" "}
+              <Button onClick={handleWriteMode}>질문하기</Button>
             </ButtonBox>
             <Box>
               <Item>
@@ -187,8 +215,13 @@ export default function Support() {
         {detailedPost && (
           <Box>
             <Item>
-              <button onClick={() => handelEditPost()}> 수정</button>
-              <button onClick={() => handleSavePost()}> 저장 </button>
+            {isOwner && (
+                <>
+                  <button onClick={handleEditPost}>수정</button>
+                  <button onClick={handleSavePost} disabled={!editMode}>저장</button>
+                  <button onClick={handleDeletePost}>삭제</button>
+                </>
+              )}
               {editMode ? (
                 <input
                   type="text"

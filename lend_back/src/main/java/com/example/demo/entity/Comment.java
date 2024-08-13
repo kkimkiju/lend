@@ -23,8 +23,6 @@ public class Comment {
     private Long id;
     @Column(nullable = false, length = 1000)
     private String content;
-    @ColumnDefault("FALSE")
-    @Column(nullable = false)
     private Boolean deletedStatus;
     private String createTime;
     private String modifyTime;
