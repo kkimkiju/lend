@@ -70,8 +70,6 @@ public class ChatService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         String regDateStr = LocalDateTime.now().format(formatter);
 
-
-
         ChatRoomDto chatRoom = ChatRoomDto.builder()
                 .roomId(randomId)
                 .roomName(email)
@@ -120,37 +118,6 @@ public class ChatService {
             }
         }
     }
-
-
-//    @Transactional
-//    public void removeRoom(String roomId) {
-//        // 채팅방 정보를 가져옵니다.
-//        ChatRoomDto room = chatRooms.get(roomId);
-//        ChatRoom room1 = chatRoomRepository.findById(roomId).orElse(null);
-//        if (room == null) {
-//            return; // 채팅방이 존재하지 않으면 아무 작업도 하지 않습니다.
-//        }
-//
-//        // 채팅방의 메시지를 삭제합니다.
-//        try {
-//            List<ChatMessage> msgList = chatMessageRepository.findByRoomId(room1); // 채팅방의 모든 메시지를 가져옵니다.
-//            for (ChatMessage msg : msgList) {
-//                chatMessageRepository.delete(msg); // 각 메시지를 삭제합니다.
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to delete messages for room: " + roomId, e);
-//        }
-//
-//        // 채팅방 삭제 작업을 수행합니다.
-//        try {
-//            chatRoomRepository.deleteByRoomId(roomId); // 채팅방을 삭제합니다.
-//            chatRooms.remove(roomId); // In-memory 데이터에서도 삭제합니다.
-//        } catch (Exception e) {
-//            throw new RuntimeException("Failed to delete room: " + roomId, e);
-//        }
-//    }
-
-
 
     // 채팅방에 입장한 세션 추가
     public void addSessionAndHandleEnter(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {

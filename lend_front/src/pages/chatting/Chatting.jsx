@@ -3,21 +3,29 @@ import Common from "../../utils/Common";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
+import Back from "../../image/backbutton.png";
+import Send from "../../image/sendbutton.png";
 
 const ChatContainer = styled.div`
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  background-color: #f9f9f9;
+  background-color: rgba(41, 197, 85, 0.4);
   border-radius: 8px;
+  border: 3px solid #29c555;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const ChatHeader = styled.div`
-  font-size: 1.5em;
-  color: #333;
-  text-align: center;
+  color: #444;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+`;
+
+const RoomName = styled.div`
+  font-size: 1.5em;
+  text-align: center;
 `;
 
 const MessagesContainer = styled.div`
@@ -25,26 +33,36 @@ const MessagesContainer = styled.div`
   flex-direction: column;
   height: 400px;
   overflow-y: auto;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-top: 2px solid #29c555;
+  border-bottom: 2px solid #29c555;
   padding: 10px;
   margin-bottom: 20px;
 `;
 
-const Message = styled.div`
+const Contents = styled.div`
+  align-self: ${(props) => (props.isSender ? "flex-end" : "flex-start")};
   max-width: 60%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Sender = styled.div`
+  display: ${(props) => (props.isSender ? "none" : "block")};
+`;
+
+const Message = styled.div`
   padding: 10px;
   margin: 10px;
   border-radius: 20px;
-  background-color: ${(props) => (props.isSender ? "#DCF8C6" : "#E0E0E0")};
-  align-self: ${(props) => (props.isSender ? "flex-end" : "flex-start")};
+  background-color: ${(props) => (props.isSender ? "#29c555" : "#ffffff")};
   border: ${(props) =>
-    props.isSender ? "1px solid #DCF8C6" : "1px solid #E0E0E0"};
+    props.isSender ? "1px solid #29c555" : "1px solid #ffffff"};
+  color: ${(props) => (props.isSender ? "#ffffff" : "#000000")};
 `;
 
 const Input = styled.input`
   padding: 10px;
-  width: 70%;
+  width: 90%;
   border-radius: 4px;
   border: 1px solid #ddd;
 `;
@@ -52,28 +70,24 @@ const Input = styled.input`
 const SendButton = styled.button`
   padding: 10px 15px;
   border: none;
-  background-color: #4caf50;
+  background-color: rgba(41, 197, 85, 0.05);
+  background-image: url(${Send});
+  background-size: cover;
+  background-position: center;
   color: white;
   border-radius: 4px;
   margin-left: 10px;
   cursor: pointer;
-
-  &:hover {
-    background-color: #45a049;
-  }
 `;
 const CloseButton = styled.button`
-  padding: 10px 15px;
   border: none;
-  background-color: #f44336;
-  color: white;
-  border-radius: 4px;
-  margin-top: 10px;
+  background-color: rgba(41, 197, 85, 0.05);
+  background-image: url(${Back});
+  background-size: cover;
+  background-position: center;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
-
-  &:hover {
-    background-color: #d32f2f;
-  }
 `;
 
 const Chatting = () => {
@@ -148,9 +162,7 @@ const Chatting = () => {
 
   useEffect(() => {
     console.log("방번호 : " + roomId);
-    // const accessToken = localStorage.getItem("accessToken");
     if (!ws.current) {
-      // const socketUrl = `${Common.SOCKET_URL}?token=${accessToken}`;
       ws.current = new WebSocket(Common.SOCKET_URL);
       ws.current.onopen = () => {
         console.log("connected to " + Common.SOCKET_URL);
@@ -186,12 +198,18 @@ const Chatting = () => {
 
   return (
     <ChatContainer>
-      <ChatHeader>문의하기</ChatHeader>
+      <ChatHeader>
+        <CloseButton onClick={onClickMsgClose} />
+        <RoomName>Lend와 채팅</RoomName>
+      </ChatHeader>
       <MessagesContainer ref={chatContainerRef}>
         {chatList.map((chat, index) => (
-          <Message key={index} isSender={chat.sender === sender}>
-            {`${chat.sender} > ${chat.message}`}
-          </Message>
+          <Contents key={index} isSender={chat.sender === sender}>
+            {chat.sender !== sender && <Sender>{`${chat.sender}`}</Sender>}
+            <Message
+              isSender={chat.sender === sender}
+            >{`${chat.message}`}</Message>
+          </Contents>
         ))}
       </MessagesContainer>
       <div>
@@ -201,9 +219,8 @@ const Chatting = () => {
           onChange={onChangMsg}
           onKeyUp={onEnterKey}
         />
-        <SendButton onClick={onClickMsgSend}>전송</SendButton>
+        <SendButton onClick={onClickMsgSend} />
       </div>
-      <CloseButton onClick={onClickMsgClose}>채팅 종료 하기</CloseButton>
     </ChatContainer>
   );
 };

@@ -4,12 +4,18 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../../utils/Common";
 
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+`;
+
 const ChatListContainer = styled.div`
+  width: 60%;
   padding: 30px;
-  position: relative;
-  margin: 40px;
-  background-color: #f3f3f3;
-  border-radius: 10px;
+  background-color: rgba(41, 197, 85, 0.4);
+  border: 3px solid #29c555;
+  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -29,7 +35,6 @@ const ChatRoom = styled.li`
 
   &:hover {
     background-color: #e9e9e9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   }
 `;
 const Header = styled.h1`
@@ -72,20 +77,22 @@ function ChatList() {
   };
 
   return (
-    <ChatListContainer>
-      <Header>채팅방 목록</Header>
-      <ChatUl>
-        {chatRooms.map((room) => (
-          <ChatRoom
-            key={room.roomId}
-            onClick={() => enterChatRoom(room.roomId)}
-          >
-            <ChatName>{room.roomName}</ChatName>
-            <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
-          </ChatRoom>
-        ))}
-      </ChatUl>
-    </ChatListContainer>
+    <Container>
+      <ChatListContainer>
+        <Header>상담 요청 목록</Header>
+        <ChatUl>
+          {chatRooms.map((room) => (
+            <ChatRoom
+              key={room.roomId}
+              onClick={() => enterChatRoom(room.roomId)}
+            >
+              <ChatName>{room.roomName}</ChatName>
+              <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
+            </ChatRoom>
+          ))}
+        </ChatUl>
+      </ChatListContainer>
+    </Container>
   );
 }
 
