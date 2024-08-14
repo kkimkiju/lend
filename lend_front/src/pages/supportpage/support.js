@@ -10,6 +10,8 @@ import CommentComponent from "./commentComponent";
 export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(true);
   const [FAQBoard, showFAQBoard] = useState(false);
+  const [writeMode, setWriteMode] = useState(false);
+  const [answerState, setAnswerState] = useState(false); //관리자 답변 여부 관리
   const BoardHandler = (number) => () => {
     if (number === 1) {
       showQuestionBoard(true);
@@ -35,23 +37,26 @@ export default function Support() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1); // 초기값 1페이지
   const pageSize = 10; // 페이지당 글 수
-  useEffect(() => {
-    const fetchQuestionList = async (page) => {
-      try {
-        const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
-        if (response.data && Array.isArray(response.data.boards)) {
-          setQuestionList(response.data.boards);
-          setTotalPages(response.data.totalPages);
-        } else {
-          console.error("Unexpected response format", response.data);
-        }
-      } catch (error) {
-        console.log(error);
-        console.log(error.response);
+
+  const fetchQuestionList = async (page) => {
+    try {
+      const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
+      if (response.data && Array.isArray(response.data.boards)) {
+        setQuestionList(response.data.boards);
+        setTotalPages(response.data.totalPages);
+      } else {
+        console.error("Unexpected response format", response.data);
       }
-    };
+    } catch (error) {
+      console.log(error);
+      console.log(error.response);
+    }
+  };
+  //게시글 갱신
+  useEffect(()=> {
     fetchQuestionList(currentPage);
-  }, [currentPage]);
+  }, [writeMode])
+
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
@@ -93,7 +98,6 @@ export default function Support() {
   };
 
   //글 작성 컴포넌트 활성화
-  const [writeMode, setWriteMode] = useState(false);
   const handleWriteMode = () => {
     setWriteMode(true);
     showQuestionBoard(false);
@@ -151,7 +155,7 @@ export default function Support() {
         showDetailedPost(false);
         showQuestionBoard(true);
         // 게시글 목록 갱신
-        // fetchQuestionList(currentPage);
+        fetchQuestionList(currentPage);
       }
     } catch (error) {
       console.log(currentPost.id);
@@ -182,16 +186,21 @@ export default function Support() {
             </ButtonBox>
             <Box>
               <Item className="boardArea">
-                <TitleOfPost><div>번호</div><div>제목</div><div>댓글 수</div><div>작성자</div><div>작성일</div></TitleOfPost>
+                <TitleOfPost><div>번호</div><div>제목</div><div>{"댓글"}</div><div>작성자</div><div>작성일</div><div>답변처리</div></TitleOfPost>
                 
                 {questionList.map((question, index) => (
                   <div key={question.id}>
                     <ListOfPost onClick={() => handleOpenPost(question.id)}>
                       <div>{(currentPage - 1) * pageSize + (index + 1)}</div>
                       <div>{question.title}</div>
-                      <div>{question.commentList ? question.commentList.length : 0}</div>
+                      <div>{question.commentList ? question.commentList.length : "" }</div>
                       <div>{question.memberReqDto.name}</div> 
                       <div>{question.createTime.slice(0, 11)}</div>
+                      {/* 관리자 계정 답변이 하나라도 있으면 완료처리 */}
+                      <div>{question.commentList && question.commentList.some(comment =>comment?.member?.authority === "ROLE_ADMIN")
+                        ? "완료"
+                        : "미처리"}
+                      </div>
                     </ListOfPost>
                   </div>
                 ))}
@@ -242,7 +251,7 @@ export default function Support() {
                   onChange={(e) => setEditedContent(e.target.value)}
                 />
               ) : (
-                <div>내용: {currentPost.content}</div>
+                <div className="content">내용: {currentPost.content}</div>
               )}
               <div>댓글조회 등록 수정 삭제 대댓글 등록 수정 삭제</div>
               <CommentComponent currentPostId = {currentPostId}/>
@@ -335,6 +344,9 @@ const Item = styled.div`
     height: 300px;
     background-color: aqua;
   }
+  .content{
+    white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
+  }
 `;
 const DropDownButton = styled.button`
   border: 0;
@@ -352,25 +364,51 @@ const TitleOfPost =styled.div`
   justify-content: space-between;
   align-items: center;
   text-align: center;
+  white-space: nowrap;
   border-bottom: 0.2vw solid;
   margin: 1vw 0 0 0;
   & div {
     width: 10vw;
-    font-size: 1.5vw;
+    font-size: 1vw;
     margin: 0;
+  }
+  & div:nth-child(1){ // 게시글리스트 번호부분 
+    width: 5vw;
+  }
+  & div:nth-child(2){ // 게시글리스트 제목부분
+    width: 20vw;
+  }
+  & div:nth-child(3){ // 댓글수 부분
+    width: 2vw;
   }
 `
 const ListOfPost = styled.div`
   width: 60;
-  height: 3vw;
+  height: 2.5vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: center;
+  white-space: nowrap;
   & div{
     width: 10vw;
     height: auto;
-    font-size: 1.5vw;
+    font-size: 1vw;
+  }
+  & div:nth-child(1){ // 게시글리스트 번호부분 
+    width: 5vw;
+  }
+  & div:nth-child(2){ // 게시글리스트 제목부분
+    width: 20vw;
+    //텍스트 줄이기 세트
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
+  }
+  & div:nth-child(3){ // 댓글수 부분
+    width: 2vw;
+    text-align: left;
   }
   :hover{
     background-color: #DDD;

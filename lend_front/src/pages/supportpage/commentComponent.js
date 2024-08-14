@@ -22,7 +22,6 @@ export default function CommentComponent({ currentPostId }) {
       console.error(error.response);
     }
   };
-
   // 댓글 갱신
   useEffect(() => {
     if (currentPostId) {
@@ -160,45 +159,45 @@ export default function CommentComponent({ currentPostId }) {
   const renderComments = (comments) => {
     return comments.map((comment) => {
       const isOwner = localStorage.getItem("email") === comment.memberReqDto.email;
-      if (comment.deletedStatus) {
-        return (
-          <div key={comment.id} style={{ marginLeft: comment.parentId ? "20px" : "0" }}>
-            <div>{comment.memberReqDto.name}</div>
-            <div>삭제된 댓글입니다.</div>
-          </div>
-        );
-      }
+      
       return (
         <div key={comment.id} style={{ marginLeft: comment.parentId ? "20px" : "0" }}>
           <div>{comment.memberReqDto.name}</div>
-          {editState.id === comment.id ? (
-            <input
-              value={editState.content}
-              onChange={(e) => setEditState({ ...editState, content: e.target.value })}
-            />
+          {comment.deletedStatus ? (
+            <div>삭제된 댓글입니다.</div>
           ) : (
-            <div>{comment.content}</div>
-          )}
-          {isOwner && (
             <>
               {editState.id === comment.id ? (
-                <Button onClick={handleSaveComment}>저장</Button>
+                <input
+                  value={editState.content}
+                  onChange={(e) => setEditState({ ...editState, content: e.target.value })}
+                />
               ) : (
-                <Button onClick={() => handleEditMode(comment.id, comment.content)}>수정</Button>
+                <div>{comment.content}</div>
               )}
-              <Button onClick={() => handleDeleteComment(comment.id)}>삭제</Button>
+              {isOwner && (
+                <>
+                  {editState.id === comment.id ? (
+                    <Button onClick={handleSaveComment}>저장</Button>
+                  ) : (
+                    <Button onClick={() => handleEditMode(comment.id, comment.content)}>수정</Button>
+                  )}
+                  <Button onClick={() => handleDeleteComment(comment.id)}>삭제</Button>
+                </>
+              )}
+              <Button onClick={() => handleWriteNestedComment(comment.id)}>대댓글</Button>
+              {nestedCommentWriteMode.parentId === comment.id && (
+                <>
+                  <input
+                    value={nestedCommentWriteMode.content}
+                    onChange={(e) => setNestedCommentWriteMode({ ...nestedCommentWriteMode, content: e.target.value })}
+                  />
+                  <Button onClick={handleSaveNestedComment}>대댓글 저장</Button>
+                </>
+              )}
             </>
           )}
-          <Button onClick={() => handleWriteNestedComment(comment.id)}>대댓글</Button>
-          {nestedCommentWriteMode.parentId === comment.id && (
-            <>
-              <input
-                value={nestedCommentWriteMode.content}
-                onChange={(e) => setNestedCommentWriteMode({ ...nestedCommentWriteMode, content: e.target.value })}
-              />
-              <Button onClick={handleSaveNestedComment}>대댓글 저장</Button>
-            </>
-          )}
+          {/* 자식 댓글을 항상 렌더링 */}
           {comment.replies.length > 0 && renderComments(comment.replies)}
         </div>
       );
