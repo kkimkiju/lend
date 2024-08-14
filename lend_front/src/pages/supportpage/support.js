@@ -62,17 +62,35 @@ export default function Support() {
   // 페이지 번호 버튼 생성
   const renderPageButtons = () => {
     const buttons = [];
-    for (let i = 1; i <= totalPages; i++) {
+    const maxButtons = 5; // 표시할 버튼 수
+  
+    // 현재 페이지가 중앙에 오도록 계산
+    let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+    let endPage = startPage + maxButtons - 1;
+  
+    // 페이지 범위를 벗어나면 조정
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxButtons + 1);
+    }
+  
+    // 5개의 버튼을 기본으로 생성
+    for (let i = 0; i < maxButtons; i++) {
+      const pageNumber = startPage + i;
+      const isOutOfRange = pageNumber < 1 || pageNumber > totalPages;
+  
       buttons.push(
         <PageButton
           key={i}
-          onClick={() => handlePageChange(i)}
-          active={i === currentPage}
+          onClick={() => handlePageChange(pageNumber)}
+          active={!isOutOfRange && pageNumber === currentPage}
+          disabled={isOutOfRange} // 페이지 범위 밖의 버튼 비활성화
         >
-          {i}
+          {isOutOfRange ? "" : pageNumber}
         </PageButton>
       );
     }
+  
     return buttons;
   };
   // 세부 게시글 조회 코드
@@ -178,15 +196,15 @@ export default function Support() {
         {questionBoard && (
           <>
             <ButtonBox>
-              <Button className="writepost" onClick={handleWriteMode}>질문하기</Button>
+              <Button className="writepost" onClick={handleWriteMode}>✒️ 질문하기</Button>
             </ButtonBox>
-            <Box className="boardArea">
+            <Box >
               <Item >
                 <TitleOfPost><div>번호</div><div>제목</div><div>{"댓글"}</div><div>작성자</div><div>작성일</div><div>답변처리</div></TitleOfPost>
                 
                 {questionList.map((question, index) => (
                   <div key={question.id}>
-                    <ListOfPost onClick={() => handleOpenPost(question.id)}>
+                    <ListOfPost className="boardArea" onClick={() => handleOpenPost(question.id)}>
                       <div>{(currentPage - 1) * pageSize + (index + 1)}</div>
                       <div>{question.title}</div>
                       <div>{question.commentList ? question.commentList.length : "" }</div>
@@ -202,7 +220,7 @@ export default function Support() {
                 ))}
               </Item>
             </Box>
-            <ButtonBox>
+            <PageButtonBox>
               <PageButton
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -210,13 +228,13 @@ export default function Support() {
                 {"<"}
               </PageButton>
               {renderPageButtons()}
-              <Button
+              <PageButton
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
               >
                 {">"}
-              </Button>
-            </ButtonBox>
+              </PageButton>
+            </PageButtonBox>
           </>
         )}
         {detailedPost && (
@@ -247,10 +265,11 @@ export default function Support() {
                 <div className="content">{currentPost.content}</div>
               )}
               {isOwner && (
-                <ButtonBox>
-                  <button onClick={handleEditPost}>수정</button>
-                  <button onClick={handleSavePost} disabled={!editMode}>저장</button>
-                  <button onClick={handleDeletePost}>삭제</button>
+                <ButtonBox className="editpost">
+                  {editMode
+                  ? (<EditPostButton className="editpost" onClick={handleSavePost} disabled={!editMode}>저장</EditPostButton>)
+                  : (<EditPostButton className="editpost" onClick={handleEditPost}>수정</EditPostButton>) }
+                  <EditPostButton className="editpost" onClick={handleDeletePost}>삭제</EditPostButton>
                 </ButtonBox>
               )}
               <CommentComponent currentPostId = {currentPostId}/>
@@ -303,30 +322,59 @@ const SearchInput = styled.input`
 const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: center;
   width: auto;
-  height: 3vh;
-  margin-bottom: 20px;
+  height: auto;
+  :hover{
+    background-color: #DDD;
+  }
+  >.writepost { // 질문하기 글작성 버튼
+    float: right;
+    white-space: nowrap;
+    margin-left: 800px;
+    padding: 0 1vw;
+  }
+  >.editpost { // 글 수정 관련 버튼
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
 `;
 const Button = styled.button`
   width: auto;
   height: auto;
   border: 0;
-  background-color: transparent;
-  transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
   border-radius: 1vw;
-  font-size: 30px;
-  margin: 2vw 5vw;
-  .writepost {
-    width: 100%;
-    float: right;
-    margin-left: 50vw;
-    background-color: blue;
-  }
+  white-space: nowrap;
+  font-size: 20px;
+  background-color: white;
+  margin: 10px 100px;
 `;
+const EditPostButton = styled.button`
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 1vw;
+  white-space: nowrap;
+  font-size: 20px;
+  background-color: white;
+  margin: 0 5px;
+  padding: 2px 20px;
+`
+const PageButtonBox = styled.div`
+`
 const PageButton = styled(Button)`
-height: 5vh;
-  background-color: ${({ active }) => (active ? "#ddd" : "#f5f5f5")};
+  border-radius: 10vw;
+  background-color: ${(props) => (props.active ? "#29c555" : "#fff")};
+  color: ${(props) => (props.active ? "#fff" : props.disabled ? "#000" : "#29c555")};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
+  opacity: ${(props) => (props.disabled ? "0.6" : "1")};
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+  margin: 0 5px;
+  padding: 8px 16px;
+  &:hover {
+    background-color: ${(props) => (props.active ? "#0056b3" : "#e9ecef")};
+  }
 `;
 const Box = styled.div`
   width: 60vw;
@@ -334,9 +382,6 @@ const Box = styled.div`
 
   flex-direction: row;
   justify-content: center;
-  .boardArea{
-    background-color: aqua;
-  }
 `;
 const ListItem = styled.div`
   display: flex;
@@ -358,7 +403,12 @@ const Item = styled.div`
     min-height: 300px;
     white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
   }
-
+  .boardArea:hover{
+    background-color: rgba(50,250,100,0.1);
+  }
+  .editpost {
+    justify-content: flex-end;
+  }
 `;
 const DropDownButton = styled.button`
   border: 0;
@@ -437,8 +487,5 @@ const ListOfPost = styled.div`
   & div:nth-child(3){ // 댓글수 부분
     width: 2vw;
     text-align: left;
-  }
-  :hover{
-    background-color: #DDD;
   }
 `

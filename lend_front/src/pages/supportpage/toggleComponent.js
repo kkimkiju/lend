@@ -21,23 +21,21 @@ export const Toggle = ({switchState, setSwitchState}) => {
       </ToggleContainer>
       {/* Desc 컴포넌트를 활용*/}
       {/* Toggle Switch가 ON인 상태일 경우에 Desc 컴포넌트 내부의 텍스트를 'Toggle Switch ON'으로, 그렇지 않은 경우 'Toggle Switch OFF'. 조건부 렌더링을 활용. */}
-      {switchState === false ?
-      <Desc><div className='OFF'>공개글</div></Desc> :
-      <Desc><div className='ON'></div>비밀글</Desc>}
+      {switchState === false
+      ? <Desc><div className='OFF'>공개글</div></Desc>
+      : <Desc><div className='ON'></div>비밀글</Desc>}
     </Body>
   );
 };
 const Body = styled.div`
+display: flex;
+width: auto;
+height: auto;
 `
 const ToggleContainer = styled.div`
   position: relative;
-  display: flex;
-  margin-top: 8rem;
-  width: 5vw;
-  left: 30%;
   cursor: pointer;
-  background-color: aqua;
-
+  margin: 0 5px;
   > .toggle-container {
     width: 50px;
     height: 24px;
@@ -48,7 +46,6 @@ const ToggleContainer = styled.div`
     background-color: rgb(0,200,102);
     transition : 0.5s
   }
-
   > .toggle-circle {
     position: absolute;
     top: 1px;
@@ -64,10 +61,8 @@ const ToggleContainer = styled.div`
     transition : 0.5s
   }
 `;
-
 const Desc = styled.div`
   //설명 부분의 CSS를 구현
   text-align: center;
-  margin: 20px;
 `;
 

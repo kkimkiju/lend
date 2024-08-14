@@ -12,27 +12,35 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
   const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
 
   const savePost = async () => {
-    const questionDto = {
-      title: title,
-      content: content,
-      isPrivate: switchState,
-      memberReqDto: {
-        email: localStorage.getItem("email"),
-      },
-    };
-    try {
-      const response = await AxiosApi.createQuestion(questionDto);
-      if (response.data) {
-        console.log(response.data);
-        setWriteMode(false);
-        showQuestionBoard(true);
-        showFAQBoard(false);
-        alert("질문이 등록 되었습니다.");
-        navigate("/lend/support");
+    // 입력값 유효성
+    if(!title) {
+      alert("제목을 입력하세요.")
+    } else if(!content) {
+      alert("내용을 입력하세요.")
+    } else {
+      const questionDto = {
+        title: title,
+        content: content,
+        isPrivate: switchState,
+        memberReqDto: {
+          email: localStorage.getItem("email"),
+        },
+      };
+      try {
+        const response = await AxiosApi.createQuestion(questionDto);
+        if (response.data) {
+          console.log(response.data);
+          setWriteMode(false);
+          showQuestionBoard(true);
+          showFAQBoard(false);
+          alert("질문이 등록 되었습니다.");
+          navigate("/lend/support");
+        }
+      } catch (error) {
+        console.error(error.response);
       }
-    } catch (error) {
-      console.error(error.response);
     }
+    
   };
 
   return (
@@ -42,7 +50,6 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
           {writeMode && (
             <>
               <Item>
-              <Toggle switchState={switchState} setSwitchState={setSwitchState} />
                 <input
                   className="TitleInput"
                   type="text"
@@ -50,15 +57,17 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
+                <Toggle switchState={switchState} setSwitchState={setSwitchState} />
                 <textarea
                   className="ContentInput"
                   type="text"
-                  maxlength="10"
+                  placeholder="500자 이내로 내용을 입력하세요."
+                  maxlength="500"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
                 <ButtonBox>
-                  <button onClick={() => savePost()}>등록</button>
+                  <Button onClick={() => savePost()}>등록</Button>
                 </ButtonBox>
               </Item>
             </>
@@ -72,7 +81,6 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
 const Body = styled.div`
   width: auto;
   height: auto;
-  margin-top: 10vh;
 `;
 const Container = styled.div`
   display: flex;
@@ -85,13 +93,27 @@ width: 100vw;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  box-sizing: border-box;
 `;
 const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: flex-end;
+  :hover{
+    background-color: #29c555;
+  }
 `;
 const Button = styled.button`
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 5vw;
+  white-space: nowrap;
+  font-size: 20px;
+  color: white;
+  background-color: #DDD;
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
+  padding: 5px 20px;
 `;
 
 
@@ -99,7 +121,6 @@ const Item = styled.div`
   display: flex;
   flex-direction: column;
   height: 50vh;
-  background-color: blueviolet;
   display: ${(props)=> props.writeMode && {
     flex : "none"
   }};

@@ -159,7 +159,6 @@ export default function CommentComponent({ currentPostId }) {
   const renderComments = (comments) => {
     return comments.map((comment) => {
       const isOwner = localStorage.getItem("email") === comment.memberReqDto.email;
-      
       return (
         <div key={comment.id} style={{ marginLeft: comment.parentId ? "20px" : "0" }}>
           <div>{comment.memberReqDto.name}</div>
@@ -175,6 +174,7 @@ export default function CommentComponent({ currentPostId }) {
               ) : (
                 <div style={{whiteSpace: "pre-wrap"}}>{comment.content}</div>
               )}
+              <CommentButtonBox>
               {isOwner && (
                 <>
                   {editState.id === comment.id ? (
@@ -185,14 +185,15 @@ export default function CommentComponent({ currentPostId }) {
                   <Button onClick={() => handleDeleteComment(comment.id)}>삭제</Button>
                 </>
               )}
-              <Button onClick={() => handleWriteNestedComment(comment.id)}>대댓글</Button>
+              <Button onClick={() => handleWriteNestedComment(comment.id)}>댓글</Button>
+              </CommentButtonBox>
               {nestedCommentWriteMode.parentId === comment.id && (
                 <>
                   <textarea
                     value={nestedCommentWriteMode.content}
                     onChange={(e) => setNestedCommentWriteMode({ ...nestedCommentWriteMode, content: e.target.value })}
                   />
-                  <Button onClick={handleSaveNestedComment}>대댓글 저장</Button>
+                  <CommentButtonBox><Button onClick={handleSaveNestedComment}>댓글 저장</Button></CommentButtonBox>
                 </>
               )}
             </>
@@ -218,7 +219,7 @@ export default function CommentComponent({ currentPostId }) {
                   value={contentOfComment}
                   onChange={(e) => setContentOfComment(e.target.value)}
                 />
-                <Button onClick={handleSaveCommnet}>등록</Button>
+                <ButtonBox><Button onClick={handleSaveCommnet}>등록</Button></ButtonBox>
               </Box>
             </Item>
           </Box>
@@ -239,12 +240,44 @@ const Container = styled.div`
   align-items: center;
 `;
 const Box = styled.div`
+border-top: 1px solid gray;
   display: flex;
   flex-direction: column;
   width: 100%;
+  > textarea{
+    margin: 20px 50px;
+  }
+`;
+const ButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding-bottom: 10px;
+  :hover{
+    background-color: #29c555;
+  }
+`;
+const CommentButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin: 5px 0;
+  :hover{
+    background-color: #29c555;
+  }
 `;
 const Button = styled.button`
-  transition: background-color 0.3s ease;
+  width: 10%;
+  height: auto;
+  border: 0;
+  border-radius: 5vw;
+  white-space: nowrap;
+  font-size: 15px;
+  color: white;
+  background-color: #DDD;
+  transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
+  margin: 0 10px;
+  padding: 5px 0;
 `;
 const Item = styled.div`
   flex-direction: column;
