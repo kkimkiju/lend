@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import SimpleSlider from "../../components/SimpleSlider";
-import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
 import LoaninfoList from "./loaninfoList";
 import Paging from "./paging";
 import Detail from "./loanDetail";
+import Suggestmodal from "./suggestmodal";
 
 const Container = styled.div`
   display: flex;
@@ -17,6 +17,7 @@ const Adbox = styled.div`
 const Sett = styled.div`
   margin: 10px;
   display: flex;
+  position: relative;
 `;
 const CategorySelect = styled.select`
   padding: 10px;
@@ -73,6 +74,10 @@ const Categbut = styled.button`
   color: white;
   cursor: pointer;
 `;
+const Sububox = styled.div`
+  position: absolute;
+  right: 1px;
+`;
 
 const Loaninfo = () => {
   const [loanitem, setLoanitem] = useState([]);
@@ -82,6 +87,14 @@ const Loaninfo = () => {
   const [deOpen, setDeOpen] = useState(false);
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [categorybu, setCategorybu] = useState("일반신용대출");
+  const [suggestopen, setSuggestopen] = useState(false);
+
+  const sugopen = (e) => {
+    setSuggestopen(true);
+  };
+  const sugclose = () => {
+    setSuggestopen(false);
+  };
 
   const onClickde = (loan) => {
     setSelectedLoan(loan);
@@ -170,6 +183,9 @@ const Loaninfo = () => {
         >
           서민금융진흥원대출
         </Categbut>
+        <Sububox>
+          <Categbut onClick={sugopen}>내게 맞는 대출 상품 추천 받기</Categbut>
+        </Sububox>
       </Sett>
       <Loanbox>
         <Loantit>
@@ -193,6 +209,7 @@ const Loaninfo = () => {
         loan={selectedLoan}
         categorybu={categorybu}
       />
+      <Suggestmodal open={suggestopen} close={sugclose} />
     </Container>
   );
 };

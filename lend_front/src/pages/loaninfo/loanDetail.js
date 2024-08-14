@@ -225,6 +225,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
         })
           .then((response) => response.json())
           .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
             setSimilarLoans(data);
           })
           .catch((error) => {
@@ -245,6 +246,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
         })
           .then((response) => response.json())
           .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
             setSimilarLoans(data);
           })
           .catch((error) => {
@@ -265,6 +267,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
         })
           .then((response) => response.json())
           .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
             setSimilarLoans(data);
           })
           .catch((error) => {
@@ -273,24 +276,26 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
       }
     } else {
       if (open && loan) {
-        fetch(`http://localhost:5000/api/get_peoplefinloan`, {
+        fetch(`http://localhost:5000/api/recommend_loans`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            number: loan._source?.["순번"],
-            category: categorybu,
+            loan_number: loan._source?.["순번"],
+            category: categorybu, // 이 부분은 서버에서 사용하는지 확인해야 합니다.
           }),
         })
           .then((response) => response.json())
           .then((data) => {
-            setSimilarLoans(data);
+            console.log("서버에서 받은 데이터:", data);
+            setSimilarLoans(data); // 데이터가 예상한 구조인지 확인한 후 이 부분을 업데이트하세요.
           })
           .catch((error) => {
             console.error("추천 데이터 로딩 실패:", error);
           });
-        console.log("aaaaaaaaaa", loan._source?.["순번"]);
+
+        console.log("보내는 loan_number:", loan._source?.["순번"]);
       }
     }
   }, [open, loan, categorybu]);

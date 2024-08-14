@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import styled from "styled-components";
 
 const DetLi = styled.li`
@@ -15,7 +14,7 @@ const DetLi = styled.li`
 
 const TiContain = styled.div`
   align-items: center;
-  margin: 0px 0% 9px 0%;
+  margin: 0px 22% 9px 12%;
   text-align: center;
   @media (max-width: 500px) {
     margin-right: 5%;
@@ -29,21 +28,19 @@ const TiContain = styled.div`
 
 const DetTitle = styled.h3`
   width: 450px;
-  color: white;
+  color: black;
   margin: 0px 4% 0px 0%;
-`;
-
-const Detdate = styled.p`
-  color: white;
-  font-size: 13px;
-  text-align: center;
-  width: 180px;
+  @media (max-width: 500px) {
+    margin-right: 17%;
+  }
   @media (max-width: 429px) {
-    font-size: 11px;
+    margin-right: 14%;
+    font-size: 17px;
   }
 `;
+
 const Detamo = styled.p`
-  color: white;
+  color: #444;
   font-size: 13px;
   text-align: center;
   @media (max-width: 429px) {
@@ -51,10 +48,19 @@ const Detamo = styled.p`
   }
 `;
 
-const SimilListitem = ({ loanitem, onClickde }) => {
+const Detdate = styled.p`
+  color: #777;
+  font-size: 13px;
+  text-align: center;
+  width: 180px;
+  @media (max-width: 429px) {
+    font-size: 11px;
+  }
+`;
+
+const SuggestListitem = ({ loanitem, onClickde }) => {
   if (!loanitem) {
-    console.warn("Invalid loanitem structure:", loanitem);
-    return null;
+    return <p>No loan item data available</p>;
   }
 
   const truncateTitle = (title) => {
@@ -62,27 +68,19 @@ const SimilListitem = ({ loanitem, onClickde }) => {
     return title.length > 25 ? title.substring(0, 25) + "..." : title;
   };
 
-  // Use the property directly from loanitem
-  const loanTitle = loanitem["금융 상품명"];
-  const loanValue = loanitem["금융회사 명"];
-  const rate = loanitem["평균 금리"];
-  const loanRate = loanitem["전처리 이자율"];
-  const loanAmount = loanitem["전처리 대출 한도"];
-  const loanPeriod = loanitem["전처리 최대 상환 기간"];
-
   return (
     <DetLi onClick={() => onClickde(loanitem)}>
       <TiContain>
         <Detdate>
-          {loanValue
-            ? truncateTitle(loanValue.toString())
-            : "최대상환기간" + truncateTitle(loanPeriod) + "년"}
+          {loanitem["금융회사 명"] ||
+            "데이터를 불러오고 있습니다. 기다려주세요"}
         </Detdate>
       </TiContain>
-      <DetTitle>{truncateTitle(loanTitle)}</DetTitle>
-      <Detamo>{rate ? truncateTitle(rate) : truncateTitle(loanRate)}</Detamo>
+      <DetTitle>{truncateTitle(loanitem["금융 상품명"])}</DetTitle>
+      <Detamo>
+        {loanitem["대출종류명"] || "데이터를 불러오고 있습니다. 기다려주세요"}
+      </Detamo>
     </DetLi>
   );
 };
-
-export default SimilListitem;
+export default SuggestListitem;
