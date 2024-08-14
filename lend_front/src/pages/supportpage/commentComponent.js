@@ -173,7 +173,7 @@ export default function CommentComponent({ currentPostId }) {
                   onChange={(e) => setEditState({ ...editState, content: e.target.value })}
                 />
               ) : (
-                <div>{comment.content}</div>
+                <div style={{whiteSpace: "pre-wrap"}}>{comment.content}</div>
               )}
               {isOwner && (
                 <>
@@ -188,7 +188,7 @@ export default function CommentComponent({ currentPostId }) {
               <Button onClick={() => handleWriteNestedComment(comment.id)}>대댓글</Button>
               {nestedCommentWriteMode.parentId === comment.id && (
                 <>
-                  <input
+                  <textarea
                     value={nestedCommentWriteMode.content}
                     onChange={(e) => setNestedCommentWriteMode({ ...nestedCommentWriteMode, content: e.target.value })}
                   />
@@ -212,7 +212,7 @@ export default function CommentComponent({ currentPostId }) {
             <Item>
               {renderComments(commentList)}
               <Box>
-                <input
+                <textarea
                   type="text"
                   placeholder="댓글을 입력하세요."
                   value={contentOfComment}

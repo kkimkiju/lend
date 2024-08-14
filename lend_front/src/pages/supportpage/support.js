@@ -37,26 +37,23 @@ export default function Support() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1); // 초기값 1페이지
   const pageSize = 10; // 페이지당 글 수
-
-  const fetchQuestionList = async (page) => {
-    try {
-      const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
-      if (response.data && Array.isArray(response.data.boards)) {
-        setQuestionList(response.data.boards);
-        setTotalPages(response.data.totalPages);
-      } else {
-        console.error("Unexpected response format", response.data);
+  useEffect(() => {
+    const fetchQuestionList = async (page) => {
+      try {
+        const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
+        if (response.data && Array.isArray(response.data.boards)) {
+          setQuestionList(response.data.boards);
+          setTotalPages(response.data.totalPages);
+        } else {
+          console.error("Unexpected response format", response.data);
+        }
+      } catch (error) {
+        console.log(error);
+        console.log(error.response);
       }
-    } catch (error) {
-      console.log(error);
-      console.log(error.response);
-    }
-  };
-  //게시글 갱신
-  useEffect(()=> {
+    };
     fetchQuestionList(currentPage);
-  }, [writeMode])
-
+  }, [currentPage, writeMode]);
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
@@ -155,7 +152,6 @@ export default function Support() {
         showDetailedPost(false);
         showQuestionBoard(true);
         // 게시글 목록 갱신
-        fetchQuestionList(currentPage);
       }
     } catch (error) {
       console.log(currentPost.id);
@@ -184,8 +180,8 @@ export default function Support() {
             <ButtonBox>
               <Button className="writepost" onClick={handleWriteMode}>질문하기</Button>
             </ButtonBox>
-            <Box>
-              <Item className="boardArea">
+            <Box className="boardArea">
+              <Item >
                 <TitleOfPost><div>번호</div><div>제목</div><div>{"댓글"}</div><div>작성자</div><div>작성일</div><div>답변처리</div></TitleOfPost>
                 
                 {questionList.map((question, index) => (
@@ -226,34 +222,37 @@ export default function Support() {
         {detailedPost && (
           <Box>
             <Item>
-            {isOwner && (
-                <>
-                  <button onClick={handleEditPost}>수정</button>
-                  <button onClick={handleSavePost} disabled={!editMode}>저장</button>
-                  <button onClick={handleDeletePost}>삭제</button>
-                </>
-              )}
               {editMode ? (
                 <input
+                  className="title"
                   type="text"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
                 />
               ) : (
-                <div>제목: {currentPost.title}</div>
+                <div className="title">{currentPost.title}</div>
               )}
-              <div>작성자: {currentPost.memberReqDto.name}</div>
-              <div>작성일: {currentPost.createTime}</div>
-              <div>수정일: {currentPost.modifyTime}</div>
+              <PostInfoBox>
+              <div>작성자</div><div>{currentPost.memberReqDto.name}</div>
+              <div>작성일</div><div>{currentPost.createTime}</div>
+              <div>수정일</div><div>{currentPost.modifyTime}</div>
+              </PostInfoBox>
               {editMode ? (
                 <textarea
+                  className="content"
                   value={editedContent}
                   onChange={(e) => setEditedContent(e.target.value)}
                 />
               ) : (
-                <div className="content">내용: {currentPost.content}</div>
+                <div className="content">{currentPost.content}</div>
               )}
-              <div>댓글조회 등록 수정 삭제 대댓글 등록 수정 삭제</div>
+              {isOwner && (
+                <ButtonBox>
+                  <button onClick={handleEditPost}>수정</button>
+                  <button onClick={handleSavePost} disabled={!editMode}>저장</button>
+                  <button onClick={handleDeletePost}>삭제</button>
+                </ButtonBox>
+              )}
               <CommentComponent currentPostId = {currentPostId}/>
             </Item>
           </Box>
@@ -304,22 +303,25 @@ const SearchInput = styled.input`
 const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  width: 90vw;
-  height: 7vh;
+  justify-content: flex-end;
+  width: auto;
+  height: 3vh;
+  margin-bottom: 20px;
 `;
 const Button = styled.button`
-  width: 20vw;
+  width: auto;
   height: auto;
   border: 0;
   background-color: transparent;
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
   border-radius: 1vw;
-  font-size: 2.5vw;
+  font-size: 30px;
   margin: 2vw 5vw;
   .writepost {
+    width: 100%;
     float: right;
     margin-left: 50vw;
+    background-color: blue;
   }
 `;
 const PageButton = styled(Button)`
@@ -327,8 +329,14 @@ height: 5vh;
   background-color: ${({ active }) => (active ? "#ddd" : "#f5f5f5")};
 `;
 const Box = styled.div`
-  display: flex;
+  width: 60vw;
+  min-height: 550px;
+
   flex-direction: row;
+  justify-content: center;
+  .boardArea{
+    background-color: aqua;
+  }
 `;
 const ListItem = styled.div`
   display: flex;
@@ -340,13 +348,17 @@ const Item = styled.div`
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
-  .boardArea{
-    height: 300px;
-    background-color: aqua;
+  .title{
+    font-size: 40px;
+    border-left: 5px solid #29c555;
+    padding: 0 15px;
   }
   .content{
+    font-size: 30px;
+    min-height: 300px;
     white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
   }
+
 `;
 const DropDownButton = styled.button`
   border: 0;
@@ -356,7 +368,23 @@ const DropDownButton = styled.button`
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
 `;
 
-
+const PostInfoBox =styled.div`
+display: flex;
+align-items: center;
+white-space: nowrap;
+color: gray;
+margin: 20px 0;
+& div {
+  margin: 0 2px;
+  font-size: 15px;
+}
+  & div:nth-child(odd){
+    color: white;
+    border-radius: 5vw;
+    background-color: #29c555;
+    padding: 2px 10px;
+  }
+`
 const TitleOfPost =styled.div`
   width: 60vw;
   height: 3vw;
