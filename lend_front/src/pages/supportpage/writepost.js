@@ -22,7 +22,7 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
         title: title,
         content: content,
         isPrivate: switchState,
-        memberReqDto: {
+        memberResDto: {
           email: localStorage.getItem("email"),
         },
       };

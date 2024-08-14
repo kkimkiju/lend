@@ -29,10 +29,10 @@ public class CommentService {
     public CommentDto createComment(CommentDto commentDto) { // questionId, email, parentId를 확인
         Question question = questionRepository.findById(commentDto.getQuestionId())
                 .orElseThrow(() -> new EntityNotFoundException("Question not found"));
-        log.info("Searching for user with commenterId: {}", commentDto.getMemberReqDto().getEmail());
+        log.info("Searching for user with commenterId: {}", commentDto.getMemberResDto().getEmail());
 
-        Member commenter = memberRepository.findByEmail(commentDto.getMemberReqDto().getEmail())
-                .orElseThrow(() -> new EntityNotFoundException("User with ID " + commentDto.getMemberReqDto().getEmail() + " not found"));
+        Member commenter = memberRepository.findByEmail(commentDto.getMemberResDto().getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("User with ID " + commentDto.getMemberResDto().getEmail() + " not found"));
 
         Comment parent = commentDto.getParentId() != null ? commentRepository.findById(commentDto.getParentId())
                 .orElseThrow(() -> new EntityNotFoundException("Parent comment not found")) : null;

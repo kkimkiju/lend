@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.CommentDto;
 import com.example.demo.dto.MemberReqDto;
+import com.example.demo.dto.MemberResDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.Question;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor // 생성자 생성
@@ -30,7 +33,7 @@ public class QuestionService {
     // 게시글 등록
     @Transactional
     public boolean createQuestion(QuestionDto questionDto) {
-        Member member = memberRepository.findByEmail(questionDto.getMemberReqDto().getEmail())
+        Member member = memberRepository.findByEmail(questionDto.getMemberResDto().getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Author not found"));
         try {
             Question question = new Question();
@@ -51,7 +54,7 @@ public class QuestionService {
             Question question = questionRepository.findById(questionDto.getId()).orElseThrow(
                     () -> new RuntimeException("해당 게시글이 존재하지 않습니다.")
             );
-            Member member = memberRepository.findByEmail(questionDto.getMemberReqDto().getEmail()).orElseThrow(
+            Member member = memberRepository.findByEmail(questionDto.getMemberResDto().getEmail()).orElseThrow(
                     () -> new RuntimeException("해당 회원이 존재하지 않습니다.")
             );
             question.setTitle(questionDto.getTitle());
@@ -132,21 +135,23 @@ public class QuestionService {
         return listDto;
     }
     // 게시글 엔티티를 DTO로 변환
-    private QuestionDto convertEntityToDto(Question question) {
+    public QuestionDto convertEntityToDto(Question question) {
         QuestionDto dto = new QuestionDto();
         dto.setId(question.getId());
         dto.setTitle(question.getTitle());
         dto.setContent(question.getContent());
         dto.setIsPrivate(question.getIsPrivate());
-        dto.setMemberReqDto(convertUserToDto(question.getMember()));
+        dto.setMemberResDto(convertUserToDto(question.getMember()));
         dto.setCreateTime(question.getCreateTime());
         dto.setModifyTime(question.getModifyTime());
+        dto.setCommentList(question.getCommentList().stream().map(CommentDto::convertEntityToDto).collect(Collectors.toList()));
         return dto;
     }
-    private MemberReqDto convertUserToDto(Member member) {
-        MemberReqDto dto = new MemberReqDto();
+    private MemberResDto convertUserToDto(Member member) {
+        MemberResDto dto = new MemberResDto();
         dto.setEmail(member.getEmail());
         dto.setName(member.getName());
+        dto.setAuthority(member.getAuthority());
         // 추가 필드들 설정
         return dto;
     }

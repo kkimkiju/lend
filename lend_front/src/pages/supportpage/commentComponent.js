@@ -57,7 +57,7 @@ export default function CommentComponent({ currentPostId }) {
       questionId: currentPostId,
       id: editState.id,
       content: editState.content,
-      memberReqDto: {
+      memberResDto: {
         email: localStorage.getItem("email"),
       },
     };
@@ -85,7 +85,7 @@ export default function CommentComponent({ currentPostId }) {
     const commentDto = {
       questionId: currentPostId,
       content: contentOfComment,
-      memberReqDto: {
+      memberResDto: {
         email: localStorage.getItem("email"),
       },
     };
@@ -110,7 +110,7 @@ export default function CommentComponent({ currentPostId }) {
       questionId: currentPostId,
       parentId: nestedCommentWriteMode.parentId,
       content: nestedCommentWriteMode.content,
-      memberReqDto: {
+      memberResDto: {
         email: localStorage.getItem("email"),
       },
     };
@@ -132,7 +132,7 @@ export default function CommentComponent({ currentPostId }) {
       id: id,
       content: "삭제된 댓글 입니다.",
       deletedStatus: true,
-      memberReqDto: {
+      memberResDto: {
         email: localStorage.getItem("email"),
       },
     };
@@ -158,10 +158,10 @@ export default function CommentComponent({ currentPostId }) {
   // 계층형 댓글 렌더링
   const renderComments = (comments) => {
     return comments.map((comment) => {
-      const isOwner = localStorage.getItem("email") === comment.memberReqDto.email;
+      const isOwner = localStorage.getItem("email") === comment.memberResDto.email;
       return (
         <div key={comment.id} style={{ marginLeft: comment.parentId ? "20px" : "0" }}>
-          <div>{comment.memberReqDto.name}</div>
+          <div>{comment.memberResDto.name}</div>
           {comment.deletedStatus ? (
             <div>삭제된 댓글입니다.</div>
           ) : (

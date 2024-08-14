@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.constant.Authority;
 import com.example.demo.entity.Member;
 import lombok.*;
 
@@ -13,6 +14,7 @@ public class MemberResDto {
     private String password;
     private String name;
     private String identityNumber;
+    private Authority authority;
 
 
     public static MemberResDto of(Member member) {
@@ -21,6 +23,7 @@ public class MemberResDto {
                 .name(member.getName())
                 .password(member.getPassword())
                 .identityNumber(member.getIdentityNumber())
+                .authority(member.getAuthority())
 //                .nickname(member.getNickname())
 //                .profileImgPath(member.getProfileImgPath())
 //                .skill(member.getSkill())

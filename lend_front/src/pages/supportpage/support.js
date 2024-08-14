@@ -6,12 +6,14 @@ import ChatRoomCreate from "../chatting/ChatRoomCreate";
 import AxiosApi from "../../axios/AxiosApi";
 import WritePost from "./writepost";
 import CommentComponent from "./commentComponent";
+import { Toggle } from "./toggleComponent";
 
 export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(true);
   const [FAQBoard, showFAQBoard] = useState(false);
   const [writeMode, setWriteMode] = useState(false);
   const [answerState, setAnswerState] = useState(false); //관리자 답변 여부 관리
+  const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
   const BoardHandler = (number) => () => {
     if (number === 1) {
       showQuestionBoard(true);
@@ -138,7 +140,8 @@ export default function Support() {
       id: currentPost.id,
       title: editedTitle,
       content: editedContent,
-      memberReqDto: {
+      isPrivate: switchState,
+      memberResDto: {
         email: localStorage.getItem("email"),
       },
     };
@@ -187,7 +190,7 @@ export default function Support() {
     }
   };
   // 현재 로그인된 사용자의 이메일과 글 작성자의 이메일 비교  + 관리자 계정인지 확인 기능 추가 필요
-  const isOwner = localStorage.getItem("email") === currentPost?.memberReqDto?.email;
+  const isOwner = localStorage.getItem("email") === currentPost?.memberResDto?.email;
   return (
     <Body>
       <Container>
@@ -215,12 +218,12 @@ export default function Support() {
                   <div key={question.id}>
                     <ListOfPost className="boardArea" onClick={() => handleOpenPost(question.id)}>
                       <div>{(currentPage - 1) * pageSize + (index + 1)}</div>
-                      <div>{question.title}</div>
-                      <div>{question.commentList ? question.commentList.length : "" }</div>
-                      <div>{question.memberReqDto.name}</div> 
+                      <div>{question.title}{question.isPrivate ? " 🔒" : ""}</div>
+                      <div>{question.commentList == 0 ? "" : "(+" + question.commentList.length +")"}</div>
+                      <div>{question.memberResDto.name}</div> 
                       <div>{question.createTime.slice(0, 11)}</div>
                       {/* 관리자 계정 답변이 하나라도 있으면 완료처리 */}
-                      <div>{question.commentList && question.commentList.some(comment =>comment?.member?.authority === "ROLE_ADMIN")
+                      <div>{question.commentList && question.commentList.some(comment =>comment?.memberResDto?.authority === "ROLE_ADMIN")
                         ? "완료"
                         : "미처리"}
                       </div>
@@ -262,9 +265,10 @@ export default function Support() {
                 <div className="title">{currentPost.title}</div>
               )}
               <PostInfoBox>
-              <div>작성자</div><div>{currentPost.memberReqDto.name}</div>
+              <div>작성자</div><div>{currentPost.memberResDto.name}</div>
               <div>작성일</div><div>{currentPost.createTime}</div>
               <div>수정일</div><div>{currentPost.modifyTime}</div>
+              <Toggle switchState={switchState} setSwitchState={setSwitchState} />
               </PostInfoBox>
               {editMode ? (
                 <textarea
