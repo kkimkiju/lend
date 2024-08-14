@@ -37,7 +37,7 @@ export default function Support() {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1); // 초기값 1페이지
   const pageSize = 10; // 페이지당 글 수
-  useEffect(() => {
+
     const fetchQuestionList = async (page) => {
       try {
         const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
@@ -52,9 +52,11 @@ export default function Support() {
         console.log(error.response);
       }
     };
+    useEffect(() => {
     fetchQuestionList(currentPage);
   }, [currentPage, writeMode]);
   const handlePageChange = (page) => {
+    console.log("questioninfo:", questionList)
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
@@ -140,21 +142,28 @@ export default function Support() {
         email: localStorage.getItem("email"),
       },
     };
-    try {
-      const response = await AxiosApi.modifyQuestion(questionDto);
-      if (response.data) {
-        console.log(response.data);
-        setEditMode(false);
-        // 현재 게시글을 갱신
-        setCurrentPost({
-          ...currentPost,
-          title: editedTitle,
-          content: editedContent,
-          modifyTime: response.data.modifyTime,
-        });
+    // 입력값 유효성검사
+    if(!editedTitle){
+      alert("제목을 입력하세요")
+    } else if(!editedContent){
+      alert("내용을 입력하세요.")
+    } else {
+      try {
+        const response = await AxiosApi.modifyQuestion(questionDto);
+        if (response.data) {
+          console.log(response.data);
+          setEditMode(false);
+          // 현재 게시글을 갱신
+          setCurrentPost({
+            ...currentPost,
+            title: editedTitle,
+            content: editedContent,
+            modifyTime: response.data.modifyTime,
+          });
+        }
+      } catch (error) {
+        console.error(error.response);
       }
-    } catch (error) {
-      console.error(error.response);
     }
   };
 
@@ -170,6 +179,7 @@ export default function Support() {
         showDetailedPost(false);
         showQuestionBoard(true);
         // 게시글 목록 갱신
+        fetchQuestionList(currentPage);
       }
     } catch (error) {
       console.log(currentPost.id);
@@ -200,8 +210,7 @@ export default function Support() {
             </ButtonBox>
             <Box >
               <Item >
-                <TitleOfPost><div>번호</div><div>제목</div><div>{"댓글"}</div><div>작성자</div><div>작성일</div><div>답변처리</div></TitleOfPost>
-                
+                <TitleOfPost><div>번호</div><div>제목</div><div>{"댓글"}</div><div>작성자</div><div>작성일</div><div>답변 상태</div></TitleOfPost>
                 {questionList.map((question, index) => (
                   <div key={question.id}>
                     <ListOfPost className="boardArea" onClick={() => handleOpenPost(question.id)}>
@@ -244,6 +253,8 @@ export default function Support() {
                 <input
                   className="title"
                   type="text"
+                  placeholder="제목을 입력해주세요."
+                  maxlength="100"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
                 />
@@ -258,6 +269,8 @@ export default function Support() {
               {editMode ? (
                 <textarea
                   className="content"
+                  placeholder="500자 이내로 내용을 입력하세요."
+                  maxlength="500"
                   value={editedContent}
                   onChange={(e) => setEditedContent(e.target.value)}
                 />

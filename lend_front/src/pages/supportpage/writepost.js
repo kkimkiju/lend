@@ -12,7 +12,7 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
   const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
 
   const savePost = async () => {
-    // 입력값 유효성
+    // 입력값 유효성검사
     if(!title) {
       alert("제목을 입력하세요.")
     } else if(!content) {
@@ -34,6 +34,8 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
           showQuestionBoard(true);
           showFAQBoard(false);
           alert("질문이 등록 되었습니다.");
+          setTitle("")
+          setContent("")
           navigate("/lend/support");
         }
       } catch (error) {
@@ -54,6 +56,7 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
                   className="TitleInput"
                   type="text"
                   placeholder="제목을 입력해주세요."
+                  maxlength="100"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
