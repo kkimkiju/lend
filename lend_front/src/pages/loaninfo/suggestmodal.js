@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SuggestList from "./suggestList";
+import Simodal from "./simodal";
 
 const ModalStyle = styled.div`
   .modal {
@@ -29,6 +30,7 @@ const ModalStyle = styled.div`
     animation: modal-show 0.3s;
     overflow: hidden;
     position: relative;
+    overflow-y: auto;
 
     main {
       padding: 16px;
@@ -59,6 +61,17 @@ const ModalStyle = styled.div`
     to {
       opacity: 1;
     }
+  }
+  main::-webkit-scrollbar {
+    width: 8px; /* Make the scrollbar thinner */
+  }
+  main::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
+
+  main::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -131,7 +144,29 @@ const Suggestmodal = (props) => {
   const [age, setAge] = useState("");
   const [annincome, setAnnincome] = useState("");
   const [selectedsiLoan, setSelectedsiLoan] = useState("");
+  const [selectopen, setSelectopen] = useState(false);
 
+  const onClickde = (e) => {
+    setSelectopen(true);
+  };
+  const sugclose = () => {
+    setSelectopen(false);
+  };
+
+  const modalclose = () => {
+    setSelectedsiLoan("");
+    setCategory("");
+    setCscore("");
+    setJeonse("");
+    setLoanam("");
+    setMort("");
+    setPawn("");
+    setOccup("");
+    setRegion("");
+    setAge("");
+    setAnnincome("");
+    close();
+  };
   const ear = (e) => {
     setAnnincome(e.target.value);
   };
@@ -259,153 +294,26 @@ const Suggestmodal = (props) => {
   };
 
   return (
-    <ModalStyle>
-      <div className={open ? "openModal modal" : "modal"}>
-        {open && (
-          <section>
-            <CloseButton onClick={close}>&times;</CloseButton>
-            <main>
-              <CategorySelect
-                id="category"
-                value={category}
-                onChange={handleChange}
-              >
-                <option value="">대출 종류를 선택해주세요</option>
-                <option value="일반신용대출">일반신용대출</option>
-                <option value="전세자금대출">전세자금대출</option>
-                <option value="주택담보대출">주택담보대출</option>
-                <option value="서민금융진흥원대출">서민금융진흥원대출</option>
-              </CategorySelect>
+    <>
+      <ModalStyle>
+        <div className={open ? "openModal modal" : "modal"}>
+          {open && (
+            <section>
+              <CloseButton onClick={modalclose}>&times;</CloseButton>
+              <main>
+                <CategorySelect
+                  id="category"
+                  value={category}
+                  onChange={handleChange}
+                >
+                  <option value="">대출 종류를 선택해주세요</option>
+                  <option value="일반신용대출">일반신용대출</option>
+                  <option value="전세자금대출">전세자금대출</option>
+                  <option value="주택담보대출">주택담보대출</option>
+                  <option value="서민금융진흥원대출">서민금융진흥원대출</option>
+                </CategorySelect>
 
-              {category === "일반신용대출" && (
-                <Textbox>
-                  <Textinput
-                    placeholder="신용점수를 입력해 주세요(숫자만 입력해주세요)"
-                    onChange={csco}
-                  />
-                  <Atext>나이스 신용점수로 입력해주세요.</Atext>
-                </Textbox>
-              )}
-
-              {category === "전세자금대출" && (
-                <>
-                  <Textbox>
-                    <Textinput
-                      placeholder="전세가를 입력해주세요(숫자만 입력해주세요)"
-                      onChange={jeons}
-                    />
-                    <Atext>예시 1억= 100000000</Atext>
-                  </Textbox>
-                  <Textbox>
-                    <Textinput
-                      placeholder="원하시는 대출 금액을 입력해주세요(숫자만 입력해주세요)"
-                      onChange={amount}
-                    />
-                    <Atext>예시 1억= 100000000</Atext>
-                  </Textbox>
-                </>
-              )}
-
-              {category === "주택담보대출" && (
-                <>
-                  <Textbox>
-                    <Textinput
-                      placeholder="주택 매매가를 알려주세요(숫자만 입력해주세요)"
-                      onChange={home}
-                    />
-                    <Atext>1억= 100000000</Atext>
-                  </Textbox>
-                  <Textbox>
-                    <Textinput
-                      placeholder="원하시는 대출 금액을 입력해주세요(숫자만 입력해주세요)"
-                      onChange={amount}
-                    />
-                    <Atext>예시 1억= 100000000</Atext>
-                  </Textbox>
-                  <Textbox>
-                    <CategorySelect onChange={paw}>
-                      <option value="">담보 종류를 선택해주세요</option>
-                      <option value="아파트">아파트</option>
-                      <option value="오피스텔">오피스텔</option>
-                      <option value="다세대주택">다세대주택</option>
-                      <option value="빌라">빌라</option>
-                      <option value="기타">기타</option>
-                    </CategorySelect>
-                  </Textbox>
-                </>
-              )}
-              {category === "서민금융진흥원대출" && (
-                <>
-                  <Textbox>
-                    <CategorySelect onChange={occ}>
-                      <option value="">직업 종류를 선택해주세요</option>
-                      <option value="근로자">근로자</option>
-                      <option value="귀어업인(희망자포함) 및 재촌비어업인">
-                        귀어업인(희망자포함) 및 재촌비어업인
-                      </option>
-                      <option value="대학생">대학생</option>
-                      <option value="청년">청년</option>
-                      <option value="사업자">사업자</option>
-                      <option value="연금소득자">연금소득자</option>
-                      <option value="금융취약계층">금융취약계층</option>
-                      <option value="취업준비생">취업준비생</option>
-                      <option value="만60세 이상 국민연금수급자 (노령,분할,유족,장애1~3급 수급자">
-                        만60세 이상 국민연금수급자 (노령,분할,유족,장애1~3급
-                        수급자
-                      </option>
-                      <option value="문화예술인">문화예술인</option>
-                      <option value="농립어업인">농립어업인</option>
-                      <option value="소기업">소기업</option>
-                      <option value="소상공인">소상공인</option>
-                      <option value="예비창업자">예비창업자</option>
-                      <option value="채무조정자">채무조정자</option>
-                      <option value="여성기업">여성기업</option>
-                      <option value="중소기업">중소기업</option>
-                      <option value="채무조정 성실상환자">
-                        채무조정 성실상환자
-                      </option>
-                      <option value="09.2학기~12년 일반 상환학자금 대출자">
-                        09.2학기~12년 일반 상환학자금 대출자
-                      </option>
-                      <option value="벤처기업">벤처기업</option>
-                      <option value="기타">기타</option>
-                    </CategorySelect>
-                  </Textbox>
-                  <Textbox>
-                    <CategorySelect onChange={regi}>
-                      <option value="">사는 지역을 입력해주세요</option>
-                      <option value="경기">경기</option>
-                      <option value="경남">경남</option>
-                      <option value="경북">경북</option>
-                      <option value="울산">울산</option>
-                      <option value="광주">광주</option>
-                      <option value="서울">서울</option>
-                      <option value="대구">대구</option>
-                      <option value="대전">대전</option>
-                      <option value="부산">부산</option>
-                      <option value="인천">인천</option>
-                      <option value="전북">전북</option>
-                      <option value="전남">전남</option>
-                      <option value="제주">제주</option>
-                      <option value="충북">충북</option>
-                      <option value="충남">충남</option>
-                      <option value="세종">세종</option>
-                    </CategorySelect>
-                  </Textbox>
-                  <Textbox>
-                    <Textinput
-                      placeholder="나이를 입력해 주세요(숫자만 입력해주세요)"
-                      onChange={ag}
-                    />
-                    <Atext>30세= 30</Atext>
-                  </Textbox>
-                  <Textbox>
-                    <Textinput
-                      placeholder="연소득을 입력해주세요(숫자만 입력해주세요)"
-                      onChange={ear}
-                    />
-                    <Atext>1억=10000, 5천만원=5000</Atext>
-                  </Textbox>
+                {category === "일반신용대출" && (
                   <Textbox>
                     <Textinput
                       placeholder="신용점수를 입력해 주세요(숫자만 입력해주세요)"
@@ -413,18 +321,148 @@ const Suggestmodal = (props) => {
                     />
                     <Atext>나이스 신용점수로 입력해주세요.</Atext>
                   </Textbox>
-                </>
-              )}
-              <SuggestList loanitems={selectedsiLoan} />
-            </main>
-            <footer>
-              <Button onClick={close}>취소</Button>
-              <Button onClick={Recommexe}>확인</Button>
-            </footer>
-          </section>
-        )}
-      </div>
-    </ModalStyle>
+                )}
+
+                {category === "전세자금대출" && (
+                  <>
+                    <Textbox>
+                      <Textinput
+                        placeholder="전세가를 입력해주세요(숫자만 입력해주세요)"
+                        onChange={jeons}
+                      />
+                      <Atext>예시 1억= 100000000</Atext>
+                    </Textbox>
+                    <Textbox>
+                      <Textinput
+                        placeholder="원하시는 대출 금액을 입력해주세요(숫자만 입력해주세요)"
+                        onChange={amount}
+                      />
+                      <Atext>예시 1억= 100000000</Atext>
+                    </Textbox>
+                  </>
+                )}
+
+                {category === "주택담보대출" && (
+                  <>
+                    <Textbox>
+                      <Textinput
+                        placeholder="주택 매매가를 알려주세요(숫자만 입력해주세요)"
+                        onChange={home}
+                      />
+                      <Atext>1억= 100000000</Atext>
+                    </Textbox>
+                    <Textbox>
+                      <Textinput
+                        placeholder="원하시는 대출 금액을 입력해주세요(숫자만 입력해주세요)"
+                        onChange={amount}
+                      />
+                      <Atext>예시 1억= 100000000</Atext>
+                    </Textbox>
+                    <Textbox>
+                      <CategorySelect onChange={paw}>
+                        <option value="">담보 종류를 선택해주세요</option>
+                        <option value="아파트">아파트</option>
+                        <option value="오피스텔">오피스텔</option>
+                        <option value="다세대주택">다세대주택</option>
+                        <option value="빌라">빌라</option>
+                        <option value="기타">기타</option>
+                      </CategorySelect>
+                    </Textbox>
+                  </>
+                )}
+                {category === "서민금융진흥원대출" && (
+                  <>
+                    <Textbox>
+                      <CategorySelect onChange={occ}>
+                        <option value="">직업 종류를 선택해주세요</option>
+                        <option value="근로자">근로자</option>
+                        <option value="귀어업인(희망자포함) 및 재촌비어업인">
+                          귀어업인(희망자포함) 및 재촌비어업인
+                        </option>
+                        <option value="대학생">대학생</option>
+                        <option value="청년">청년</option>
+                        <option value="사업자">사업자</option>
+                        <option value="연금소득자">연금소득자</option>
+                        <option value="금융취약계층">금융취약계층</option>
+                        <option value="취업준비생">취업준비생</option>
+                        <option value="만60세 이상 국민연금수급자 (노령,분할,유족,장애1~3급 수급자">
+                          만60세 이상 국민연금수급자 (노령,분할,유족,장애1~3급
+                          수급자
+                        </option>
+                        <option value="문화예술인">문화예술인</option>
+                        <option value="농립어업인">농립어업인</option>
+                        <option value="소기업">소기업</option>
+                        <option value="소상공인">소상공인</option>
+                        <option value="예비창업자">예비창업자</option>
+                        <option value="채무조정자">채무조정자</option>
+                        <option value="여성기업">여성기업</option>
+                        <option value="중소기업">중소기업</option>
+                        <option value="채무조정 성실상환자">
+                          채무조정 성실상환자
+                        </option>
+                        <option value="09.2학기~12년 일반 상환학자금 대출자">
+                          09.2학기~12년 일반 상환학자금 대출자
+                        </option>
+                        <option value="벤처기업">벤처기업</option>
+                        <option value="기타">기타</option>
+                      </CategorySelect>
+                    </Textbox>
+                    <Textbox>
+                      <CategorySelect onChange={regi}>
+                        <option value="">사는 지역을 입력해주세요</option>
+                        <option value="경기">경기</option>
+                        <option value="경남">경남</option>
+                        <option value="경북">경북</option>
+                        <option value="울산">울산</option>
+                        <option value="광주">광주</option>
+                        <option value="서울">서울</option>
+                        <option value="대구">대구</option>
+                        <option value="대전">대전</option>
+                        <option value="부산">부산</option>
+                        <option value="인천">인천</option>
+                        <option value="전북">전북</option>
+                        <option value="전남">전남</option>
+                        <option value="제주">제주</option>
+                        <option value="충북">충북</option>
+                        <option value="충남">충남</option>
+                        <option value="세종">세종</option>
+                      </CategorySelect>
+                    </Textbox>
+                    <Textbox>
+                      <Textinput
+                        placeholder="나이를 입력해 주세요(숫자만 입력해주세요)"
+                        onChange={ag}
+                      />
+                      <Atext>30세= 30</Atext>
+                    </Textbox>
+                    <Textbox>
+                      <Textinput
+                        placeholder="연소득을 입력해주세요(숫자만 입력해주세요)"
+                        onChange={ear}
+                      />
+                      <Atext>1억=10000, 5천만원=5000</Atext>
+                    </Textbox>
+                    <Textbox>
+                      <Textinput
+                        placeholder="신용점수를 입력해 주세요(숫자만 입력해주세요)"
+                        onChange={csco}
+                      />
+                      <Atext>나이스 신용점수로 입력해주세요.</Atext>
+                    </Textbox>
+                  </>
+                )}
+                <SuggestList loanitems={selectedsiLoan} onClickde={onClickde} />
+              </main>
+              <footer>
+                <Button onClick={modalclose}>취소</Button>
+                <Button onClick={Recommexe}>확인</Button>
+              </footer>
+            </section>
+          )}
+        </div>
+      </ModalStyle>
+      <Simodal open={selectopen} close={sugclose} loan={selectedsiLoan} />
+    </>
   );
 };
 

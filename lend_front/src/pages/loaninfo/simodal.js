@@ -1,4 +1,6 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import SimilList from "./similList";
 
 const ModalStyle = styled.div`
   .modal {
@@ -8,7 +10,7 @@ const ModalStyle = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 100;
+    z-index: 70;
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
@@ -180,39 +182,234 @@ const Wwbox = styled.div`
   height: 50%;
   display: flex;
 `;
+const Sugbox = styled.div`
+  width: 450px;
+  height: 50%;
+  margin-right: 10%;
+`;
+const Sugtextbox = styled.div`
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 17px;
+  color: white;
+`;
+const Simodal = ({ open, close, loan, categorybu }) => {
+  const [similarLoans, setSimilarLoans] = useState([]);
+  const [selectedsiLoan, setSelectedsiLoan] = useState(null);
+  const [siOpen, setSiOpen] = useState(false);
+  const onClickde = (loan) => {
+    setSelectedsiLoan(loan);
+    setSiOpen(true);
+  };
 
-const Simodal = ({ open, close, loan1 }) => {
-  console.log(loan1);
-  console.log(open);
+  useEffect(() => {
+    if (categorybu == "일반신용대출") {
+      if (open && loan) {
+        fetch(`http://localhost:5000/api/recommendations`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            number: loan._source?.["순번"],
+            category: categorybu,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
+            setSimilarLoans(data);
+          })
+          .catch((error) => {
+            console.error("추천 데이터 로딩 실패:", error);
+          });
+      }
+    } else if (categorybu == "전세자금대출") {
+      if (open && loan) {
+        fetch(`http://localhost:5000/api/loan_recommendations`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            number: loan._source?.["순번"],
+            category: categorybu,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
+            setSimilarLoans(data);
+          })
+          .catch((error) => {
+            console.error("추천 데이터 로딩 실패:", error);
+          });
+      }
+    } else if (categorybu == "주택담보대출") {
+      if (open && loan) {
+        fetch(`http://localhost:5000/api/loan_similarity`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            loan_number: loan._source?.["순번"],
+            category: categorybu,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
+            setSimilarLoans(data);
+          })
+          .catch((error) => {
+            console.error("추천 데이터 로딩 실패:", error);
+          });
+      }
+    } else {
+      if (open && loan) {
+        fetch(`http://localhost:5000/api/recommend_loans`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            loan_number: loan._source?.["순번"],
+            category: categorybu, // 이 부분은 서버에서 사용하는지 확인해야 합니다.
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("서버에서 받은 데이터:", data);
+            setSimilarLoans(data); // 데이터가 예상한 구조인지 확인한 후 이 부분을 업데이트하세요.
+          })
+          .catch((error) => {
+            console.error("추천 데이터 로딩 실패:", error);
+          });
+
+        console.log("보내는 loan_number:", loan._source?.["순번"]);
+      }
+    }
+  }, [open, loan, categorybu]);
+
   const truncateTitle = (title) => {
     if (!title) return "No title available";
     return title.length > 25 ? title.substring(0, 25) + "..." : title;
   };
+  const getDisplayValue = (loan) => {
+    if (loan._source["공시 시작일"]) {
+      return loan._source["공시 시작일"];
+    } else if (loan._source["대상"]) {
+      return loan._source["대상"];
+    }
+    return "정보 없음";
+  };
+
+  const getLabel = (loan) => {
+    // "가입 방법"이 존재하면 "가입 방법", 없으면 "대상"을 반환
+    return loan._source["공시 시작일"] ? "공시 시작일" : "대상";
+  };
 
   if (!open) return null;
 
-  if (!loan1 || !loan1._source) return null;
-
+  if (!loan || !loan._source) return null;
+  const de = (categorybu) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return "연락처";
+    } else {
+      return "공시 종료일";
+    }
+  };
+  const def = (categorybu, loan) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return loan._source["연락처"];
+    } else {
+      return loan._source["공시 종료일"] || "정보 없음";
+    }
+  };
+  const are = (categorybu) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return "지역";
+    } else {
+      return "대출 조건";
+    }
+  };
+  const are1 = (categorybu, loan) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return loan._source["지역"];
+    } else {
+      return loan._source["대출조건"] || "정보 없음";
+    }
+  };
+  const agee = (categorybu) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return "연령제한";
+    } else {
+      return "대출 만기 경과 건 연체이자율";
+    }
+  };
+  const agee1 = (categorybu, loan) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return loan._source["연령 제한"];
+    } else {
+      return loan._source["대출 만기 경과 건 연체이자율"] || "정보 없음";
+    }
+  };
+  const qq = (categorybu) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return "상환 방법";
+    } else {
+      return "중도상환 수수료";
+    }
+  };
+  const qq1 = (categorybu, loan) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return loan._source["상환 방법"];
+    } else {
+      return loan._source["중도상환 수수료"] || "정보 없음";
+    }
+  };
+  const ww = (categorybu) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return "상품 기간";
+    } else {
+      return "보증기관";
+    }
+  };
+  const ww1 = (categorybu, loan) => {
+    if (categorybu == "서민금융진흥원대출") {
+      return loan._source["상품 기간"];
+    } else {
+      return loan._source["보증기관"] || "정보 없음";
+    }
+  };
   return (
     <>
       <ModalStyle>
-        <div style={{ display: open ? "flex" : "none" }} className="modal">
+        <div className={open ? "openModal modal" : "modal"}>
           {open && (
             <section>
               <CloseButton onClick={close}>&times;</CloseButton>
               <main>
-                <h2>{loan1["금융 상품명"] || "정보 없음"}</h2>
+                <h2>{loan._source["금융 상품명"] || "정보 없음"}</h2>
                 <Grayline />
                 <Gbox>
                   <Lowbox>
                     <strong>이자율</strong>
-                    <Lowboxtext>{loan1["평균 금리"] || "정보 없음"}</Lowboxtext>
+                    <Lowboxtext>
+                      {loan._source["평균 금리"] ||
+                        loan._source["이자율 "] ||
+                        "정보없음"}
+                    </Lowboxtext>
                   </Lowbox>
                   <Grayline2 />
                   <Lowbox>
                     <strong>대출 한도</strong>
-                    <Lowboxtext title={loan1["대출한도"]}>
-                      {loan1["대출한도"] || "정보 없음"}
+                    <Lowboxtext title={loan._source["대출한도"]}>
+                      {loan._source["대출한도"] ||
+                        loan._source["대출 한도"] ||
+                        "정보 없음"}
                     </Lowboxtext>
                   </Lowbox>
                 </Gbox>
@@ -221,52 +418,52 @@ const Simodal = ({ open, close, loan1 }) => {
                     <Wlowbox>
                       <strong>은행명</strong>
                       <Lowwboxtext>
-                        {loan1["금융회사 명"] || "정보 없음"}
+                        {loan._source["금융회사 명"] || "정보 없음"}
                       </Lowwboxtext>
                     </Wlowbox>
                     <Wlowbox>
                       <strong>대출종류명</strong>
                       <Lowwboxtext>
-                        {loan1["대출종류명"] || "정보 없음"}
+                        {loan._source["대출종류명"] || "정보 없음"}
                       </Lowwboxtext>
                     </Wlowbox>
                     <Wlowbox>
-                      <strong>가입 방법</strong>
-                      <Lowwboxtext title={loan1["가입 방법"]}>
-                        {truncateTitle(loan1["가입 방법"]) || "정보 없음"}
+                      <strong>가입방법</strong>
+                      <Lowwboxtext
+                        title={
+                          loan._source["가입 방법"] || loan._source["신청 방법"]
+                        }
+                      >
+                        {loan._source["가입 방법"] || loan._source["신청 방법"]}
                       </Lowwboxtext>
                     </Wlowbox>
                   </Wwbox>
                   <Grayline />
                   <Wwbox>
                     <Hwlowbox>
-                      <strong>공시 시작일</strong>
-                      <Lowwboxtext>
-                        {loan1["공시 시작일"] || "정보 없음"}
-                      </Lowwboxtext>
+                      <strong>{getLabel(loan)}</strong>
+                      <Lowwboxtext>{getDisplayValue(loan)}</Lowwboxtext>
                     </Hwlowbox>
                     <Hwlowbox>
-                      <strong>공시 종료일</strong>
-                      <Lowwboxtext>
-                        {loan1["공시 종료일"] || "정보 없음"}
-                      </Lowwboxtext>
+                      <strong>{de(categorybu)}</strong>
+                      <Lowwboxtext>{def(categorybu, loan)}</Lowwboxtext>
                     </Hwlowbox>
                   </Wwbox>
                 </Wbox>
                 <p>
-                  <strong>대출조건:</strong> {loan1["대출조건"] || "정보 없음"}
+                  <strong>{are(categorybu)}:</strong>
+                  {are1(categorybu, loan)}
                 </p>
                 <p>
-                  <strong>대출 만기 경과 건 연체이자율:</strong>{" "}
-                  {loan1["대출 만기 경과 건 연체이자율"] || "정보 없음"}
+                  <strong>{agee(categorybu)}:</strong> {agee1(categorybu, loan)}
                 </p>
                 <p>
-                  <strong>중도상환 수수료:</strong>
-                  {loan1["중도상환 수수료"] || "정보 없음"}
+                  <strong>{qq(categorybu)}:</strong>
+                  {qq1(categorybu, loan)}
                 </p>
                 <p>
                   <strong>보증기관:</strong>
-                  {loan1["보증기관"] || "정보 없음"}
+                  {ww1(categorybu, loan)}
                 </p>
               </main>
               <footer>
@@ -274,6 +471,10 @@ const Simodal = ({ open, close, loan1 }) => {
               </footer>
             </section>
           )}
+          <Sugbox>
+            <Sugtextbox>비슷한 대출 상품</Sugtextbox>
+            <SimilList loanitems={similarLoans} onClickde={onClickde} />
+          </Sugbox>
         </div>
       </ModalStyle>
     </>
