@@ -20,7 +20,9 @@ const Header = () => {
             <Menu as={Link} to="/lend/wishlist">
               찜 목록
             </Menu>
-            <Menu>마이 페이지</Menu>
+            <Menu as={Link} to="/lend/mypage">
+              마이 페이지
+            </Menu>
           </Box>
         ) : (
           <Box>

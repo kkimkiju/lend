@@ -20,6 +20,7 @@ import Loaninfo from "./pages/loaninfo/loaninfo";
 import WishList from "./pages/WishList";
 import UserStore from "./context/UserStore";
 import KaKaoLogin from "./components/KaKaoLogin";
+import Mypage from "./pages/Mypage";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/lend/chatting/:roomId" element={<Chatting />} />
             <Route path="/lend/Loaninfo" element={<Loaninfo />} />
             <Route path="/lend/wishlist" element={<WishList />} />
+            <Route path="/lend/mypage" element={<Mypage />} />
             <Route path="/lend/kakaologin" element={<KaKaoLogin />} />
           </Routes>
         </Router>
