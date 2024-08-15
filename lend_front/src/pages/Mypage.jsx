@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import AxiosApi from "../axios/AxiosApi";
+import { UserContext } from "../context/UserStore";
 
 const Container = styled.div`
   width: 100vw;
@@ -102,6 +104,11 @@ const Mypage = () => {
   const [passwordError, setPasswordError] = useState("");
   const [passwordheckError, setPasswordCheckError] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
+  const [name, setName] = useState("");
+
+  const context = useContext(UserContext);
+  const { loginStatus, setLoginStatus } = context;
+  const email = localStorage.getItem("email");
   // 새로운 비밀번호 입력
   const onChangePassword = (e) => {
     const pw = e.target.value;
@@ -131,6 +138,30 @@ const Mypage = () => {
   const handlePwCheck = (e) => {
     setPasswordCheck(e.target.value);
   };
+  useEffect(() => {
+    const getInfo = async () => {
+      const rsp = await AxiosApi.getMemberInfo();
+      console.log(rsp.data, "data");
+      setName(rsp.data.name);
+    };
+    getInfo();
+  }, []);
+  const modify = async () => {
+    const user = { password: newPassword };
+    try {
+      const response = await AxiosApi.modifyMyinfo(user);
+      if (response.data) {
+        alert("수정에 성공했습니다.");
+        window.location.reload();
+        console.log(response.data);
+        // navigate("/apueda/login");
+      }
+    } catch (e) {
+      console.log(e);
+      alert("수정에 실패했습니다.");
+    }
+  };
+
   return (
     <Container>
       <Layout>
@@ -139,9 +170,10 @@ const Mypage = () => {
         </Header>
         <InputContainer>
           <MyinfoContainer>
-            <span>임정후</span>
-            <span>dlaeocjf94@naver.com</span>
+            <span>{name}</span>
+            <span>{email}</span>
           </MyinfoContainer>
+
           <WithMsg>
             <Input
               type="password"
@@ -167,7 +199,8 @@ const Mypage = () => {
               </div>
             )}
           </WithMsg>
-          <button>수정</button>
+          <button onClick={() => modify()}>수정</button>
+          <button>회원탈퇴</button>
         </InputContainer>
         <InputContainer>
           <span>대출 리스트 수정(넣을게 없어서 일단 써놓음)</span>

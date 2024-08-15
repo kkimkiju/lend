@@ -86,9 +86,15 @@ const AxiosApi = {
     console.log(email, "email");
     return await axios.get(`${LEND_DOMAIN}/auth/check?email=${email}`);
   },
+
+  //회원 정보 조회
+  getMemberInfo: async () => {
+    return await AxiosInstance.get(`/members/memberinfo`);
+  },
   // 회원 정보 수정(비밀번호 수정)
-  modifyMyinfo: async () => {
-    return await AxiosInstance.post();
+  modifyMyinfo: async (user) => {
+    console.log(user, "user");
+    return await AxiosInstance.post(`/members/membermodify`, user);
   },
   // 문의게시판 ----------------------
   // 글생성

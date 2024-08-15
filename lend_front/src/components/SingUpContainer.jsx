@@ -174,7 +174,12 @@ const SingUpContainer = ({ isSignIn }) => {
   // 이메일 중복 여부
   const [emailError, setEmailError] = useState("");
   const [emailExist, setEmailExist] = useState(false);
-  const navigate = useNavigate();
+  const [allChecked, setAllChecked] = useState(false);
+  // 약관 체크여부
+  const [privacyIsChecked, setPrivacyIsChecked] = useState(false);
+  const [privacyIsChecked2, setPrivacyIsChecked2] = useState(false);
+  const [privacyIsChecked3, setPrivacyIsChecked3] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const onChangeEmail = (e) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -313,11 +318,7 @@ const SingUpContainer = ({ isSignIn }) => {
     setName(e.target.value);
   };
   useEffect(() => {}, [date, identifyNum]);
-  const [allChecked, setAllChecked] = useState(false);
-  const [privacyIsChecked, setPrivacyIsChecked] = useState(false);
-  const [privacyIsChecked2, setPrivacyIsChecked2] = useState(false);
-  const [privacyIsChecked3, setPrivacyIsChecked3] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
+
   // 약관 체크
   const handlePrivacyAllCheckboxChange = (e) => {
     const { checked } = e.target;
