@@ -120,6 +120,12 @@ public class ChatService {
         }
     }
 
+    // 메세지 가져오기
+    public List<ChatMessage> getMessages(String roomId) {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+        return chatMessageRepository.findByRoomId(chatRoom);
+    }
+
     // 채팅방에 입장한 세션 추가
     public void addSessionAndHandleEnter(String roomId, WebSocketSession session, ChatMessageDto chatMessage) {
         ChatRoomDto room = findRoomById(roomId);

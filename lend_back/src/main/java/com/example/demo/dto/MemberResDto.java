@@ -15,6 +15,7 @@ public class MemberResDto {
     private String name;
     private String identityNumber;
     private Authority authority;
+    private Boolean isKaKao;
 
 
     public static MemberResDto of(Member member) {
@@ -23,6 +24,7 @@ public class MemberResDto {
                 .name(member.getName())
                 .password(member.getPassword())
                 .identityNumber(member.getIdentityNumber())
+                .isKaKao(member.getIsKakao())
                 .authority(member.getAuthority())
 //                .nickname(member.getNickname())
 //                .profileImgPath(member.getProfileImgPath())

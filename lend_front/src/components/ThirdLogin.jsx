@@ -19,11 +19,10 @@ const Container = styled.div`
   animation-delay: ${(props) => props.delay || "1s"};
 `;
 const LogoImg = styled.div``;
-const ThirdLogin = () => {
+const ThirdLogin = ({ openModal }) => {
   return (
     <Container>
-      <KaKaoLogin></KaKaoLogin>
-
+      <KaKaoLogin openModal={openModal}></KaKaoLogin>
       <LogoImg>네이버</LogoImg>
     </Container>
   );

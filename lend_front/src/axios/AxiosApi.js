@@ -69,7 +69,10 @@ const AxiosApi = {
       { headers: { "Content-Type": "application/json" } }
     );
   },
-
+  // 메세지 가져오기
+  getChatMessages: async (roomId) => {
+    return await AxiosInstance.get(`/chat/messages/${roomId}`);
+  },
   // 로그인
   login: async (email, password) => {
     const user = {
@@ -90,12 +93,18 @@ const AxiosApi = {
 
   //회원 정보 조회
   getMemberInfo: async () => {
+    console.log("getMemberInfo 실행");
     return await AxiosInstance.get(`/members/memberinfo`);
   },
-  // 회원 정보 수정(비밀번호 수정)
+  //회원 정보 수정(비밀번호 수정)
   modifyMyinfo: async (user) => {
     console.log(user, "user");
     return await AxiosInstance.post(`/members/membermodify`, user);
+  },
+  //가입시 추가정보 입력
+  extraInfo: async (user) => {
+    console.log(user, "user");
+    return await axios.post(`${LEND_DOMAIN}/auth/membermodify`, user);
   },
   // 문의게시판 ----------------------
   // 글생성

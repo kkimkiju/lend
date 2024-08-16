@@ -94,9 +94,35 @@ const Chatting = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
   const [chatList, setChatList] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef(null);
   const { roomId } = useParams();
   const ws = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await AxiosApi.getChatMessages(roomId); // API 호출 함수 이름 확인 필요
+        const fetchedMessages = response.data.map((msg) => ({
+          ...msg,
+          localDateTime: new Date(msg.localDateTime),
+        }));
+        setMessages(fetchedMessages);
+        console.log("Messages fetched:", fetchedMessages);
+      } catch (error) {
+        console.error("Error fetching messages", error);
+      }
+    };
+    fetchMessages();
+  }, [roomId]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const onChangMsg = (e) => {
     setInputMsg(e.target.value);
@@ -182,19 +208,19 @@ const Chatting = () => {
     ws.current.onmessage = (evt) => {
       const data = JSON.parse(evt.data);
       console.log(data.message);
-      setChatList((prevItems) => [...prevItems, data]);
+      setMessages((prevItems) => [...prevItems, data]);
     };
   }, [socketConnected]);
 
   // 화면 하단으로 자동 스크롤
-  const chatContainerRef = useRef(null);
+  // const chatContainerRef = useRef(null);
 
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [chatList]);
+  // useEffect(() => {
+  //   if (chatContainerRef.current) {
+  //     chatContainerRef.current.scrollTop =
+  //       chatContainerRef.current.scrollHeight;
+  //   }
+  // }, [chatList]);
 
   return (
     <ChatContainer>
@@ -202,13 +228,13 @@ const Chatting = () => {
         <CloseButton onClick={onClickMsgClose} />
         <RoomName>Lend와 채팅</RoomName>
       </ChatHeader>
-      <MessagesContainer ref={chatContainerRef}>
-        {chatList.map((chat, index) => (
-          <Contents key={index} isSender={chat.sender === sender}>
-            {chat.sender !== sender && <Sender>{`${chat.sender}`}</Sender>}
+      <MessagesContainer ref={messagesEndRef}>
+        {messages.map((msg, index) => (
+          <Contents key={index} isSender={msg.sender === sender}>
+            {msg.sender !== sender && <Sender>{`${msg.sender}`}</Sender>}
             <Message
-              isSender={chat.sender === sender}
-            >{`${chat.message}`}</Message>
+              isSender={msg.sender === sender}
+            >{`${msg.message}`}</Message>
           </Contents>
         ))}
       </MessagesContainer>

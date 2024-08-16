@@ -370,6 +370,7 @@ const SingUpContainer = ({ isSignIn }) => {
       password: password,
       identityNumber: date + identifyNum,
       name: name,
+      isKaKao: false,
     };
     console.log(user, "user");
     try {

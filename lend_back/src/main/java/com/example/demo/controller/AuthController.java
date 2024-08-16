@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.service.AuthService;
+import com.example.demo.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AuthController {
     private final AuthService authService;
+    private final MemberService memberService;
 
     // 회원 여부 확인
     @GetMapping("/check")
@@ -28,9 +30,15 @@ public class AuthController {
     public ResponseEntity<LoginResponseDto> login(@RequestBody MemberReqDto requestDto) {
         System.out.println(requestDto.getPassword() + "pw");
         return ResponseEntity.ok(authService.login(requestDto));
-    }  
+    }
+    @PostMapping("/membermodify")
+    public ResponseEntity<MemberResDto> memberModify(@RequestBody MemberReqDto memberReqDto) {
+        System.out.println("modifyMember 실행");
 
-//    // 아이디 찾기
+        return ResponseEntity.ok(memberService.modifyMember(memberReqDto));
+    }
+
+    //    // 아이디 찾기
 //    @PostMapping("/findid")
 //    public ResponseEntity <String> findId(@RequestBody MemberDto memberDto) {
 //        String email = authService.findId(memberDto);

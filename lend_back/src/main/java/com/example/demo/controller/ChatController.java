@@ -1,7 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ChatMessageDto;
 import com.example.demo.dto.ChatRoomDto;
 import com.example.demo.dto.ChatRoomReqDto;
+import com.example.demo.entity.ChatMessage;
 import com.example.demo.entity.ChatRoom;
 import com.example.demo.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -51,10 +54,20 @@ public class ChatController {
         return chatService.findRoomById(roomId);
     }
 
-    // 방 삭제
-//    @GetMapping("/delete")
-//    public ResponseEntity<Boolean> deleteRoom(@PathVariable String roomId) {
-//        boolean isTrue = chatService.removeRoom(roomId);
-//        return ResponseEntity.ok(isTrue);
-//    }
+    // 메세지 가져오기
+    @GetMapping("/messages/{roomId}")
+    public ResponseEntity<List<ChatMessageDto>> getMessages(@PathVariable String roomId) {
+        List<ChatMessage> messages = chatService.getMessages(roomId);
+        List<ChatMessageDto> messageDtos = messages.stream().map(msg -> {
+            ChatMessageDto dto = new ChatMessageDto();
+            dto.setSender(msg.getSender().getEmail());
+            dto.setMessage(msg.getMessage());
+            dto.setRoomId(msg.getChatId().toString());
+            return dto;
+        }).collect(Collectors.toList());
+        return ResponseEntity.ok(messageDtos);
+    }
+
+
+
 }
