@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Bar } from "react-chartjs-2";
+import AxiosApi from "../axios/AxiosApi";
+import Paging from "./loaninfo/paging";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -132,12 +134,23 @@ const GraphContainer = styled.div`
 `;
 
 const WishList = () => {
-  // 찜목록 데이터 예시
-  const [wishList, setWishList] = useState([
-    { title: "대출 상품 1", rate: 3.5, limit: 5000 },
-    { title: "대출 상품 2", rate: 4.2, limit: 3000 },
-    { title: "대출 상품 3", rate: 2.9, limit: 7000 },
-  ]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(7);
+  const [totalItems, setTotalItems] = useState(0);
+  const [wishList, setWishList] = useState([]);
+  const [useemail, setUseemail] = useState("");
+
+  useEffect(() => {
+    const userinfo = async () => {
+      try {
+        const rsp = await AxiosApi.getMemberInfo();
+        setUseemail(rsp.data.email);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    userinfo();
+  }, []);
 
   // 금리 데이터를 위한 차트 설정
   const rateData = {
@@ -206,6 +219,31 @@ const WishList = () => {
     },
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const fetchData = async () => {
+    try {
+      let response = await AxiosApi.Wishlistget(
+        useemail,
+        currentPage - 1,
+        pageSize
+      );
+      console.log("장바구니데이터 : ", response);
+      setTotalItems(response.data.totalItems); // totalItems 설정
+      setWishList(response.data.items); // wishList에 실제 데이터 설정
+    } catch (error) {
+      console.error("Error fetching list:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (useemail) {
+      fetchData();
+    }
+  }, [useemail, currentPage]);
+
   return (
     <Container>
       <Header>
@@ -217,13 +255,20 @@ const WishList = () => {
         ) : (
           wishList.map((item, index) => (
             <Item key={index}>
-              <ItemTitle>{item.title}</ItemTitle>
+              <ItemTitle>{item.loan_name || "정보 없음"}</ItemTitle>
               <ItemDescription>
-                금리: {item.rate}%, 한도: {item.limit}만원
+                금리: {item.rate || "정보 없음"}%, 한도:{" "}
+                {item.limit || "정보 없음"}만원
               </ItemDescription>
             </Item>
           ))
         )}
+        <Paging
+          page={currentPage}
+          itemsCountPerPage={pageSize}
+          totalItemsCount={totalItems}
+          onPageChange={handlePageChange}
+        />
       </List>
       {wishList.length > 1 && (
         <>

@@ -7,7 +7,14 @@ import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.ShooppingcartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,7 +29,7 @@ public class ShooppingcartService {
                     .orElseThrow(() -> new IllegalArgumentException("Author not found"));
 
             Shooppingcart shooppingcart = new Shooppingcart();
-            shooppingcart.setMember_id(member);
+            shooppingcart.setMember(member);
             shooppingcart.setLoan_id(shooppingcartDto.getLoan_id());
             shooppingcart.setLoan_name(shooppingcartDto.getLoan_name());
             shooppingcart.setLoan_category(shooppingcartDto.getLoan_category());
@@ -37,5 +44,32 @@ public class ShooppingcartService {
             return false;
         }
 
+    }
+
+    public Map<String, Object> getCart(String memberId, Pageable pageable) {
+        Member member = memberRepository.findByEmail(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        Page<Shooppingcart> shooppingcartPage = shooppingcartRepository.findByMember(member, pageable);
+        if (shooppingcartPage.isEmpty()) {
+            throw new RuntimeException("장바구니 내역이 존재하지 않습니다");
+        }
+        List<ShooppingcartDto> shooppingcartDtos = shooppingcartPage.getContent()
+                .stream()
+                .map(this::convertEntityToDto)
+                .collect(Collectors.toList());
+        Map<String, Object> result = new HashMap<>();
+        result.put("items", shooppingcartDtos); // 'paymentHistory' 대신 'items'
+        result.put("totalPages", shooppingcartPage.getTotalPages());
+        result.put("totalItems", shooppingcartPage.getTotalElements());
+        return result;
+    }
+    private ShooppingcartDto convertEntityToDto(Shooppingcart shooppingcart) {
+        ShooppingcartDto shooppingcartDto = new ShooppingcartDto();
+        shooppingcartDto.setMemberId(shooppingcart.getMember().getEmail());
+        shooppingcartDto.setRate(shooppingcart.getRate());
+        shooppingcartDto.setLim(shooppingcart.getLim());
+        shooppingcartDto.setLoan_name(shooppingcart.getLoan_name());
+        shooppingcartDto.setLoan_category(shooppingcart.getLoan_category());
+        return shooppingcartDto;
     }
 }

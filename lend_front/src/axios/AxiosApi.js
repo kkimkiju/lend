@@ -190,6 +190,14 @@ const AxiosApi = {
       WishListsave
     );
   },
+  Wishlistget: async (memberId, page, size) => {
+    return await AxiosInstance.get(`${LEND_DOMAIN}/wishlist/cart/${memberId}`, {
+      params: {
+        page: page,
+        size: size,
+      },
+    });
+  },
   // 문의게시판 ----------------------
 };
 

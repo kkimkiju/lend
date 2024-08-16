@@ -21,7 +21,7 @@ public class Shooppingcart {
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member_id;
+    private Member member;
 
     @Column(name = "loan_name", nullable = false)
     private String loan_name;
