@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.AccessTokenDto;
-import com.example.demo.dto.MemberReqDto;
-import com.example.demo.dto.MemberResDto;
-import com.example.demo.dto.TokenDto;
+import com.example.demo.dto.*;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.Token;
 import com.example.demo.jwt.TokenProvider;
@@ -15,12 +12,16 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -47,31 +48,45 @@ public class AuthService {
         return MemberResDto.of(memberRepository.save(member));
     }
     //로그인
-    public TokenDto login(MemberReqDto requestDto) {
+    public LoginResponseDto login(MemberReqDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
         log.info("Authentication Token: {}", authenticationToken);
         try {
             Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
+
+            // authorities를 String 리스트로 변환
+            List<String> authorities = authentication.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
+            for (String authority : authorities) {
+                System.out.println("Authority: " + authority);
+            }
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
             TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
+            System.out.println("뭐야" + SecurityContextHolder.getContext().getAuthentication());
             log.info("Token DTO: {}", tokenDto);
 
             Token token = Token.builder()
                     .email(authentication.getName())
                     .refreshToken(tokenDto.getRefreshToken())
                     .build();
-
             tokenRepository.save(token);
             System.out.println(token.getRefreshToken());
-            return tokenDto;
+
+            // 수정된 부분: authorities를 String 리스트로 반환
+            return new LoginResponseDto(tokenDto, authorities);
         } catch (BadCredentialsException ex) {
-            log.error("Bad credentials provided for user: {}", requestDto.getEmail());
+            log.error("잘못된 자격 증명이 제공되었습니다: {}", requestDto.getEmail());
             throw ex;
         } catch (Exception ex) {
-            log.error("Authentication failed", ex);
+            log.error("인증 실패", ex);
             throw ex;
         }
     }
+
+
 
 
 //    public TokenDto login(MemberReqDto requestDto) {
