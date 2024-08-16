@@ -88,7 +88,7 @@ public class ChatService {
     }
 
     @Transactional
-    public void removeRoom1(String roomId) {
+    public void removeRoom(String roomId) {
         try {
             chatRoomRepository.deleteByRoomId(roomId);
         } catch (Exception e) {
@@ -98,7 +98,7 @@ public class ChatService {
 
 
     @Transactional
-    public void removeRoom(String roomId) {
+    public void removeMessage(String roomId) {
         ChatRoomDto room = chatRooms.get(roomId);
         ChatRoom room1 = chatRoomRepository.findById(roomId).orElse(null);
         List<ChatMessage> msgList = chatMessageRepository.findByRoomId(room1);
@@ -112,9 +112,10 @@ public class ChatService {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-//                if (msgList.isEmpty()) {
-//                    removeRoom1(roomId);
-//                }
+                List<ChatMessage> msgExistCheck = chatMessageRepository.findByRoomId(room1);
+                if (msgExistCheck.isEmpty()) {
+                    removeRoom(roomId);
+                }
             }
         }
     }
@@ -143,8 +144,7 @@ public class ChatService {
             }
             log.debug("Session removed: " + session);
             if (room.isSessionEmpty()) {
-                removeRoom(roomId);
-
+                removeMessage(roomId);
             }
         }
     }
