@@ -101,7 +101,7 @@ const AxiosApi = {
     console.log(user, "user");
     return await AxiosInstance.post(`/members/membermodify`, user);
   },
-  //가입시 추가정보 입력
+  //카카오 가입시 추가정보 입력
   extraInfo: async (user) => {
     console.log(user, "user");
     return await axios.post(`${LEND_DOMAIN}/auth/membermodify`, user);

@@ -65,7 +65,6 @@ public class AuthService {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             TokenDto tokenDto = tokenProvider.generateTokenDto(authentication);
-            System.out.println("뭐야" + SecurityContextHolder.getContext().getAuthentication());
             log.info("Token DTO: {}", tokenDto);
 
             Token token = Token.builder()

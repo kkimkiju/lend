@@ -33,9 +33,9 @@ public class AuthController {
     }
     @PostMapping("/membermodify")
     public ResponseEntity<MemberResDto> memberModify(@RequestBody MemberReqDto memberReqDto) {
-        System.out.println("modifyMember 실행");
+        System.out.println("getKakaoInfo 실행");
 
-        return ResponseEntity.ok(memberService.modifyMember(memberReqDto));
+        return ResponseEntity.ok(memberService.getKakaoInfo(memberReqDto));
     }
 
     //    // 아이디 찾기

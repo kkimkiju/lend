@@ -22,20 +22,33 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
 
-
-    public MemberResDto modifyMember(MemberReqDto memberReqDto) {
+    // 수정 두개로 나눠야됨 12:43
+    public MemberResDto getKakaoInfo(MemberReqDto memberReqDto) {
         Optional<Member> mem = memberRepository.findByEmail(memberReqDto.getEmail());
         System.out.println(mem+ "mem");
         if(mem.isPresent()) {
             Member member = mem.get();
             member.setName(memberReqDto.getName());
-            member.setPassword(passwordEncoder.encode(memberReqDto.getPassword()));
             member.setIdentityNumber(memberReqDto.getIdentityNumber());
             member.setIsKakao(memberReqDto.getIsKaKao());
             return MemberResDto.of(memberRepository.save(member));
         }
         else {
-            log.error("에러");
+            log.error("카카오 멤버 수정중 에러");
+            return null;
+        }
+    }
+    public MemberResDto modifyMember(MemberReqDto memberReqDto) {
+        Optional<Member> mem = memberRepository.findByEmail(memberReqDto.getEmail());
+        System.out.println(mem+ "mem");
+        if(mem.isPresent()) {
+            Member member = mem.get();
+            member.setEmail(memberReqDto.getEmail());
+            member.setPassword(passwordEncoder.encode(memberReqDto.getPassword()));
+            return MemberResDto.of(memberRepository.save(member));
+        }
+        else {
+            log.error("멤버 수정중 에러");
             return null;
         }
     }

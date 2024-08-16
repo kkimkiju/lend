@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoImg from "../image/로고.png";
 import LoginComponent from "./LoginComponent";
+import KaKaoImg from "../image/카카오btn.png";
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -11,7 +12,6 @@ const fadeIn = keyframes`
     opacity: 1;
   }
 `;
-const KaKaoBtt = styled.div``;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -99,6 +99,11 @@ const WithMsg = styled.div`
     width: 80%;
   }
 `;
+const KaKaoBtt = styled.div``;
+const KaKaoLogo = styled.img`
+  width: 50px;
+  height: 50px;
+`;
 const LoginMain = ({ isSignIn }) => {
   const [inputEmail, setInputEmail] = useState("");
   // 오류 메시지
@@ -171,7 +176,6 @@ const LoginMain = ({ isSignIn }) => {
         </LoginBtt>
         <LoginEtc>
           <>아이디/비밀번호 찾기</>
-          <>회원가입</>
         </LoginEtc>
       </InputContainer>
       {/* <ThirdLogin
@@ -179,7 +183,9 @@ const LoginMain = ({ isSignIn }) => {
         openModal={openModal}
       ></ThirdLogin> */}
       {/* <KaKaoSignUpModal open={openModal}></KaKaoSignUpModal> */}
-      <KaKaoBtt onClick={() => kakaoLogin()}>카카오</KaKaoBtt>
+      <KaKaoBtt onClick={() => kakaoLogin()}>
+        <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
+      </KaKaoBtt>
 
       {/* <LogoImg>네이버</LogoImg> */}
     </Container>

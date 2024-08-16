@@ -51,8 +51,10 @@ const Mainpage = () => {
       const res = await KakaoApi.getInfo(token);
       console.log("kakaoUser", typeof res.data);
       console.log("res", res.data);
+      console.log("res.data.isMember", res.data.isMember);
 
       if (res.data.isMember) {
+        console.log("ismember true", res.data.isMember);
         login(res.data.userInfo.kakao_account.email, res.data.userInfo.id);
       } else {
         setIsMember(!res.data.isMember);
@@ -68,15 +70,18 @@ const Mainpage = () => {
     console.log("카카오 로그인!");
     try {
       const rsp = await AxiosApi.login(email, password);
-      if (rsp.data.grantType === "Bearer") {
+      console.log("rsp.data.grantType ", rsp.data);
+      if (rsp.data.tokenDto.grantType === "Bearer") {
         setAccToken(rsp.data.accessToken);
-        localStorage.setItem("accessToken", rsp.data.accessToken);
-        localStorage.setItem("refreshToken", rsp.data.refreshToken);
+        localStorage.setItem("accessToken", rsp.data.tokenDto.accessToken);
+        localStorage.setItem("refreshToken", rsp.data.tokenDto.refreshToken);
+
         console.log(accToken);
         setLoginStatus(true);
         setOpenModal(false);
         navigate("/");
       } else {
+        console.log("?");
         setOpenModal(true);
       }
     } catch (err) {
@@ -84,9 +89,9 @@ const Mainpage = () => {
     }
   };
 
-  const closeModal = () => {
-    setOpenModal(false);
-  };
+  // const closeModal = () => {
+  //   setOpenModal(false);
+  // };
 
   return (
     <>

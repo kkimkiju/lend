@@ -153,19 +153,21 @@ const Mypage = () => {
     };
     if (loginStatus) {
       getInfo();
+    } else {
+      return null;
     }
   }, []);
   const modify = async () => {
     const user = {
       email: loginEmail,
       password: newPassword,
-      identityNumber: identityNumber,
-      name: name,
-      isKaKao: false,
+      // identityNumber: identityNumber,
+      // name: name,
+      // isKaKao: false,
     };
     if (pwdValid) {
       try {
-        const response = await AxiosApi.extraInfo(user);
+        const response = await AxiosApi.modifyMyinfo(user);
         if (response.data) {
           alert("수정에 성공했습니다.");
 
