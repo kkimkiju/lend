@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SimilList from "./similList";
+import AxiosApi from "../../axios/AxiosApi";
 
 const ModalStyle = styled.div`
   .modal {
@@ -107,6 +108,7 @@ const Button = styled.button`
   color: #fff;
   font-weight: bold;
   cursor: pointer;
+  margin-left: 10px;
 `;
 
 const Grayline = styled.div`
@@ -196,7 +198,49 @@ const Sugtextbox = styled.div`
 `;
 const LoanDetail = ({ open, close, loan, categorybu }) => {
   const [similarLoans, setSimilarLoans] = useState([]);
-  // const loan_no = loan._source?.["순번"];
+  const [useemail, setUseemail] = useState("");
+  const [useage, setUseage] = useState("");
+  const [age, setAge] = useState("");
+  useEffect(() => {
+    const userinfo = async () => {
+      try {
+        const rsp = await AxiosApi.getMemberInfo();
+        setUseemail(rsp.data.email);
+        setUseage(rsp.data.identityNumber);
+        const identityNumber = rsp.data.identityNumber;
+        const birthYearPrefix = identityNumber.substring(0, 2); // '99'
+        const currentYear = new Date().getFullYear();
+        const currentYearPrefix = Math.floor(currentYear / 100) * 100; // 현재 연도의 천 단위 (예: 2000)
+
+        // 연도 보정: 50 이상이면 1900년대, 그렇지 않으면 2000년대
+        const birthYear =
+          parseInt(birthYearPrefix, 10) >= 50
+            ? currentYearPrefix - 100 + parseInt(birthYearPrefix, 10)
+            : currentYearPrefix + parseInt(birthYearPrefix, 10);
+
+        // 현재 나이 계산
+        const currentYearFull = new Date().getFullYear();
+        let calculatedAge = currentYearFull - birthYear;
+
+        // 생일이 아직 지나지 않았으면 나이 -1
+        const birthMonth = parseInt(identityNumber.substring(2, 4), 10); // 월
+        const birthDay = parseInt(identityNumber.substring(4, 6), 10); // 일
+
+        const today = new Date();
+        if (
+          today.getMonth() + 1 < birthMonth ||
+          (today.getMonth() + 1 === birthMonth && today.getDate() < birthDay)
+        ) {
+          calculatedAge--;
+        }
+
+        setAge(calculatedAge);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    userinfo();
+  }, []);
 
   const handleDetailClick = (loan_no) => {
     console.log(loan_no);
@@ -277,13 +321,13 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
           },
           body: JSON.stringify({
             loan_number: loan._source?.["순번"],
-            category: categorybu, // 이 부분은 서버에서 사용하는지 확인해야 합니다.
+            category: categorybu,
           }),
         })
           .then((response) => response.json())
           .then((data) => {
             console.log("서버에서 받은 데이터:", data);
-            setSimilarLoans(data); // 데이터가 예상한 구조인지 확인한 후 이 부분을 업데이트하세요.
+            setSimilarLoans(data);
           })
           .catch((error) => {
             console.error("추천 데이터 로딩 실패:", error);
@@ -385,6 +429,34 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
       return loan._source["보증기관"] || "정보 없음";
     }
   };
+  const loan_id = loan._source["순번"];
+  const loan_name = loan._source["금융 상품명"];
+  const loan_category = categorybu;
+  const rate =
+    loan._source["평균 금리"] || loan._source["이자율 "] || "정보없음";
+  const lim =
+    loan._source["대출한도"] || loan._source["대출 한도"] || "정보 없음";
+
+  const wishlistsave = async () => {
+    try {
+      const rsp = await AxiosApi.WishListsave(
+        useemail,
+        age,
+        loan_id,
+        loan_name,
+        loan_category,
+        rate,
+        lim
+      );
+      if (rsp.data) {
+        alert("장바구니에 대출 정보를 담았습니다.");
+      } else {
+        alert("장바구니에 못담았습니다.");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
   return (
     <>
       <ModalStyle>
@@ -400,7 +472,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
                     <strong>이자율</strong>
                     <Lowboxtext>
                       {loan._source["평균 금리"] ||
-                        loan._source["전처리 이자율 "] ||
+                        loan._source["이자율 "] ||
                         "정보없음"}
                     </Lowboxtext>
                   </Lowbox>
@@ -469,6 +541,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
               </main>
               <footer>
                 <Button onClick={close}>취소</Button>
+                <Button onClick={wishlistsave}>장바구니 담기</Button>
               </footer>
             </section>
           )}

@@ -3,6 +3,7 @@ import axios from "axios";
 const ELASTIC = "http://localhost:9200";
 
 const ElasticsearchAxios = {
+  // 합본 불러오는건데 안쓰는것
   GetElastic: async (page, itemsCountPerPage) => {
     const from = (page - 1) * itemsCountPerPage;
     return await axios.get(`${ELASTIC}/final/_search`, {
@@ -12,6 +13,7 @@ const ElasticsearchAxios = {
       },
     });
   },
+  // 엘라스틱서치에서 credit_loan 문서 불러옴
   Getcredit_loan: async (page, itemsCountPerPage) => {
     const from = (page - 1) * itemsCountPerPage;
     return await axios.get(`${ELASTIC}/credit_loan/_search`, {
@@ -48,6 +50,7 @@ const ElasticsearchAxios = {
       },
     });
   },
+  // 엘라스틱서치 credit_loan문서에서 순번으로 검색
   Getcredit_loan_ser: async (loan_no) => {
     return await axios.post(`${ELASTIC}/credit_loan/_search`, {
       query: {

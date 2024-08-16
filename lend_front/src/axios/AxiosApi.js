@@ -166,6 +166,30 @@ const AxiosApi = {
       commnetDto
     );
   },
+  // 찜목록 등록
+  WishListsave: async (
+    useemail,
+    age,
+    loan_id,
+    loan_name,
+    loan_category,
+    rate,
+    lim
+  ) => {
+    const WishListsave = {
+      memberId: useemail,
+      userage: age,
+      loan_id: loan_id,
+      loan_name: loan_name,
+      loan_category: loan_category,
+      rate: rate,
+      lim: lim,
+    };
+    return await AxiosInstance.post(
+      `${LEND_DOMAIN}/wishlist/ssave`,
+      WishListsave
+    );
+  },
   // 문의게시판 ----------------------
 };
 
