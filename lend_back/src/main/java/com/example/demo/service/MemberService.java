@@ -21,8 +21,7 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
 
-
-    // 수정 두개로 나눠야됨 12:43
+    // 카카오 첫 로그인시 추가 정보 입력
     public MemberResDto getKakaoInfo(MemberReqDto memberReqDto) {
         Optional<Member> mem = memberRepository.findByEmail(memberReqDto.getEmail());
         System.out.println(mem+ "mem");
@@ -38,9 +37,9 @@ public class MemberService {
             return null;
         }
     }
+    // 마이페이지 정보 수정
     public MemberResDto modifyMember(MemberReqDto memberReqDto) {
         Optional<Member> mem = memberRepository.findByEmail(memberReqDto.getEmail());
-        System.out.println(mem+ "mem");
         if(mem.isPresent()) {
             Member member = mem.get();
             member.setEmail(memberReqDto.getEmail());
@@ -53,14 +52,16 @@ public class MemberService {
         }
     }
 
-
-
     // 회원 정보 조회(로그인 한 사용자)
     public MemberResDto getMemberInfo(String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("해당 회원이 존재하지 않습니다.")
         );
         return MemberResDto.of(member);
+    }
+    public Boolean findByNameAndEmail(String name,String email) {
+        Optional<Member> mem = memberRepository.findByNameAndEmail(name, email);
+        return mem.isPresent();
     }
 
     // 회원 삭제
@@ -72,6 +73,20 @@ public class MemberService {
             memberRepository.delete(member);
             return true;
         } catch (RuntimeException e) {
+            return false;
+        }
+    }
+    // 비밀 번호 찾기 ( 새로운 비밀 번호)
+    public boolean findByNameAndEmail(MemberResDto memberResDto) {
+        Optional<Member> mem = memberRepository.findByEmail(memberResDto.getEmail());
+        if(mem.isPresent()) {
+            Member member = mem.get();
+            member.setEmail(memberResDto.getEmail());
+            member.setPassword(passwordEncoder.encode(memberResDto.getPassword()));
+            return true;
+        }
+        else {
+            log.error("새로운 비밀 번호등록중 에러");
             return false;
         }
     }
@@ -87,9 +102,6 @@ public class MemberService {
 //        return memberDtos;
 //    }
 
-//    public Optional<MemberDto> findByEmail(String email) {
-//        Optional<Member> member = memberRepository.findById(email);
-//        return member.map(MemberDto::of);
-//    }
+
 
 }

@@ -96,6 +96,17 @@ const AxiosApi = {
     console.log("getMemberInfo 실행");
     return await AxiosInstance.get(`/members/memberinfo`);
   },
+  // 비밀번호 찾기
+  findPw: async (name, email) => {
+    console.log(email, "email , name", name);
+    return await axios.get(`${LEND_DOMAIN}/auth/pw/${name}/${email}`);
+  },
+  // 비밀번호 찾기
+  findNewPw: async (user) => {
+    console.log(user, "user");
+    return await axios.post(`${LEND_DOMAIN}/auth/pw/new`, user);
+  },
+
   //회원 정보 수정(비밀번호 수정)
   modifyMyinfo: async (user) => {
     console.log(user, "user");

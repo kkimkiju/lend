@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Container,
   Row,
@@ -13,6 +13,8 @@ import {
 import LoginMain from "../components/LoginMain";
 import styled from "styled-components";
 import SingUpContainer from "../components/SingUpContainer";
+import FindInfo from "../components/FindInfo";
+import { UserContext } from "../context/UserStore";
 const LoginContainer = styled.div`
   margin: 0 10%;
   width: 800px;
@@ -21,14 +23,34 @@ const LoginContainer = styled.div`
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
 
+  const context = useContext(UserContext);
+  const { isModalOpen, setIsModalOpen } = context;
+  const ref = useRef(null);
   const toggleForm = () => {
     setIsSignIn(!isSignIn);
   };
-
+  useEffect(() => {
+    setIsModalOpen(false);
+  }, []);
+  // 다른 곳을 클릭하면 드롭다운 닫기
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setIsModalOpen(false);
+    }
+  };
+  // 이벤트 리스너 등록
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      console.log("isModalOpen", isModalOpen);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   return (
     <>
       <GlobalStyle />
       <Container isSignIn={isSignIn}>
+        <FindInfo open={isModalOpen} ref={ref}></FindInfo>
         <Row>
           <Col isSignIn={!isSignIn}>
             <SingUpContainer isSignIn={isSignIn}></SingUpContainer>

@@ -14,6 +14,10 @@ const UserStore = (props) => {
   const [profileChange, setProfileChange] = useState(
     localStorage.getItem("profileChange") || ""
   );
+  // 비밀번호찾기 모달 상태
+  const [isModalOpen, setIsModalOpen] = useState(
+    localStorage.getItem("isModalOpen") || false
+  );
 
   useEffect(() => {
     localStorage.setItem("loginStatus", loginStatus);
@@ -24,7 +28,9 @@ const UserStore = (props) => {
   useEffect(() => {
     localStorage.setItem("profileChange", subscribeStatus);
   }, [profileChange]);
-
+  useEffect(() => {
+    localStorage.setItem("isModalOpen", isModalOpen);
+  }, [isModalOpen]);
   return (
     <UserContext.Provider
       value={{
@@ -34,6 +40,8 @@ const UserStore = (props) => {
         setSubscribeStatus,
         profileChange,
         setProfileChange,
+        isModalOpen,
+        setIsModalOpen,
       }}
     >
       {props.children}

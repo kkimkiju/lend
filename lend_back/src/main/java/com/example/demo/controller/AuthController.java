@@ -37,8 +37,17 @@ public class AuthController {
 
         return ResponseEntity.ok(memberService.getKakaoInfo(memberReqDto));
     }
-
-    //    // 아이디 찾기
+    @GetMapping("/pw/{name}/{email}")
+    public ResponseEntity<Boolean> findByNameAndEmail(@PathVariable String name,@PathVariable String email){
+        boolean isTrue  = memberService.findByNameAndEmail(name,email);
+        return ResponseEntity.ok(isTrue);
+    }
+    @PostMapping("/pw/new")
+    public ResponseEntity<Boolean> getNewPw(@RequestBody MemberResDto memberResDto){
+        boolean isTrue  = memberService.findByNameAndEmail(memberResDto);
+        return ResponseEntity.ok(isTrue);
+    }
+    // 아이디 찾기
 //    @PostMapping("/findid")
 //    public ResponseEntity <String> findId(@RequestBody MemberDto memberDto) {
 //        String email = authService.findId(memberDto);

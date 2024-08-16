@@ -1,9 +1,11 @@
 import styled, { keyframes } from "styled-components";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoImg from "../image/로고.png";
 import LoginComponent from "./LoginComponent";
 import KaKaoImg from "../image/카카오btn.png";
+import FindInfo from "./FindInfo";
+import { UserContext } from "../context/UserStore";
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -110,9 +112,11 @@ const LoginMain = ({ isSignIn }) => {
   const [idMessage, setIdMessage] = useState("");
   const [isTrue, setIsTrue] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const context = useContext(UserContext);
+  const { setIsModalOpen } = context;
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
-
+  // const ref = useRef(null);
   const kakaoLogin = () => {
     const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
     const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
@@ -149,7 +153,20 @@ const LoginMain = ({ isSignIn }) => {
   const handleLoginFail = () => {
     setIsLogin(false);
   };
-
+  // // 다른 곳을 클릭하면 드롭다운 닫기
+  // const handleClickOutside = (event) => {
+  //   if (ref.current && !ref.current.contains(event.target)) {
+  //     setIsModalOpen(false);
+  //   }
+  // };
+  // // 이벤트 리스너 등록
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     console.log("mouse down 실행");
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
   return (
     <Container isTrue={isTrue}>
       <Logo src={LogoImg} onClick={() => navigate("/lend")}></Logo>
@@ -175,19 +192,13 @@ const LoginMain = ({ isSignIn }) => {
           ></LoginComponent>
         </LoginBtt>
         <LoginEtc>
-          <>아이디/비밀번호 찾기</>
+          <div onClick={() => setIsModalOpen(true)}>비밀번호 찾기</div>
+          {/* <FindInfo open={isModalOpen} ref={ref}></FindInfo> */}
         </LoginEtc>
       </InputContainer>
-      {/* <ThirdLogin
-        onClick={() => kakaoLogin()}
-        openModal={openModal}
-      ></ThirdLogin> */}
-      {/* <KaKaoSignUpModal open={openModal}></KaKaoSignUpModal> */}
       <KaKaoBtt onClick={() => kakaoLogin()}>
         <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
       </KaKaoBtt>
-
-      {/* <LogoImg>네이버</LogoImg> */}
     </Container>
   );
 };

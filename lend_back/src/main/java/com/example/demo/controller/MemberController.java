@@ -22,10 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
-
-    private final PasswordEncoder passwordEncoder;
-
 
 
     // 회원정보 가져오기
@@ -46,6 +42,8 @@ public class MemberController {
         boolean isTrue = memberService.deleteMember(SecurityContextHolder.getContext().getAuthentication().getName());
         return ResponseEntity.ok(isTrue);
     }
+
+
 
 //    @GetMapping("/list")
 //    public ResponseEntity<List<MemberDto>> memberList(){
