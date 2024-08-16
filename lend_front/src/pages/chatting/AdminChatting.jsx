@@ -97,6 +97,7 @@ const Chatting = () => {
   const [inputMsg, setInputMsg] = useState("");
   const [sender, setSender] = useState("");
   const [messages, setMessages] = useState([]);
+  const [requestMember, setRequestMember] = useState("");
   const messagesEndRef = useRef(null);
   const { roomId } = useParams();
   const ws = useRef(null);
@@ -181,6 +182,19 @@ const Chatting = () => {
   };
 
   useEffect(() => {
+    // 채팅방 정보 가져 오기
+    const getChatRoom = async () => {
+      try {
+        const rsp = await AxiosApi.chatDetail(roomId);
+        setRequestMember(rsp.data.roomName);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getChatRoom();
+  }, []);
+
+  useEffect(() => {
     const connectWebSocket = () => {
       ws.current = new WebSocket(Common.SOCKET_URL);
 
@@ -232,32 +246,35 @@ const Chatting = () => {
   }, [socketConnected, sender]);
 
   return (
-    <ChatContainer>
-      <ChatHeader>
-        <CloseButton onClick={onClickMsgClose} />
-        <RoomName>Lend와 채팅</RoomName>
-      </ChatHeader>
-      <MessagesContainer>
-        {messages.map((msg, index) => (
-          <Contents key={index} isSender={msg.sender === sender}>
-            {msg.sender !== sender && <Sender>Lend 상담원</Sender>}
-            <Message isSender={msg.sender === sender}>
-              {`${msg.message}`}
-            </Message>
-          </Contents>
-        ))}
-        <div ref={messagesEndRef} />
-      </MessagesContainer>
-      <div>
-        <Input
-          placeholder="문자 전송"
-          value={inputMsg}
-          onChange={onChangMsg}
-          onKeyUp={onEnterKey}
-        />
-        <SendButton onClick={onClickMsgSend} />
-      </div>
-    </ChatContainer>
+    <>
+      <AdminHeader />
+      <ChatContainer>
+        <ChatHeader>
+          <CloseButton onClick={onClickMsgClose} />
+          <RoomName>{requestMember}와 채팅</RoomName>
+        </ChatHeader>
+        <MessagesContainer>
+          {messages.map((msg, index) => (
+            <Contents key={index} isSender={msg.sender === sender}>
+              {msg.sender !== sender && <Sender>{`${msg.sender}`}</Sender>}
+              <Message isSender={msg.sender === sender}>
+                {`${msg.message}`}
+              </Message>
+            </Contents>
+          ))}
+          <div ref={messagesEndRef} />
+        </MessagesContainer>
+        <div>
+          <Input
+            placeholder="문자 전송"
+            value={inputMsg}
+            onChange={onChangMsg}
+            onKeyUp={onEnterKey}
+          />
+          <SendButton onClick={onClickMsgSend} />
+        </div>
+      </ChatContainer>
+    </>
   );
 };
 

@@ -6,6 +6,7 @@ import {
   Routes,
   Navigate,
   useLocation,
+  useMatch,
 } from "react-router-dom";
 import Mainpage from "./pages/Mainpage";
 import Header from "./components/Header";
@@ -16,6 +17,7 @@ import Support from "./pages/supportpage/support";
 import ChatList from "./pages/chatting/ChatList";
 import ChatRoomCreate from "./pages/chatting/ChatRoomCreate";
 import Chatting from "./pages/chatting/Chatting";
+import AdminChatting from "./pages/chatting/AdminChatting";
 import Loaninfo from "./pages/loaninfo/loaninfo";
 import WishList from "./pages/WishList";
 import UserStore from "./context/UserStore";
@@ -41,6 +43,10 @@ function App() {
             <Route path="/lend/support" element={<Support />} />
             <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
             <Route path="/lend/chatting/:roomId" element={<Chatting />} />
+            <Route
+              path="/lend/admin/chatting/:roomId"
+              element={<AdminChatting />}
+            />
             <Route path="/lend/chatlist" element={<ChatList />} />
             <Route path="/lend/Loaninfo" element={<Loaninfo />} />
             <Route path="/lend/wishlist" element={<WishList />} />
@@ -60,9 +66,12 @@ function ConditionalHeader() {
 
   const isLoginPage = location.pathname === "/lend/login";
   const isChatListPage = location.pathname === "/lend/chatlist";
+  const isAdminChattingPage = useMatch("/lend/admin/chatting/:roomId");
 
   // 로그인 페이지와 채팅 리스트 페이지에서는 헤더를 숨김
-  return <>{!isLoginPage && !isChatListPage && <Header />}</>;
+  return (
+    <>{!isLoginPage && !isChatListPage && !isAdminChattingPage && <Header />}</>
+  );
 }
 
 function SlideWrapper({ children }) {

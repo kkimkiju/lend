@@ -74,7 +74,7 @@ function ChatList() {
   }, []);
 
   const enterChatRoom = (roomId) => {
-    navigate(`/lend/chatting/${roomId}`);
+    navigate(`/lend/admin/chatting/${roomId}`);
   };
 
   return (

@@ -4,7 +4,6 @@ import com.example.demo.dto.ChatMessageDto;
 import com.example.demo.dto.ChatRoomDto;
 import com.example.demo.dto.ChatRoomReqDto;
 import com.example.demo.entity.ChatMessage;
-import com.example.demo.entity.ChatRoom;
 import com.example.demo.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,8 +37,6 @@ public class ChatController {
     @PostMapping("/new")
     public ResponseEntity<ChatRoomDto> createRoom(@RequestBody ChatRoomReqDto chatRoomReqDto) {
         log.warn("email : {}", chatRoomReqDto.getEmail());
-//        ChatRoomResDto room = chatService.createRoom(chatRoomReqDto.getEmail());
-//        System.out.println(room.getRoomId());
         return ResponseEntity.ok(chatService.createRoom(chatRoomReqDto.getEmail()));
     }
     @GetMapping("/list")
@@ -67,7 +64,4 @@ public class ChatController {
         }).collect(Collectors.toList());
         return ResponseEntity.ok(messageDtos);
     }
-
-
-
 }
