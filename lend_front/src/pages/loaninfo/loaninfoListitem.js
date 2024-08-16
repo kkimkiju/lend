@@ -1,63 +1,52 @@
 import styled from "styled-components";
 
 const DetLi = styled.li`
-  background-color: none;
   display: flex;
+
   align-items: center;
   border-bottom: 2px solid #ced4da;
+  cursor: pointer;
+
   &:last-child {
     border-bottom: none;
     margin-bottom: 0;
   }
-  cursor: pointer;
 `;
 
 const TiContain = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  margin: 0px 22% 9px 12%;
   text-align: center;
-  @media (max-width: 500px) {
-    margin-right: 5%;
-    width: 16%;
-  }
-  @media (max-width: 429px) {
-    margin: 0;
-    width: 33%;
-  }
 `;
 
 const DetTitle = styled.h3`
-  width: 450px;
+  flex: 1;
   color: black;
-  margin: 0px 4% 0px 0%;
-  @media (max-width: 500px) {
-    margin-right: 17%;
-  }
-  @media (max-width: 429px) {
-    margin-right: 14%;
-    font-size: 17px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 const Detamo = styled.p`
+  flex: 1;
   color: #444;
-  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  @media (max-width: 429px) {
-    width: 13%;
-  }
 `;
 
 const Detdate = styled.p`
+  flex: 1;
   color: #777;
-  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  width: 180px;
-  @media (max-width: 429px) {
-    font-size: 11px;
-  }
 `;
-
 const LoaninfoListitem = ({ loanitem, onClickde }) => {
   // title이 undefined일 경우 처리
   const truncateTitle = (title) => {
@@ -70,7 +59,7 @@ const LoaninfoListitem = ({ loanitem, onClickde }) => {
       <TiContain>
         <Detdate>
           {loanitem._source["금융회사 명"] || "No company name"}
-        </Detdate>{" "}
+        </Detdate>
         {/* 기본값 설정 */}
       </TiContain>
       <DetTitle>{truncateTitle(loanitem._source["금융 상품명"])}</DetTitle>

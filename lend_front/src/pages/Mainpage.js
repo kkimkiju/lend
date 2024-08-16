@@ -109,8 +109,11 @@ const TextOverlay = styled.div`
 
 const TryBtn = styled.div`
   margin-top: 30px;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 120px;
+  height: 50px;
   border-radius: 100px;
   color: white;
   font-size: 25px;

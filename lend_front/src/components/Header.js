@@ -13,7 +13,9 @@ const Header = () => {
         <LOGO src={Logo} onClick={() => navigate("/lend")}></LOGO>
         {loginStatus ? (
           <Box>
-            <Menu>대출 상품</Menu>
+            <Menu as={Link} to="/lend/Loaninfo">
+              대출 상품
+            </Menu>
             <Menu as={Link} to="/lend/support">
               문의 게시판
             </Menu>

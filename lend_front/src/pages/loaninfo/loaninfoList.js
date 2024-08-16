@@ -3,6 +3,7 @@ import React from "react";
 import LoaninfoListitem from "./loaninfoListitem";
 
 const LoanUl = styled.ul`
+  width: 100%;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -10,7 +11,7 @@ const LoanUl = styled.ul`
 
 const LoaninfoList = ({ loanitem, onClickde }) => {
   return (
-    <ul>
+    <LoanUl>
       {loanitem.map((item) => (
         <LoaninfoListitem
           key={item._id}
@@ -18,7 +19,7 @@ const LoaninfoList = ({ loanitem, onClickde }) => {
           onClickde={onClickde}
         />
       ))}
-    </ul>
+    </LoanUl>
   );
 };
 

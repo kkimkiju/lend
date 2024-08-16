@@ -9,13 +9,13 @@ import Suggestmodal from "./suggestmodal";
 
 const Container = styled.div`
   display: flex;
+
   flex-direction: column;
 `;
 const Adbox = styled.div`
   width: 100%;
 `;
 const Sett = styled.div`
-  margin: 10px;
   display: flex;
   position: relative;
 `;
@@ -46,24 +46,40 @@ const Loanbox = styled.div`
   flex-direction: column;
 `;
 const Loantit = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   background-color: #94b9f3;
-  padding: 10px;
+  margin-top: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 720px) {
     display: none;
   }
+
+  > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 const Title = styled.div`
-  flex: 1;
+  display: flex;
+  flex: 2;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 20px;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 `;
 const Loan = styled.div`
   width: 100%;
-  height: 550px;
+  height: auto;
 `;
 const Categbut = styled.button`
   padding: 10px 20px;
