@@ -8,7 +8,7 @@ const SimilUl = styled.ul`
   margin: 0;
 `;
 
-const SimilList = ({ loanitems = [], onClickde }) => {
+const SimilList = ({ loanitems = [], handleDetailClick, category }) => {
   return (
     <ul>
       {loanitems.length > 0 ? (
@@ -16,7 +16,8 @@ const SimilList = ({ loanitems = [], onClickde }) => {
           <SimilListitem
             key={index} // 데이터의 고유 ID가 있다면 그 값을 사용하는 것이 좋습니다.
             loanitem={item}
-            onClickde={onClickde}
+            handleDetailClick={handleDetailClick}
+            category={category}
           />
         ))
       ) : (

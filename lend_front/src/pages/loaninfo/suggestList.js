@@ -8,7 +8,7 @@ const LoanUl = styled.ul`
   margin: 0;
 `;
 
-const SuggestList = ({ loanitems = [], onClickde }) => {
+const SuggestList = ({ loanitems = [], handleDetailClick, category }) => {
   return (
     <LoanUl>
       {loanitems.length > 0 ? (
@@ -16,7 +16,8 @@ const SuggestList = ({ loanitems = [], onClickde }) => {
           <SuggestListitem
             key={item._id}
             loanitem={item}
-            onClickde={onClickde}
+            handleDetailClick={handleDetailClick}
+            category={category}
           />
         ))
       ) : (

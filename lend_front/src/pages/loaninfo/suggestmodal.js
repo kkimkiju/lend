@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SuggestList from "./suggestList";
-import Simodal from "./simodal";
+import { useNavigate } from "react-router-dom";
 
 const ModalStyle = styled.div`
   .modal {
@@ -144,13 +144,13 @@ const Suggestmodal = (props) => {
   const [age, setAge] = useState("");
   const [annincome, setAnnincome] = useState("");
   const [selectedsiLoan, setSelectedsiLoan] = useState("");
-  const [selectopen, setSelectopen] = useState(false);
+  const loan_no = selectedsiLoan["금융회사 명"];
+  const navigate = useNavigate();
 
-  const onClickde = (e) => {
-    setSelectopen(true);
-  };
-  const sugclose = () => {
-    setSelectopen(false);
+  const handleDetailClick = (loan_no) => {
+    console.log(loan_no);
+    const url = `/lend/Sugg/${loan_no}/${category}`;
+    window.open(url, "_blank");
   };
 
   const modalclose = () => {
@@ -451,7 +451,11 @@ const Suggestmodal = (props) => {
                     </Textbox>
                   </>
                 )}
-                <SuggestList loanitems={selectedsiLoan} onClickde={onClickde} />
+                <SuggestList
+                  loanitems={selectedsiLoan}
+                  handleDetailClick={handleDetailClick}
+                  category={category}
+                />
               </main>
               <footer>
                 <Button onClick={modalclose}>취소</Button>
@@ -461,7 +465,6 @@ const Suggestmodal = (props) => {
           )}
         </div>
       </ModalStyle>
-      <Simodal open={selectopen} close={sugclose} loan={selectedsiLoan} />
     </>
   );
 };

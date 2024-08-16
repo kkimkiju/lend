@@ -196,17 +196,12 @@ const Sugtextbox = styled.div`
 `;
 const LoanDetail = ({ open, close, loan, categorybu }) => {
   const [similarLoans, setSimilarLoans] = useState([]);
-  const [selectedsiLoan, setSelectedsiLoan] = useState(null);
-  const [siOpen, setSiOpen] = useState(false);
+  // const loan_no = loan._source?.["순번"];
 
-  const onClickde = (loan) => {
-    setSelectedsiLoan(loan);
-    setSiOpen(true);
-  };
-
-  const closeDe = () => {
-    setSiOpen(false); // 추천 대출 모달 닫기
-    setSelectedsiLoan(null);
+  const handleDetailClick = (loan_no) => {
+    console.log(loan_no);
+    const url = `/lend/Sugg/${loan_no}/${categorybu}`;
+    window.open(url, "_blank");
   };
 
   useEffect(() => {
@@ -405,7 +400,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
                     <strong>이자율</strong>
                     <Lowboxtext>
                       {loan._source["평균 금리"] ||
-                        loan._source["이자율 "] ||
+                        loan._source["전처리 이자율 "] ||
                         "정보없음"}
                     </Lowboxtext>
                   </Lowbox>
@@ -479,7 +474,11 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
           )}
           <Sugbox>
             <Sugtextbox>비슷한 대출 상품</Sugtextbox>
-            <SimilList loanitems={similarLoans} onClickde={onClickde} />
+            <SimilList
+              loanitems={similarLoans}
+              handleDetailClick={handleDetailClick}
+              category={categorybu}
+            />
           </Sugbox>
         </div>
       </ModalStyle>

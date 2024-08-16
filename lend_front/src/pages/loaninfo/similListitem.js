@@ -51,7 +51,7 @@ const Detamo = styled.p`
   }
 `;
 
-const SimilListitem = ({ loanitem, onClickde }) => {
+const SimilListitem = ({ loanitem, handleDetailClick, category }) => {
   if (!loanitem) {
     console.warn("Invalid loanitem structure:", loanitem);
     return null;
@@ -71,7 +71,7 @@ const SimilListitem = ({ loanitem, onClickde }) => {
   const loanPeriod = loanitem["전처리 최대 상환 기간"];
 
   return (
-    <DetLi onClick={() => onClickde(loanitem)}>
+    <DetLi onClick={() => handleDetailClick(loanitem["순번"])}>
       <TiContain>
         <Detdate>
           {loanValue

@@ -21,6 +21,7 @@ import WishList from "./pages/WishList";
 import UserStore from "./context/UserStore";
 import KaKaoLogin from "./components/KaKaoLogin";
 import Mypage from "./pages/Mypage";
+import Sugg from "./pages/loaninfo/sugg";
 
 function App() {
   return (
@@ -45,6 +46,8 @@ function App() {
             <Route path="/lend/wishlist" element={<WishList />} />
             <Route path="/lend/mypage" element={<Mypage />} />
             <Route path="/lend/kakaologin" element={<KaKaoLogin />} />
+            <Route path="/lend/Sugg" element={<Sugg />} />
+            <Route path="/lend/Sugg/:loan_no/:category" element={<Sugg />} />
           </Routes>
         </Router>
       </UserStore>

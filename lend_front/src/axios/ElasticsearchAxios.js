@@ -48,5 +48,41 @@ const ElasticsearchAxios = {
       },
     });
   },
+  Getcredit_loan_ser: async (loan_no) => {
+    return await axios.post(`${ELASTIC}/credit_loan/_search`, {
+      query: {
+        term: {
+          순번: loan_no, // "순번" 필드명과 loan_no 값을 이용해 검색
+        },
+      },
+    });
+  },
+  Getjeonse_loan_ser: async (loan_no) => {
+    return await axios.post(`${ELASTIC}/jeonse_loan/_search`, {
+      query: {
+        term: {
+          순번: loan_no, // "순번" 필드명과 loan_no 값을 이용해 검색
+        },
+      },
+    });
+  },
+  Getmortgage_loan_ser: async (loan_no) => {
+    return await axios.post(`${ELASTIC}/mortgage_loan/_search`, {
+      query: {
+        term: {
+          순번: loan_no, // "순번" 필드명과 loan_no 값을 이용해 검색
+        },
+      },
+    });
+  },
+  Getpeoplefinloan_ser: async (loan_no) => {
+    return await axios.post(`${ELASTIC}/peoplefinloan/_search`, {
+      query: {
+        term: {
+          순번: loan_no, // "순번" 필드명과 loan_no 값을 이용해 검색
+        },
+      },
+    });
+  },
 };
 export default ElasticsearchAxios;

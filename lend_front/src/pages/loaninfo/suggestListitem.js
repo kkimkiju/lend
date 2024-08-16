@@ -58,7 +58,7 @@ const Detdate = styled.p`
   }
 `;
 
-const SuggestListitem = ({ loanitem, onClickde }) => {
+const SuggestListitem = ({ loanitem, handleDetailClick, category }) => {
   if (!loanitem) {
     return <p>No loan item data available</p>;
   }
@@ -69,7 +69,7 @@ const SuggestListitem = ({ loanitem, onClickde }) => {
   };
 
   return (
-    <DetLi onClick={() => onClickde(loanitem)}>
+    <DetLi onClick={() => handleDetailClick(loanitem["순번"])}>
       <TiContain>
         <Detdate>
           {loanitem["금융회사 명"] ||
