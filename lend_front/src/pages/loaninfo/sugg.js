@@ -5,7 +5,7 @@ import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
 import AxiosApi from "../../axios/AxiosApi";
 
 const Container = styled.div`
-  width: 100%;
+  width: 50%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -33,7 +33,7 @@ const Grayline2 = styled.div`
 const Gbox = styled.div`
   background-color: #58faac;
   width: 100%;
-  height: 150px;
+  height: 90px;
   display: flex;
 `;
 
@@ -54,7 +54,7 @@ const Lowboxtext = styled.div`
 
 const Wbox = styled.div`
   width: 100%;
-  height: 280px;
+  height: 250px;
   display: flex;
   margin-top: 20px;
   border: 1px solid #dee2e6;
@@ -91,18 +91,6 @@ const Wwbox = styled.div`
   height: 50%;
   display: flex;
 `;
-const Sugbox = styled.div`
-  width: 450px;
-  height: 50%;
-  margin-right: 10%;
-`;
-const Sugtextbox = styled.div`
-  width: 100%;
-  text-align: center;
-  font-weight: bold;
-  font-size: 17px;
-  color: white;
-`;
 const Button = styled.button`
   width: 100px;
   height: 50px;
@@ -116,6 +104,19 @@ const Button = styled.button`
   position: absolute;
   right: 10px;
   bottom: 5px;
+`;
+
+const Pbox = styled.div`
+  width: 100%;
+  text-align: left;
+`;
+
+const Bbox = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
 `;
 
 const Sugg = () => {
@@ -303,71 +304,82 @@ const Sugg = () => {
   };
 
   return (
-    <Container>
-      <Test1 />
-      <h2>{loanitem["금융 상품명"] || "정보 없음"}</h2>
-      <Grayline />
-      <Gbox>
-        <Lowbox>
-          <strong>이자율</strong>
-          <Lowboxtext>
-            {loanitem["평균 금리"] || loanitem["전처리 이자율 "] || "정보 없음"}
-          </Lowboxtext>
-        </Lowbox>
-        <Grayline2 />
-        <Lowbox>
-          <strong>대출 한도</strong>
-          <Lowboxtext>
-            {loanitem["대출 한도"] || loanitem["대출한도"] || "정보 없음"}
-          </Lowboxtext>
-        </Lowbox>
-      </Gbox>
-      <Wbox>
-        <Wwbox>
-          <Wlowbox>
-            <strong>은행명</strong>
-            <Lowwboxtext>{loanitem["금융회사 명"] || "정보 없음"}</Lowwboxtext>
-          </Wlowbox>
-          <Wlowbox>
-            <strong>대출종류명</strong>
-            <Lowwboxtext>{loanitem["대출종류명"] || "정보 없음"}</Lowwboxtext>
-          </Wlowbox>
-          <Wlowbox>
-            <strong>가입방법</strong>
-            <Lowwboxtext title={loanitem["가입 방법"] || loanitem["신청 방법"]}>
-              {loanitem["가입 방법"] || loanitem["신청 방법"] || "정보 없음"}
-            </Lowwboxtext>
-          </Wlowbox>
-        </Wwbox>
+    <Bbox>
+      <Container>
+        <Test1 />
+        <h2>{loanitem["금융 상품명"] || "정보 없음"}</h2>
         <Grayline />
-        <Wwbox>
-          <Hwlowbox>
-            <strong>{getLabel(loanitem)}</strong>
-            <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
-          </Hwlowbox>
-          <Hwlowbox>
-            <strong>{de(category)}</strong>
-            <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
-          </Hwlowbox>
-        </Wwbox>
-      </Wbox>
-      <p>
-        <strong>{are(category)}:</strong>
-        {are1(category, loanitem)}
-      </p>
-      <p>
-        <strong>{agee(category)}:</strong> {agee1(category, loanitem)}
-      </p>
-      <p>
-        <strong>{qq(category)}:</strong>
-        {qq1(category, loanitem)}
-      </p>
-      <p>
-        <strong>보증기관:</strong>
-        {ww1(category, loanitem)}
-      </p>
-      <Button onClick={wishlistsave}>장바구니 담기</Button>
-    </Container>
+        <Gbox>
+          <Lowbox>
+            <strong>이자율</strong>
+            <Lowboxtext>
+              {loanitem["평균 금리"] ||
+                loanitem["전처리 이자율 "] ||
+                "정보 없음"}
+            </Lowboxtext>
+          </Lowbox>
+          <Grayline2 />
+          <Lowbox>
+            <strong>대출 한도</strong>
+            <Lowboxtext>
+              {loanitem["대출 한도"] || loanitem["대출한도"] || "정보 없음"}
+            </Lowboxtext>
+          </Lowbox>
+        </Gbox>
+        <Wbox>
+          <Wwbox>
+            <Wlowbox>
+              <strong>은행명</strong>
+              <Lowwboxtext>
+                {loanitem["금융회사 명"] || "정보 없음"}
+              </Lowwboxtext>
+            </Wlowbox>
+            <Wlowbox>
+              <strong>대출종류명</strong>
+              <Lowwboxtext>{loanitem["대출종류명"] || "정보 없음"}</Lowwboxtext>
+            </Wlowbox>
+            <Wlowbox>
+              <strong>가입방법</strong>
+              <Lowwboxtext
+                title={loanitem["가입 방법"] || loanitem["신청 방법"]}
+              >
+                {loanitem["가입 방법"] || loanitem["신청 방법"] || "정보 없음"}
+              </Lowwboxtext>
+            </Wlowbox>
+          </Wwbox>
+          <Grayline />
+          <Wwbox>
+            <Hwlowbox>
+              <strong>{getLabel(loanitem)}</strong>
+              <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
+            </Hwlowbox>
+            <Hwlowbox>
+              <strong>{de(category)}</strong>
+              <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
+            </Hwlowbox>
+          </Wwbox>
+        </Wbox>
+        <Pbox>
+          <p>
+            <strong>{are(category)}:</strong>
+            {are1(category, loanitem)}
+          </p>
+          <p>
+            <strong>{agee(category)}:</strong> {agee1(category, loanitem)}
+          </p>
+          <p>
+            <strong>{qq(category)}:</strong>
+            {qq1(category, loanitem)}
+          </p>
+          <p>
+            <strong>보증기관:</strong>
+            {ww1(category, loanitem)}
+          </p>
+        </Pbox>
+
+        <Button onClick={wishlistsave}>장바구니 담기</Button>
+      </Container>
+    </Bbox>
   );
 };
 
