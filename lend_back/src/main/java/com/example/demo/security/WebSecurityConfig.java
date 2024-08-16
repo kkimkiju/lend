@@ -4,8 +4,8 @@ package com.example.demo.security;
 import com.example.demo.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-    import org.springframework.context.annotation.Configuration;
-    import org.springframework.http.HttpMethod;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 //WebSecurityConfig.java
 
 
@@ -46,13 +46,14 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                 .accessDeniedHandler(jwtAccessDeniedHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**", "/","/kakao/**").permitAll()
+                .antMatchers("/auth/**", "/","/lend","/kakao/**").permitAll()
                 .antMatchers( "/static/**", "/ws/**", "/elastic/**").permitAll()
                 .antMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**", "/swagger/**", "/sign-api/exception").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/favicon.ico","/manifest.json").permitAll()
                 .anyRequest().authenticated()
-
+                .and()
+                .cors()
                 .and()
                 .apply(new JwtSecurityConfig(tokenProvider));
 

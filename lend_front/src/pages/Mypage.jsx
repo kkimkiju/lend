@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import AxiosApi from "../axios/AxiosApi";
 import { UserContext } from "../context/UserStore";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -105,10 +106,13 @@ const Mypage = () => {
   const [passwordheckError, setPasswordCheckError] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [name, setName] = useState("");
-
+  const [loginEmail, setLoginEmail] = useState("");
+  const [identityNumber, setIdentityNumber] = useState("");
+  const [isKaKao, setIsKaKao] = useState(false);
+  const navigate = useNavigate();
   const context = useContext(UserContext);
-  const { loginStatus, setLoginStatus } = context;
-  const email = localStorage.getItem("email");
+  const { loginStatus } = context;
+
   // 새로운 비밀번호 입력
   const onChangePassword = (e) => {
     const pw = e.target.value;
@@ -143,22 +147,37 @@ const Mypage = () => {
       const rsp = await AxiosApi.getMemberInfo();
       console.log(rsp.data, "data");
       setName(rsp.data.name);
+      setLoginEmail(rsp.data.email);
+      setIsKaKao(rsp.data.isKaKao);
+      setIdentityNumber(rsp.data.identityNumber);
     };
-    getInfo();
+    if (loginStatus) {
+      getInfo();
+    }
   }, []);
   const modify = async () => {
-    const user = { password: newPassword };
-    try {
-      const response = await AxiosApi.modifyMyinfo(user);
-      if (response.data) {
-        alert("수정에 성공했습니다.");
-        window.location.reload();
-        console.log(response.data);
-        // navigate("/apueda/login");
+    const user = {
+      email: loginEmail,
+      password: newPassword,
+      identityNumber: identityNumber,
+      name: name,
+      isKaKao: false,
+    };
+    if (pwdValid) {
+      try {
+        const response = await AxiosApi.extraInfo(user);
+        if (response.data) {
+          alert("수정에 성공했습니다.");
+
+          console.log(response.data);
+          navigate("/");
+        }
+      } catch (e) {
+        console.log(e);
+        alert("수정에 실패했습니다.");
       }
-    } catch (e) {
-      console.log(e);
-      alert("수정에 실패했습니다.");
+    } else {
+      alert("유효하지 않은 비밀번호입니다.");
     }
   };
 
@@ -171,34 +190,40 @@ const Mypage = () => {
         <InputContainer>
           <MyinfoContainer>
             <span>{name}</span>
-            <span>{email}</span>
+            <span>{loginEmail}</span>
           </MyinfoContainer>
+          {isKaKao ? (
+            <span>카카오 로그인 상태입니다</span>
+          ) : (
+            <>
+              <WithMsg>
+                <Input
+                  type="password"
+                  placeholder="새로운 비밀번호 입력"
+                  onChange={onChangePassword}
+                  value={newPassword}
+                />
+                {newPassword.length > 0 && (
+                  <div className={pwdValid ? "success" : "error"}>
+                    {passwordError}
+                  </div>
+                )}
+              </WithMsg>
+              <WithMsg>
+                <Input
+                  type="password"
+                  placeholder="비밀번호 재입력"
+                  onChange={handlePwCheck}
+                />
+                {passwordCheck.length > 0 && (
+                  <div className={pwdValid ? "success" : "error"}>
+                    {passwordheckError}
+                  </div>
+                )}
+              </WithMsg>
+            </>
+          )}
 
-          <WithMsg>
-            <Input
-              type="password"
-              placeholder="새로운 비밀번호 입력"
-              onChange={onChangePassword}
-              value={newPassword}
-            />
-            {newPassword.length > 0 && (
-              <div className={pwdValid ? "success" : "error"}>
-                {passwordError}
-              </div>
-            )}
-          </WithMsg>
-          <WithMsg>
-            <Input
-              type="password"
-              placeholder="비밀번호 재입력"
-              onChange={handlePwCheck}
-            />
-            {passwordCheck.length > 0 && (
-              <div className={pwdValid ? "success" : "error"}>
-                {passwordheckError}
-              </div>
-            )}
-          </WithMsg>
           <button onClick={() => modify()}>수정</button>
           <button>회원탈퇴</button>
         </InputContainer>

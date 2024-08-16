@@ -1,5 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
-import ThirdLogin from "./ThirdLogin";
+import styled, { keyframes } from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LogoImg from "../image/로고.png";
@@ -12,6 +11,7 @@ const fadeIn = keyframes`
     opacity: 1;
   }
 `;
+const KaKaoBtt = styled.div``;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -105,10 +105,16 @@ const LoginMain = ({ isSignIn }) => {
   const [idMessage, setIdMessage] = useState("");
   const [isTrue, setIsTrue] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
-
   const [pw, setPw] = useState("");
-
   const navigate = useNavigate();
+
+  const kakaoLogin = () => {
+    const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
+    const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
+    // oauth 요청 URL
+    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+    window.location.href = kakaoURL;
+  };
 
   useEffect(() => {
     setIsTrue(isSignIn);
@@ -168,7 +174,14 @@ const LoginMain = ({ isSignIn }) => {
           <>회원가입</>
         </LoginEtc>
       </InputContainer>
-      <ThirdLogin></ThirdLogin>
+      {/* <ThirdLogin
+        onClick={() => kakaoLogin()}
+        openModal={openModal}
+      ></ThirdLogin> */}
+      {/* <KaKaoSignUpModal open={openModal}></KaKaoSignUpModal> */}
+      <KaKaoBtt onClick={() => kakaoLogin()}>카카오</KaKaoBtt>
+
+      {/* <LogoImg>네이버</LogoImg> */}
     </Container>
   );
 };
