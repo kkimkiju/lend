@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository <ChatMessage, Long> {
-    List<ChatMessage> findByRoomId(ChatRoom room);
+    List<ChatMessage> findByRoomId(ChatRoom roomId);
     @Modifying
     @Query("DELETE FROM ChatMessage c WHERE c.roomId = :roomId")
     void deleteByRoomId(@Param("roomId") String roomId);

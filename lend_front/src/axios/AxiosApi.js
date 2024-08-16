@@ -69,7 +69,10 @@ const AxiosApi = {
       { headers: { "Content-Type": "application/json" } }
     );
   },
-
+  // 메세지 가져오기
+  getChatMessages: async (roomId) => {
+    return await AxiosInstance.get(`/chat/messages/${roomId}`);
+  },
   // 로그인
   login: async (email, password) => {
     const user = {
