@@ -208,9 +208,9 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
         setUseemail(rsp.data.email);
         setUseage(rsp.data.identityNumber);
         const identityNumber = rsp.data.identityNumber;
-        const birthYearPrefix = identityNumber.substring(0, 2); // '99'
+        const birthYearPrefix = identityNumber.substring(0, 2);
         const currentYear = new Date().getFullYear();
-        const currentYearPrefix = Math.floor(currentYear / 100) * 100; // 현재 연도의 천 단위 (예: 2000)
+        const currentYearPrefix = Math.floor(currentYear / 100) * 100;
 
         // 연도 보정: 50 이상이면 1900년대, 그렇지 않으면 2000년대
         const birthYear =

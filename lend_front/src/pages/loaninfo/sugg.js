@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
+import AxiosApi from "../../axios/AxiosApi";
 
 const Container = styled.div`
   width: 100%;
@@ -9,6 +10,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
+  position: relative;
 `;
 const Test1 = styled.div`
   width: 100%;
@@ -101,10 +103,67 @@ const Sugtextbox = styled.div`
   font-size: 17px;
   color: white;
 `;
+const Button = styled.button`
+  width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  background-color: #4ce386;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  position: absolute;
+  right: 10px;
+  bottom: 5px;
+`;
 
 const Sugg = () => {
   const { loan_no, category } = useParams();
-  const [loanitem, setLoanitem] = useState({}); // 처음엔 null로 초기화
+  const [loanitem, setLoanitem] = useState({});
+  const [useemail, setUseemail] = useState("");
+  const [useage, setUseage] = useState("");
+  const [age, setAge] = useState("");
+  useEffect(() => {
+    const userinfo = async () => {
+      try {
+        const rsp = await AxiosApi.getMemberInfo();
+        setUseemail(rsp.data.email);
+        setUseage(rsp.data.identityNumber);
+        const identityNumber = rsp.data.identityNumber;
+        const birthYearPrefix = identityNumber.substring(0, 2);
+        const currentYear = new Date().getFullYear();
+        const currentYearPrefix = Math.floor(currentYear / 100) * 100;
+
+        // 연도 보정: 50 이상이면 1900년대, 그렇지 않으면 2000년대
+        const birthYear =
+          parseInt(birthYearPrefix, 10) >= 50
+            ? currentYearPrefix - 100 + parseInt(birthYearPrefix, 10)
+            : currentYearPrefix + parseInt(birthYearPrefix, 10);
+
+        // 현재 나이 계산
+        const currentYearFull = new Date().getFullYear();
+        let calculatedAge = currentYearFull - birthYear;
+
+        // 생일이 아직 지나지 않았으면 나이 -1
+        const birthMonth = parseInt(identityNumber.substring(2, 4), 10); // 월
+        const birthDay = parseInt(identityNumber.substring(4, 6), 10); // 일
+
+        const today = new Date();
+        if (
+          today.getMonth() + 1 < birthMonth ||
+          (today.getMonth() + 1 === birthMonth && today.getDate() < birthDay)
+        ) {
+          calculatedAge--;
+        }
+
+        setAge(calculatedAge);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    userinfo();
+  }, []);
 
   useEffect(() => {
     const getConta = async () => {
@@ -122,7 +181,6 @@ const Sugg = () => {
         const { hits } = response.data.hits;
         if (hits.length > 0) {
           setLoanitem(hits[0]._source); // 첫 번째 항목의 _source를 설정
-          console.log("받아옴", loanitem);
         }
       } catch (error) {
         console.error("Error fetching list:", error);
@@ -217,6 +275,32 @@ const Sugg = () => {
       return loanitem["보증기관"] || "정보 없음";
     }
   };
+  const loan_id = loanitem["순번"];
+  const loan_name = loanitem["금융 상품명"];
+  const loan_category = category;
+  const rate = loanitem["평균 금리"] || loanitem["이자율 "] || "정보없음";
+  const lim = loanitem["대출한도"] || loanitem["대출 한도"] || "정보 없음";
+
+  const wishlistsave = async () => {
+    try {
+      const rsp = await AxiosApi.WishListsave(
+        useemail,
+        age,
+        loan_id,
+        loan_name,
+        loan_category,
+        rate,
+        lim
+      );
+      if (rsp.data) {
+        alert("장바구니에 대출 정보를 담았습니다.");
+      } else {
+        alert("장바구니에 못담았습니다.");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Container>
@@ -282,6 +366,7 @@ const Sugg = () => {
         <strong>보증기관:</strong>
         {ww1(category, loanitem)}
       </p>
+      <Button onClick={wishlistsave}>장바구니 담기</Button>
     </Container>
   );
 };
