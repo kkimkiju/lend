@@ -4,19 +4,28 @@ import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
 import { Toggle } from "./toggleComponent";
 
-
-export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, showFAQBoard}) {
+export default function WritePost({
+  writeMode,
+  setWriteMode,
+  showQuestionBoard,
+  showFAQBoard,
+}) {
   const navigate = useNavigate(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
 
+  const exitPost = async () => {
+    setWriteMode(false);
+    showQuestionBoard(true);
+    navigate("/lend/support");
+  };
   const savePost = async () => {
     // 입력값 유효성검사
-    if(!title) {
-      alert("제목을 입력하세요.")
-    } else if(!content) {
-      alert("내용을 입력하세요.")
+    if (!title) {
+      alert("제목을 입력하세요.");
+    } else if (!content) {
+      alert("내용을 입력하세요.");
     } else {
       const questionDto = {
         title: title,
@@ -34,15 +43,14 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
           showQuestionBoard(true);
           showFAQBoard(false);
           alert("질문이 등록 되었습니다.");
-          setTitle("")
-          setContent("")
+          setTitle("");
+          setContent("");
           navigate("/lend/support");
         }
       } catch (error) {
         console.error(error.response);
       }
     }
-    
   };
 
   return (
@@ -60,7 +68,10 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
-                <Toggle switchState={switchState} setSwitchState={setSwitchState} />
+                <Toggle
+                  switchState={switchState}
+                  setSwitchState={setSwitchState}
+                />
                 <textarea
                   className="ContentInput"
                   type="text"
@@ -69,7 +80,10 @@ export default function WritePost({ writeMode, setWriteMode, showQuestionBoard, 
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
+
                 <ButtonBox>
+                  <Button onClick={() => exitPost()}>닫기</Button>
+
                   <Button onClick={() => savePost()}>등록</Button>
                 </ButtonBox>
               </Item>
@@ -92,7 +106,7 @@ const Container = styled.div`
   align-items: center;
 `;
 const Box = styled.div`
-width: 100vw;
+  width: 100vw;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -100,9 +114,10 @@ width: 100vw;
 `;
 const ButtonBox = styled.div`
   display: flex;
+
   flex-direction: row;
   justify-content: flex-end;
-  :hover{
+  :hover {
     background-color: #29c555;
   }
 `;
@@ -114,47 +129,51 @@ const Button = styled.button`
   white-space: nowrap;
   font-size: 20px;
   color: white;
-  background-color: #DDD;
+  background-color: #ddd;
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
   padding: 5px 20px;
+  margin-right: 10px;
+  &:last-child {
+    margin-right: 0; /* 마지막 버튼은 margin-right 제거 */
+  }
 `;
-
 
 const Item = styled.div`
   display: flex;
+
   flex-direction: column;
   height: 50vh;
-  display: ${(props)=> props.writeMode && {
-    flex : "none"
-  }};
+  display: ${(props) =>
+    props.writeMode && {
+      flex: "none",
+    }};
   flex-direction: column;
-  .TitleInput{
+  .TitleInput {
     width: 50vw;
     height: 3vw;
     font-size: 30px;
-    border-radius: .5vw;
+    border-radius: 0.5vw;
     margin: 2vh 0;
-    padding: .1vw 0 0 .5vw;
+    padding: 0.1vw 0 0 0.5vw;
   }
-  .ContentInput{
+  .ContentInput {
     width: 50vw;
     height: 10vw;
     font-size: 20px;
     text-align: left;
     white-space: pre-line;
-    border-radius: .5vw;
+    border-radius: 0.5vw;
     margin: 2vh 0;
-    padding: .1vw;
-    padding: 0 0 35vh .5vw;
+    padding: 0.1vw;
+    padding: 0 0 35vh 0.5vw;
     // 스크롤바 제거
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
     ::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
+      display: none; /* Chrome, Safari, Opera*/
     }
   }
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
 `;
-

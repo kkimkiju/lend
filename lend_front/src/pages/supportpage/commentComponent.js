@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
+import { useNavigate } from "react-router-dom";
 
-export default function CommentComponent({ currentPostId }) {
+export default function CommentComponent({
+  currentPostId,
+  showDetailedPost,
+  showQuestionBoard,
+}) {
   const [commentList, setCommentList] = useState([]);
   const [editState, setEditState] = useState({ id: null, content: "" });
-  const [nestedCommentWriteMode, setNestedCommentWriteMode] = useState({ parentId: null, content: "" });
+  const [nestedCommentWriteMode, setNestedCommentWriteMode] = useState({
+    parentId: null,
+    content: "",
+  });
 
   // fetchCommentList 함수를 컴포넌트 내부에서 정의
   const fetchCommentList = async (id) => {
@@ -80,6 +88,12 @@ export default function CommentComponent({ currentPostId }) {
   };
 
   const [contentOfComment, setContentOfComment] = useState("");
+  const navigate = useNavigate(null);
+  const exitPost = async () => {
+    showQuestionBoard(true);
+    showDetailedPost(false);
+    navigate("/lend/support");
+  };
 
   const handleSaveCommnet = async () => {
     const commentDto = {
@@ -138,7 +152,7 @@ export default function CommentComponent({ currentPostId }) {
     };
     try {
       const response = await AxiosApi.deleteComment(commentDto);
-      if(response.data){
+      if (response.data) {
         alert("댓글 삭제 완료.");
         setCommentList((prevComments) =>
           prevComments.map((comment) =>
@@ -150,17 +164,21 @@ export default function CommentComponent({ currentPostId }) {
         setEditState({ id: null, content: "" });
         fetchCommentList(currentPostId); // 댓글 목록을 다시 불러오기
       }
-    } catch(error){
+    } catch (error) {
       console.error(error.response);
     }
-  }
+  };
 
   // 계층형 댓글 렌더링
   const renderComments = (comments) => {
     return comments.map((comment) => {
-      const isOwner = localStorage.getItem("email") === comment.memberResDto.email;
+      const isOwner =
+        localStorage.getItem("email") === comment.memberResDto.email;
       return (
-        <div key={comment.id} style={{ marginLeft: comment.parentId ? "20px" : "0" }}>
+        <div
+          key={comment.id}
+          style={{ marginLeft: comment.parentId ? "20px" : "0" }}
+        >
           <div>{comment.memberResDto.name}</div>
           {comment.deletedStatus ? (
             <div>삭제된 댓글입니다.</div>
@@ -169,31 +187,50 @@ export default function CommentComponent({ currentPostId }) {
               {editState.id === comment.id ? (
                 <input
                   value={editState.content}
-                  onChange={(e) => setEditState({ ...editState, content: e.target.value })}
+                  onChange={(e) =>
+                    setEditState({ ...editState, content: e.target.value })
+                  }
                 />
               ) : (
-                <div style={{whiteSpace: "pre-wrap"}}>{comment.content}</div>
+                <div style={{ whiteSpace: "pre-wrap" }}>{comment.content}</div>
               )}
               <CommentButtonBox>
-              {isOwner && (
-                <>
-                  {editState.id === comment.id ? (
-                    <Button onClick={handleSaveComment}>저장</Button>
-                  ) : (
-                    <Button onClick={() => handleEditMode(comment.id, comment.content)}>수정</Button>
-                  )}
-                  <Button onClick={() => handleDeleteComment(comment.id)}>삭제</Button>
-                </>
-              )}
-              <Button onClick={() => handleWriteNestedComment(comment.id)}>댓글</Button>
+                {isOwner && (
+                  <>
+                    {editState.id === comment.id ? (
+                      <Button onClick={handleSaveComment}>저장</Button>
+                    ) : (
+                      <Button
+                        onClick={() =>
+                          handleEditMode(comment.id, comment.content)
+                        }
+                      >
+                        수정
+                      </Button>
+                    )}
+                    <Button onClick={() => handleDeleteComment(comment.id)}>
+                      삭제
+                    </Button>
+                  </>
+                )}
+                <Button onClick={() => handleWriteNestedComment(comment.id)}>
+                  댓글
+                </Button>
               </CommentButtonBox>
               {nestedCommentWriteMode.parentId === comment.id && (
                 <>
                   <textarea
                     value={nestedCommentWriteMode.content}
-                    onChange={(e) => setNestedCommentWriteMode({ ...nestedCommentWriteMode, content: e.target.value })}
+                    onChange={(e) =>
+                      setNestedCommentWriteMode({
+                        ...nestedCommentWriteMode,
+                        content: e.target.value,
+                      })
+                    }
                   />
-                  <CommentButtonBox><Button onClick={handleSaveNestedComment}>댓글 저장</Button></CommentButtonBox>
+                  <CommentButtonBox>
+                    <Button onClick={handleSaveNestedComment}>댓글 저장</Button>
+                  </CommentButtonBox>
                 </>
               )}
             </>
@@ -207,24 +244,29 @@ export default function CommentComponent({ currentPostId }) {
 
   return (
     <>
-      <Body>
-        <Container>
-          <Box>
-            <Item>
-              {renderComments(commentList)}
-              <Box>
-                <textarea
-                  type="text"
-                  placeholder="댓글을 입력하세요."
-                  value={contentOfComment}
-                  onChange={(e) => setContentOfComment(e.target.value)}
-                />
-                <ButtonBox><Button onClick={handleSaveCommnet}>등록</Button></ButtonBox>
-              </Box>
-            </Item>
-          </Box>
-        </Container>
-      </Body>
+      {showDetailedPost && (
+        <Body>
+          <Container>
+            <Box>
+              <Item>
+                {renderComments(commentList)}
+                <Box>
+                  <textarea
+                    type="text"
+                    placeholder="댓글을 입력하세요."
+                    value={contentOfComment}
+                    onChange={(e) => setContentOfComment(e.target.value)}
+                  />
+                  <ButtonBox>
+                    <Button onClick={exitPost}>닫기</Button>
+                    <Button onClick={handleSaveCommnet}>등록</Button>
+                  </ButtonBox>
+                </Box>
+              </Item>
+            </Box>
+          </Container>
+        </Body>
+      )}
     </>
   );
 }
@@ -240,11 +282,11 @@ const Container = styled.div`
   align-items: center;
 `;
 const Box = styled.div`
-border-top: 1px solid gray;
+  border-top: 1px solid gray;
   display: flex;
   flex-direction: column;
   width: 100%;
-  > textarea{
+  > textarea {
     margin: 20px 50px;
   }
 `;
@@ -253,7 +295,7 @@ const ButtonBox = styled.div`
   flex-direction: row;
   justify-content: flex-end;
   padding-bottom: 10px;
-  :hover{
+  :hover {
     background-color: #29c555;
   }
 `;
@@ -262,7 +304,7 @@ const CommentButtonBox = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   margin: 5px 0;
-  :hover{
+  :hover {
     background-color: #29c555;
   }
 `;
@@ -274,7 +316,7 @@ const Button = styled.button`
   white-space: nowrap;
   font-size: 15px;
   color: white;
-  background-color: #DDD;
+  background-color: #ddd;
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
   margin: 0 10px;
   padding: 5px 0;

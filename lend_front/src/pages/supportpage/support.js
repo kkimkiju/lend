@@ -12,6 +12,7 @@ export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(true);
   const [FAQBoard, showFAQBoard] = useState(false);
   const [writeMode, setWriteMode] = useState(false);
+  const [commentMode, setCommentMode] = useState(false);
   const [answerState, setAnswerState] = useState(false); //관리자 답변 여부 관리
   const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
   const BoardHandler = (number) => () => {
@@ -40,25 +41,25 @@ export default function Support() {
   const [currentPage, setCurrentPage] = useState(1); // 초기값 1페이지
   const pageSize = 10; // 페이지당 글 수
 
-    const fetchQuestionList = async (page) => {
-      try {
-        const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
-        if (response.data && Array.isArray(response.data.boards)) {
-          setQuestionList(response.data.boards);
-          setTotalPages(response.data.totalPages);
-        } else {
-          console.error("Unexpected response format", response.data);
-        }
-      } catch (error) {
-        console.log(error);
-        console.log(error.response);
+  const fetchQuestionList = async (page) => {
+    try {
+      const response = await AxiosApi.getQuestionList(page - 1); // 백엔드로 요청할 때는 page-1을 보냄
+      if (response.data && Array.isArray(response.data.boards)) {
+        setQuestionList(response.data.boards);
+        setTotalPages(response.data.totalPages);
+      } else {
+        console.error("Unexpected response format", response.data);
       }
-    };
-    useEffect(() => {
+    } catch (error) {
+      console.log(error);
+      console.log(error.response);
+    }
+  };
+  useEffect(() => {
     fetchQuestionList(currentPage);
   }, [currentPage, writeMode]);
   const handlePageChange = (page) => {
-    console.log("questioninfo:", questionList)
+    console.log("questioninfo:", questionList);
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
@@ -67,22 +68,22 @@ export default function Support() {
   const renderPageButtons = () => {
     const buttons = [];
     const maxButtons = 5; // 표시할 버튼 수
-  
+
     // 현재 페이지가 중앙에 오도록 계산
     let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
     let endPage = startPage + maxButtons - 1;
-  
+
     // 페이지 범위를 벗어나면 조정
     if (endPage > totalPages) {
       endPage = totalPages;
       startPage = Math.max(1, endPage - maxButtons + 1);
     }
-  
+
     // 5개의 버튼을 기본으로 생성
     for (let i = 0; i < maxButtons; i++) {
       const pageNumber = startPage + i;
       const isOutOfRange = pageNumber < 1 || pageNumber > totalPages;
-  
+
       buttons.push(
         <PageButton
           key={i}
@@ -94,13 +95,13 @@ export default function Support() {
         </PageButton>
       );
     }
-  
+
     return buttons;
   };
   // 세부 게시글 조회 코드
   const [detailedPost, showDetailedPost] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
-  const [currentPostId, setCurrentPostId] =useState(null)
+  const [currentPostId, setCurrentPostId] = useState(null);
   const handleOpenPost = async (id) => {
     try {
       const response = await AxiosApi.getDetailedPost(id);
@@ -146,10 +147,10 @@ export default function Support() {
       },
     };
     // 입력값 유효성검사
-    if(!editedTitle){
-      alert("제목을 입력하세요")
-    } else if(!editedContent){
-      alert("내용을 입력하세요.")
+    if (!editedTitle) {
+      alert("제목을 입력하세요");
+    } else if (!editedContent) {
+      alert("내용을 입력하세요.");
     } else {
       try {
         const response = await AxiosApi.modifyQuestion(questionDto);
@@ -175,7 +176,7 @@ export default function Support() {
     if (!currentPost) return;
     try {
       const response = await AxiosApi.deleteQuestion(currentPost.id);
-      
+
       if (response.data) {
         alert("게시글이 삭제되었습니다.");
         // 삭제 후 게시판 목록으로 돌아가기
@@ -190,7 +191,8 @@ export default function Support() {
     }
   };
   // 현재 로그인된 사용자의 이메일과 글 작성자의 이메일 비교  + 관리자 계정인지 확인 기능 추가 필요
-  const isOwner = localStorage.getItem("email") === currentPost?.memberResDto?.email;
+  const isOwner =
+    localStorage.getItem("email") === currentPost?.memberResDto?.email;
   return (
     <Body>
       <Container>
@@ -201,31 +203,55 @@ export default function Support() {
           <Button onClick={BoardHandler(2)}>자주 묻는 질문</Button>
         </ButtonBox>
         <WritePost
-            writeMode={writeMode}
-            setWriteMode={setWriteMode}
-            showQuestionBoard={showQuestionBoard}
-            showFAQBoard={showFAQBoard}
-          />
+          writeMode={writeMode}
+          setWriteMode={setWriteMode}
+          showQuestionBoard={showQuestionBoard}
+          showFAQBoard={showFAQBoard}
+        />
         {questionBoard && (
           <>
             <ButtonBox>
-              <Button className="writepost" onClick={handleWriteMode}>✒️ 질문하기</Button>
+              <Button className="writepost" onClick={handleWriteMode}>
+                ✒️ 질문하기
+              </Button>
             </ButtonBox>
-            <Box >
-              <Item >
-                <TitleOfPost><div>번호</div><div>제목</div><div>{"댓글"}</div><div>작성자</div><div>작성일</div><div>답변 상태</div></TitleOfPost>
+            <Box>
+              <Item>
+                <TitleOfPost>
+                  <div>번호</div>
+                  <div>제목</div>
+                  <div>{"댓글"}</div>
+                  <div>작성자</div>
+                  <div>작성일</div>
+                  <div>답변 상태</div>
+                </TitleOfPost>
                 {questionList.map((question, index) => (
                   <div key={question.id}>
-                    <ListOfPost className="boardArea" onClick={() => handleOpenPost(question.id)}>
+                    <ListOfPost
+                      className="boardArea"
+                      onClick={() => handleOpenPost(question.id)}
+                    >
                       <div>{(currentPage - 1) * pageSize + (index + 1)}</div>
-                      <div>{question.title}{question.isPrivate ? " 🔒" : ""}</div>
-                      <div>{question.commentList == 0 ? "" : "(+" + question.commentList.length +")"}</div>
-                      <div>{question.memberResDto.name}</div> 
+                      <div>
+                        {question.title}
+                        {question.isPrivate ? " 🔒" : ""}
+                      </div>
+                      <div>
+                        {question.commentList == 0
+                          ? ""
+                          : "(+" + question.commentList.length + ")"}
+                      </div>
+                      <div>{question.memberResDto.name}</div>
                       <div>{question.createTime.slice(0, 11)}</div>
                       {/* 관리자 계정 답변이 하나라도 있으면 완료처리 */}
-                      <div>{question.commentList && question.commentList.some(comment =>comment?.memberResDto?.authority === "ROLE_ADMIN")
-                        ? "완료"
-                        : "미처리"}
+                      <div>
+                        {question.commentList &&
+                        question.commentList.some(
+                          (comment) =>
+                            comment?.memberResDto?.authority === "ROLE_ADMIN"
+                        )
+                          ? "완료"
+                          : "미처리"}
                       </div>
                     </ListOfPost>
                   </div>
@@ -265,10 +291,17 @@ export default function Support() {
                 <div className="title">{currentPost.title}</div>
               )}
               <PostInfoBox>
-              <div>작성자</div><div>{currentPost.memberResDto.name}</div>
-              <div>작성일</div><div>{currentPost.createTime}</div>
-              <div>수정일</div><div>{currentPost.modifyTime}</div>
-              <Toggle switchState={switchState} setSwitchState={setSwitchState} />
+                <div>작성자</div>
+                <div>{currentPost.memberResDto.name}</div>
+                <div>작성일</div>
+                <div>{currentPost.createTime}</div>
+                <div>수정일</div>
+                <div>{currentPost.modifyTime}</div>
+
+                <Toggle
+                  switchState={switchState}
+                  setSwitchState={setSwitchState}
+                />
               </PostInfoBox>
               {editMode ? (
                 <textarea
@@ -283,13 +316,35 @@ export default function Support() {
               )}
               {isOwner && (
                 <ButtonBox className="editpost">
-                  {editMode
-                  ? (<EditPostButton className="editpost" onClick={handleSavePost} disabled={!editMode}>저장</EditPostButton>)
-                  : (<EditPostButton className="editpost" onClick={handleEditPost}>수정</EditPostButton>) }
-                  <EditPostButton className="editpost" onClick={handleDeletePost}>삭제</EditPostButton>
+                  {editMode ? (
+                    <EditPostButton
+                      className="editpost"
+                      onClick={handleSavePost}
+                      disabled={!editMode}
+                    >
+                      저장
+                    </EditPostButton>
+                  ) : (
+                    <EditPostButton
+                      className="editpost"
+                      onClick={handleEditPost}
+                    >
+                      수정
+                    </EditPostButton>
+                  )}
+                  <EditPostButton
+                    className="editpost"
+                    onClick={handleDeletePost}
+                  >
+                    삭제
+                  </EditPostButton>
                 </ButtonBox>
               )}
-              <CommentComponent currentPostId = {currentPostId}/>
+              <CommentComponent
+                currentPostId={currentPostId}
+                showQuestionBoard={showQuestionBoard}
+                showDetailedPost={showDetailedPost}
+              />
             </Item>
           </Box>
         )}
@@ -343,16 +398,19 @@ const ButtonBox = styled.div`
   align-items: center;
   width: auto;
   height: auto;
-  :hover{
-    background-color: #DDD;
+  :hover {
+    background-color: #ddd;
+    color: black;
   }
-  >.writepost { // 질문하기 글작성 버튼
+  > .writepost {
+    // 질문하기 글작성 버튼
     float: right;
     white-space: nowrap;
     margin-left: 800px;
     padding: 0 1vw;
   }
-  >.editpost { // 글 수정 관련 버튼
+  > .editpost {
+    // 글 수정 관련 버튼
     justify-content: flex-end;
     margin-bottom: 10px;
   }
@@ -361,10 +419,11 @@ const Button = styled.button`
   width: auto;
   height: auto;
   border: 0;
-  border-radius: 1vw;
+  border-radius: 5px;
   white-space: nowrap;
   font-size: 20px;
-  background-color: white;
+  color: white;
+  background-color: #29c555;
   margin: 10px 100px;
 `;
 const EditPostButton = styled.button`
@@ -377,13 +436,13 @@ const EditPostButton = styled.button`
   background-color: white;
   margin: 0 5px;
   padding: 2px 20px;
-`
-const PageButtonBox = styled.div`
-`
+`;
+const PageButtonBox = styled.div``;
 const PageButton = styled(Button)`
   border-radius: 10vw;
   background-color: ${(props) => (props.active ? "#29c555" : "#fff")};
-  color: ${(props) => (props.active ? "#fff" : props.disabled ? "#000" : "#29c555")};
+  color: ${(props) =>
+    props.active ? "#fff" : props.disabled ? "#000" : "#29c555"};
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   opacity: ${(props) => (props.disabled ? "0.6" : "1")};
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
@@ -410,18 +469,18 @@ const Item = styled.div`
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
-  .title{
+  .title {
     font-size: 40px;
     border-left: 5px solid #29c555;
     padding: 0 15px;
   }
-  .content{
+  .content {
     font-size: 30px;
     min-height: 300px;
     white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
   }
-  .boardArea:hover{
-    background-color: rgba(50,250,100,0.1);
+  .boardArea:hover {
+    background-color: rgba(50, 250, 100, 0.1);
   }
   .editpost {
     justify-content: flex-end;
@@ -435,24 +494,24 @@ const DropDownButton = styled.button`
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
 `;
 
-const PostInfoBox =styled.div`
-display: flex;
-align-items: center;
-white-space: nowrap;
-color: gray;
-margin: 20px 0;
-& div {
-  margin: 0 2px;
-  font-size: 15px;
-}
-  & div:nth-child(odd){
+const PostInfoBox = styled.div`
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: gray;
+  margin: 20px 0;
+  & div {
+    margin: 0 2px;
+    font-size: 15px;
+  }
+  & div:nth-child(odd) {
     color: white;
     border-radius: 5vw;
     background-color: #29c555;
     padding: 2px 10px;
   }
-`
-const TitleOfPost =styled.div`
+`;
+const TitleOfPost = styled.div`
   width: 60vw;
   height: 3vw;
   display: flex;
@@ -467,16 +526,19 @@ const TitleOfPost =styled.div`
     font-size: 1vw;
     margin: 0;
   }
-  & div:nth-child(1){ // 게시글리스트 번호부분 
+  & div:nth-child(1) {
+    // 게시글리스트 번호부분
     width: 5vw;
   }
-  & div:nth-child(2){ // 게시글리스트 제목부분
+  & div:nth-child(2) {
+    // 게시글리스트 제목부분
     width: 20vw;
   }
-  & div:nth-child(3){ // 댓글수 부분
+  & div:nth-child(3) {
+    // 댓글수 부분
     width: 2vw;
   }
-`
+`;
 const ListOfPost = styled.div`
   width: 60;
   height: 2.5vw;
@@ -485,15 +547,17 @@ const ListOfPost = styled.div`
   align-items: center;
   text-align: center;
   white-space: nowrap;
-  & div{
+  & div {
     width: 10vw;
     height: auto;
     font-size: 1vw;
   }
-  & div:nth-child(1){ // 게시글리스트 번호부분 
+  & div:nth-child(1) {
+    // 게시글리스트 번호부분
     width: 5vw;
   }
-  & div:nth-child(2){ // 게시글리스트 제목부분
+  & div:nth-child(2) {
+    // 게시글리스트 제목부분
     width: 20vw;
     //텍스트 줄이기 세트
     overflow: hidden;
@@ -501,8 +565,9 @@ const ListOfPost = styled.div`
     text-overflow: ellipsis;
     word-break: break-all;
   }
-  & div:nth-child(3){ // 댓글수 부분
+  & div:nth-child(3) {
+    // 댓글수 부분
     width: 2vw;
     text-align: left;
   }
-`
+`;
