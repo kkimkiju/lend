@@ -38,9 +38,9 @@ function App() {
           <Routes>
             <Route path="/lend/login" element={<Login />} />
             <Route path="/lend/support" element={<Support />} />
-            <Route path="/lend/chatlist" element={<ChatList />} />
             <Route path="/lend/chat/create" element={<ChatRoomCreate />} />
             <Route path="/lend/chatting/:roomId" element={<Chatting />} />
+            <Route path="/lend/chatlist" element={<ChatList />} />
             <Route path="/lend/Loaninfo" element={<Loaninfo />} />
             <Route path="/lend/wishlist" element={<WishList />} />
             <Route path="/lend/mypage" element={<Mypage />} />
@@ -56,8 +56,10 @@ function ConditionalHeader() {
   const location = useLocation();
 
   const isLoginPage = location.pathname === "/lend/login";
+  const isChatListPage = location.pathname === "/lend/chatlist";
 
-  return <>{!isLoginPage && <Header />}</>;
+  // 로그인 페이지와 채팅 리스트 페이지에서는 헤더를 숨김
+  return <>{!isLoginPage && !isChatListPage && <Header />}</>;
 }
 
 function SlideWrapper({ children }) {

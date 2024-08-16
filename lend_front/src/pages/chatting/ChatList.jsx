@@ -3,6 +3,7 @@ import AxiosApi from "../../axios/AxiosApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../../utils/Common";
+import AdminHeader from "../../components/AdminHeader";
 
 const Container = styled.div`
   width: 100%;
@@ -37,7 +38,7 @@ const ChatRoom = styled.li`
     background-color: #e9e9e9;
   }
 `;
-const Header = styled.h1`
+const HeaderText = styled.h1`
   color: #333;
   text-align: center;
   margin-bottom: 20px;
@@ -77,22 +78,25 @@ function ChatList() {
   };
 
   return (
-    <Container>
-      <ChatListContainer>
-        <Header>상담 요청 목록</Header>
-        <ChatUl>
-          {chatRooms.map((room) => (
-            <ChatRoom
-              key={room.roomId}
-              onClick={() => enterChatRoom(room.roomId)}
-            >
-              <ChatName>{room.roomName}</ChatName>
-              <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
-            </ChatRoom>
-          ))}
-        </ChatUl>
-      </ChatListContainer>
-    </Container>
+    <>
+      <AdminHeader />
+      <Container>
+        <ChatListContainer>
+          <HeaderText>상담 요청 목록</HeaderText>
+          <ChatUl>
+            {chatRooms.map((room) => (
+              <ChatRoom
+                key={room.roomId}
+                onClick={() => enterChatRoom(room.roomId)}
+              >
+                <ChatName>{room.roomName}</ChatName>
+                <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
+              </ChatRoom>
+            ))}
+          </ChatUl>
+        </ChatListContainer>
+      </Container>
+    </>
   );
 }
 
