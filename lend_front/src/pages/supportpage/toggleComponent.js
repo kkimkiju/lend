@@ -40,6 +40,8 @@ export const Toggle = ({ switchState, setSwitchState }) => {
 };
 const Body = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
   width: auto;
   height: auto;
 `;
@@ -61,8 +63,8 @@ const ToggleContainer = styled.div`
   }
   > .toggle-circle {
     position: absolute;
-    top: 6px;
-    left: 2px;
+    top: 4px;
+    left: 5px;
     width: 22px;
     height: 22px;
     border-radius: 50%;
@@ -71,7 +73,7 @@ const ToggleContainer = styled.div`
     //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
   }
   > .toggle--checked {
-    left: 20px;
+    left: 23px;
     transition: 0.5s;
   }
 `;

@@ -131,7 +131,7 @@ export default function CommentComponent({
     try {
       const response = await AxiosApi.createComment(commentDto);
       if (response.data) {
-        alert("대댓글 등록 완료.");
+        alert("댓글 등록 완료.");
         fetchCommentList(currentPostId); // 댓글 목록을 다시 불러오기
         setNestedCommentWriteMode({ parentId: null, content: "" });
       }
@@ -179,7 +179,7 @@ export default function CommentComponent({
           key={comment.id}
           style={{ marginLeft: comment.parentId ? "20px" : "0" }}
         >
-          <div>{comment.memberResDto.name}</div>
+          <Name authority={comment.memberResDto.authority}>{comment.memberResDto.name}</Name>
           {comment.deletedStatus ? (
             <div>삭제된 댓글입니다.</div>
           ) : (
@@ -328,3 +328,9 @@ const Item = styled.div`
     background-color: rgb(240, 240, 240);
   }
 `;
+
+const Name = styled.div`
+border-left: ${(props) => (props.authority === "ROLE_ADMIN" ?  "5px solid orange": "5px solid gray")};
+margin: 10px 0;
+padding: 0 5px;
+`

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.constant.Authority;
 import com.example.demo.dto.CommentDto;
 import com.example.demo.dto.MemberReqDto;
 import com.example.demo.dto.MemberResDto;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -133,6 +131,10 @@ public class QuestionService {
             listDto.add(convertEntityToDto(q));
         }
         return listDto;
+    }
+    // email로 authority 조회 메서드
+    public Optional<Authority> getAuthority(MemberResDto memberResDto) {
+        return memberRepository.findAuthorityByEmail(memberResDto.getEmail());
     }
     // 게시글 엔티티를 DTO로 변환
     public QuestionDto convertEntityToDto(Question question) {

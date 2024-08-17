@@ -102,15 +102,43 @@ export default function Support() {
   const [detailedPost, showDetailedPost] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [currentPostId, setCurrentPostId] = useState(null);
+  const [authority, setAuthority] = useState(null);
   const handleOpenPost = async (id) => {
+    // 권한 확인
+    try{
+      const memberResDto = {
+        email: localStorage.getItem("email"),
+      }
+      const response = await AxiosApi.getAuthority(memberResDto);
+      console.log("Authority info: ", response.data);
+      setAuthority(response.data.authority);
+    } catch (error){
+      console.error(error.response);
+    }
     try {
       const response = await AxiosApi.getDetailedPost(id);
       if (response.data) {
-        showDetailedPost(true);
-        showQuestionBoard(false);
-        setCurrentPost(response.data);
-        setCurrentPostId(id);
-        console.log(response.data);
+        //비밀글인지 확인
+        if(response.data.isPrivate) {
+          // 작성자이거나 authority가 ROLL_ADMIN 인지 확인
+          if(response.data.memberResDto.email === localStorage.getItem("email")
+            || authority === "ROLE_ADMIN") {
+              showDetailedPost(true);
+              showQuestionBoard(false);
+              setCurrentPost(response.data);
+              setCurrentPostId(id);
+              console.log(response.data);
+          } else { // 비밀글인데 작성자가 아닐 때
+            alert("비밀글 입니다.")
+            showDetailedPost(false);
+          }
+        } else { // 비밀글이 아닐때
+          showDetailedPost(true);
+          showQuestionBoard(false);
+          setCurrentPost(response.data);
+          setCurrentPostId(id);
+          console.log(response.data);
+        }
       }
     } catch (error) {
       console.error(error.response);
@@ -291,17 +319,15 @@ export default function Support() {
                 <div className="title">{currentPost.title}</div>
               )}
               <PostInfoBox>
-                <div>작성자</div>
-                <div>{currentPost.memberResDto.name}</div>
-                <div>작성일</div>
-                <div>{currentPost.createTime}</div>
-                <div>수정일</div>
-                <div>{currentPost.modifyTime}</div>
-
-                <Toggle
-                  switchState={switchState}
-                  setSwitchState={setSwitchState}
-                />
+                <span>작성자</span>
+                <span>{currentPost.memberResDto.name}</span>
+                <span>작성일</span>
+                <span>{currentPost.createTime}</span>
+                {/* 수정일이 없거나 작성일과 동일하면 표시하지 않음 */}
+                {currentPost.createTime === currentPost.modifyTime || currentPost.modifyTime === null 
+                ? "" 
+                : <><span>수정일</span><span>{currentPost.modifyTime}</span> </> }
+                {editMode ? ( <Toggle switchState={switchState} setSwitchState={setSwitchState}/> ) : ""}
               </PostInfoBox>
               {editMode ? (
                 <textarea
@@ -500,11 +526,11 @@ const PostInfoBox = styled.div`
   white-space: nowrap;
   color: gray;
   margin: 20px 0;
-  & div {
-    margin: 0 2px;
+  & span {
+    margin: 0 4px;
     font-size: 15px;
   }
-  & div:nth-child(odd) {
+  & span:nth-child(odd) {
     color: white;
     border-radius: 5vw;
     background-color: #29c555;

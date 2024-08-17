@@ -177,6 +177,13 @@ const AxiosApi = {
       commnetDto
     );
   },
+  // 권한 조회
+  getAuthority: async (memberResDto) => {
+    return await AxiosInstance.post(
+      `${LEND_DOMAIN}/support/check-athority`,
+      memberResDto
+    );
+  },
   // 찜목록 등록
   WishListsave: async (
     useemail,

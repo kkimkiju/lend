@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.constant.Authority;
+import com.example.demo.dto.MemberResDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.service.AuthService;
 import com.example.demo.service.QuestionService;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -54,5 +57,11 @@ public class QuestionController {
     public ResponseEntity<QuestionDto> getBoardDetail(@PathVariable Long id) {
         QuestionDto questionDto = questionService.getDetailedQuestion(id);
         return ResponseEntity.ok(questionDto);
+    }
+    // 게시글 권한조회
+    @PostMapping("check-athority")
+    public ResponseEntity<Optional<Authority>> getAuthority(@RequestBody MemberResDto memberResDto) {
+        Optional<Authority> authority = questionService.getAuthority(memberResDto);
+        return ResponseEntity.ok(authority);
     }
 }
