@@ -378,13 +378,13 @@ export default function Support() {
           <Box>
             <Item>
               <DropDownButton onClick={DropDownHandler("menu1")}>
-                메뉴1
+                대출
               </DropDownButton>
               <DropDownButton onClick={DropDownHandler("menu2")}>
-                메뉴2
+                회원관리
               </DropDownButton>
               <DropDownButton onClick={DropDownHandler("menu3")}>
-                메뉴3
+                기타오류
               </DropDownButton>
             </Item>
             <ListItem>
