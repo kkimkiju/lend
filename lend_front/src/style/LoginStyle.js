@@ -25,6 +25,7 @@ export const Container = styled.div`
     border-bottom-right-radius: max(50vw, 50vh);
     border-top-left-radius: max(50vw, 50vh);
   }
+
   ${(props) =>
     props.isSignIn
       ? css`
@@ -164,6 +165,9 @@ export const Text = styled.div`
     @media only screen and (max-width: 1024px) {
       font-size: 2.5rem;
     }
+    @media only screen and (max-width: 500px) {
+      font-size: 1rem;
+    }
   }
 
   p {
@@ -206,9 +210,18 @@ export const PointerBox = styled.div`
   animation-delay: ${(props) => props.delay || "0.5s"};
   transform: ${(props) => (props.isSignIn ? "scale(1)" : "scale(0)")};
   transition: 0.5s ease-in-out;
+  span {
+    @media only screen and (max-width: 500px) {
+      font-size: 8px;
+    }
+  }
 `;
 export const Pointer = styled.b`
   cursor: pointer;
+
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+  }
 `;
 
 export const GlobalStyle = createGlobalStyle`

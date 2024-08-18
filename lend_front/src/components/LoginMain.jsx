@@ -34,6 +34,12 @@ const Container = styled.div`
     height: 80%;
     padding: 56px;
   }
+  @media only screen and (max-width: 500px) {
+    height: 65%;
+    border-radius: 50px;
+    padding: 0;
+    gap: 0.5rem;
+  }
 `;
 const Logo = styled.img`
   width: 180px;
@@ -46,6 +52,10 @@ const Logo = styled.img`
   @media only screen and (max-width: 1024px) {
     width: 120px;
     height: 80px;
+  }
+  @media only screen and (max-width: 500px) {
+    width: 70px;
+    height: 50px;
   }
 `;
 const InputContainer = styled.div`
@@ -64,6 +74,9 @@ const InputContainer = styled.div`
     gap: 1rem;
     font-size: 12px;
   }
+  @media only screen and (max-width: 500px) {
+    font-size: 12px;
+  }
 `;
 const EmailInput = styled.input`
   all: unset;
@@ -76,6 +89,10 @@ const EmailInput = styled.input`
   @media only screen and (max-width: 1024px) {
     height: 10px;
   }
+  @media only screen and (max-width: 500px) {
+    padding: 8px;
+    font-size: 8px;
+  }
 `;
 const PasswordInput = styled.input`
   all: unset;
@@ -87,6 +104,10 @@ const PasswordInput = styled.input`
   text-align: start;
   @media only screen and (max-width: 1024px) {
     height: 10px;
+  }
+  @media only screen and (max-width: 500px) {
+    padding: 8px;
+    font-size: 8px;
   }
 `;
 const LoginBtt = styled.button`
@@ -102,10 +123,20 @@ const LoginBtt = styled.button`
     height: 40px;
     font-size: 12px;
   }
+  @media only screen and (max-width: 500px) {
+    width: 54px;
+    height: 27px;
+    font-size: 8px;
+  }
 `;
 const LoginEtc = styled.div`
   display: flex;
   gap: 10px;
+  & {
+    @media only screen and (max-width: 500px) {
+      font-size: 6px;
+    }
+  }
 `;
 const WithMsg = styled.div`
   display: flex;
@@ -131,6 +162,10 @@ const KaKaoLogo = styled.img`
   @media only screen and (max-width: 1024px) {
     width: 40px;
     height: 40px;
+  }
+  @media only screen and (max-width: 500px) {
+    width: 25px;
+    height: 25px;
   }
 `;
 const LoginMain = ({ isSignIn }) => {

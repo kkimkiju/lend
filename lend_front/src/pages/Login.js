@@ -18,9 +18,9 @@ import { UserContext } from "../context/UserStore";
 const LoginContainer = styled.div`
   margin: 0 10%;
   width: 80%;
-  height: 650px;
+  // height: 650px;
   @media only screen and (max-width: 1024px) {
-    height: 550px;
+    // height: 550px;
   }
 `;
 const Login = () => {

@@ -10,6 +10,15 @@ const Container = styled.div`
   @media only screen and (max-width: 1024px) {
     height: 550px;
   }
+  @media only screen and (max-width: 500px) {
+    height: 350px;
+    border-radius: 50px;
+  }
+  .error {
+    @media only screen and (max-width: 500px) {
+      font-size: 8px;
+    }
+  }
 `;
 
 const SignContainer = styled.div`
@@ -24,6 +33,9 @@ const SignContainer = styled.div`
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   transition: 0.5s ease-in-out;
   transform: ${(props) => (props.isTrue ? "scale(0)" : "scale(1)")};
+  @media only screen and (max-width: 500px) {
+    border-radius: 50px;
+  }
 `;
 const InputContainer = styled.div`
   display: flex;
@@ -43,6 +55,10 @@ const Input = styled.input`
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    padding: 7px;
+  }
 `;
 
 const WithMsg = styled.div`
@@ -96,6 +112,12 @@ const Button = styled.div`
     props.isConfirmCer && props.emailExist ? "auto" : "none"};
   cursor: pointer;
   /* user-select: none; */
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+  }
 `;
 const ConfirmButton = styled.div`
   display: flex;
@@ -154,6 +176,10 @@ const Logo = styled.img`
   @media only screen and (max-width: 1024px) {
     width: 120px;
     height: 80px;
+  }
+  @media only screen and (max-width: 500px) {
+    width: 70px;
+    height: 50px;
   }
 `;
 const SingUpContainer = ({ isSignIn }) => {
