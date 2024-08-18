@@ -28,13 +28,10 @@ public class AuthController {
     }
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody MemberReqDto requestDto) {
-        System.out.println(requestDto.getPassword() + "pw");
         return ResponseEntity.ok(authService.login(requestDto));
     }
     @PostMapping("/membermodify")
     public ResponseEntity<MemberResDto> memberModify(@RequestBody MemberReqDto memberReqDto) {
-        System.out.println("getKakaoInfo 실행");
-
         return ResponseEntity.ok(memberService.getKakaoInfo(memberReqDto));
     }
     @GetMapping("/pw/{name}/{email}")

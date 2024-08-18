@@ -16,15 +16,13 @@ const Mainpage = () => {
   const [isMember, setIsMember] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [accToken, setAccToken] = useState("");
-
+  const [pw, setPw] = useState("");
   const handleLogout = () => {
     setLoginStatus(false);
     localStorage.clear();
     navigate("/");
-    setLoginStatus("");
   };
 
-  // 토큰이 없을 때만 카카오 API 요청을 수행하도록 수정
   const kakaoToken = async () => {
     const code = new URL(window.location.href).searchParams.get("code");
     if (!code || accToken) return; // code가 없거나 이미 토큰이 존재하면 반환
@@ -58,10 +56,12 @@ const Mainpage = () => {
         login(res.data.userInfo.kakao_account.email, res.data.userInfo.id);
       } else {
         setIsMember(!res.data.isMember);
+        setPw(res.data.userInfo.id);
         localStorage.setItem("email", res.data.userInfo.kakao_account.email);
         setOpenModal(true);
       }
     } catch (err) {
+      alert("카카오 로그인중 오류가 발생했습니다. ");
       console.log("카카오 사용자 정보 가져오기 에러: " + err);
     }
   };
@@ -81,7 +81,6 @@ const Mainpage = () => {
         setOpenModal(false);
         navigate("/");
       } else {
-        console.log("?");
         setOpenModal(true);
       }
     } catch (err) {
@@ -122,7 +121,11 @@ const Mainpage = () => {
           <Section />
           <Footer />
         </Container>
-        <KaKaoSignUpModal open={openModal}></KaKaoSignUpModal>
+        <KaKaoSignUpModal
+          open={openModal}
+          login={login}
+          pw={pw}
+        ></KaKaoSignUpModal>
       </Body>
     </>
   );

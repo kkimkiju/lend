@@ -26,6 +26,11 @@ const ModalStyle = styled.div`
   }
 
   section {
+    display: flex;
+    padding: 48px 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
     width: 90%;
     max-width: 450px;
     margin: 0 auto;
@@ -33,27 +38,31 @@ const ModalStyle = styled.div`
     border: 0.8px solid;
     background-color: white;
     overflow: hidden;
-
+    input:focus {
+      outline: 2px solid #29c555;
+    }
     div {
-      padding: 16px;
-      border-bottom: 2px solid #dee2e6;
       text-align: center;
-      color: #333;
-      white-space: pre-line;
-      line-height: 1.4;
+      color: #000;
     }
   }
+  .confirm {
+    color: #fff;
+    width: auto;
+    height: 16px;
+    min-width: auto;
+  }
 `;
-
 const Button = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 86%;
+  width: auto;
+  min-width: 120px;
   height: 47px;
   padding: 0.75rem;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   color: #fff;
   background-color: #29c555;
   cursor: pointer;
@@ -61,11 +70,10 @@ const Button = styled.div`
 const DateOfBirth = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0 27px;
+  gap: 8px;
+  padding: 0 32px;
 `;
 const Input = styled.input`
-  all: unset;
   text-align: start;
   width: 80%;
   height: 16px;
@@ -73,7 +81,7 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 5px;
 `;
-const KaKaoSignUpModal = ({ open, close }) => {
+const KaKaoSignUpModal = ({ open, login, pw }) => {
   const [date, setDate] = useState("");
   const [name, setName] = useState("");
   const [identifyNum, setIdentifyNum] = useState("");
@@ -84,7 +92,6 @@ const KaKaoSignUpModal = ({ open, close }) => {
   const handleName = (e) => {
     setName(e.target.value);
   };
-  console.log("open", open);
   const handleDateChange = (e) => {
     const value = e.target.value
       .replace(/[^0-9.]/g, "")
@@ -103,6 +110,7 @@ const KaKaoSignUpModal = ({ open, close }) => {
       return;
     }
   };
+  // 회원가입시 추가정보(이름, 생년월일) 기입
   const regist = async () => {
     const user = {
       email: email,
@@ -113,6 +121,7 @@ const KaKaoSignUpModal = ({ open, close }) => {
     console.log(name, "user + ", email);
     try {
       const response = await AxiosApi.extraInfo(user);
+      login(email, pw);
       alert("회원가입에 성공했습니다.");
       setLoginStatus(true);
       console.log(response.data);
@@ -123,7 +132,13 @@ const KaKaoSignUpModal = ({ open, close }) => {
     }
   };
   const handleSignUp = () => {
-    regist();
+    console.log(name, identifyNum, date);
+    if (name === "" || date.length < 6 || identifyNum.length < 1) {
+      alert("회원정보는 전부 작성해주셔야 합니다.");
+      return;
+    } else {
+      regist();
+    }
   };
   return (
     <ModalStyle>
@@ -152,7 +167,9 @@ const KaKaoSignUpModal = ({ open, close }) => {
               />{" "}
               ●●●●●●
             </DateOfBirth>
-            <Button onClick={() => handleSignUp()}>확인</Button>
+            <Button onClick={() => handleSignUp()} className="confirm">
+              확인
+            </Button>
           </section>
         )}
       </div>

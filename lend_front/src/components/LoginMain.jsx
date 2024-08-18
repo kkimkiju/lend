@@ -30,6 +30,10 @@ const Container = styled.div`
   animation: ${fadeIn} 0.8s ease-in-out forwards;
   animation-delay: ${(props) => props.delay || "0.5s"};
   transform: ${(props) => (props.isTrue ? "scale(1)" : "scale(0)")};
+  @media only screen and (max-width: 1024px) {
+    height: 80%;
+    padding: 56px;
+  }
 `;
 const Logo = styled.img`
   width: 180px;
@@ -39,6 +43,10 @@ const Logo = styled.img`
   opacity: 0;
   animation: ${fadeIn} 0.8s ease-in-out forwards;
   animation-delay: ${(props) => props.delay || "1s"};
+  @media only screen and (max-width: 1024px) {
+    width: 120px;
+    height: 80px;
+  }
 `;
 const InputContainer = styled.div`
   display: flex;
@@ -52,6 +60,10 @@ const InputContainer = styled.div`
   input:focus {
     outline: 2px solid #29c555;
   }
+  @media only screen and (max-width: 1024px) {
+    gap: 1rem;
+    font-size: 12px;
+  }
 `;
 const EmailInput = styled.input`
   all: unset;
@@ -61,6 +73,9 @@ const EmailInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 5px;
   text-align: start;
+  @media only screen and (max-width: 1024px) {
+    height: 10px;
+  }
 `;
 const PasswordInput = styled.input`
   all: unset;
@@ -70,6 +85,9 @@ const PasswordInput = styled.input`
   border: 1px solid #ccc;
   border-radius: 5px;
   text-align: start;
+  @media only screen and (max-width: 1024px) {
+    height: 10px;
+  }
 `;
 const LoginBtt = styled.button`
   width: 100px;
@@ -79,6 +97,11 @@ const LoginBtt = styled.button`
   background-color: #29c555;
   color: #fff;
   font-weight: bold;
+  @media only screen and (max-width: 1024px) {
+    width: 70px;
+    height: 40px;
+    font-size: 12px;
+  }
 `;
 const LoginEtc = styled.div`
   display: flex;
@@ -105,6 +128,10 @@ const KaKaoBtt = styled.div``;
 const KaKaoLogo = styled.img`
   width: 50px;
   height: 50px;
+  @media only screen and (max-width: 1024px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 const LoginMain = ({ isSignIn }) => {
   const [inputEmail, setInputEmail] = useState("");

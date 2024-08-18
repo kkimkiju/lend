@@ -48,6 +48,9 @@ const InputContainer = styled.div`
   input:focus {
     outline: 2px solid #29c555;
   }
+  .kakaolog {
+    padding: 16px;
+  }
 `;
 const Input = styled.input`
   all: unset;
@@ -99,6 +102,26 @@ const WithMsg = styled.div`
     width: 80%;
   }
 `;
+const ButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  .delete {
+    width: 100%;
+    font-size: 12px;
+    color: #999999;
+  }
+`;
+const Button = styled.button`
+  width: 100px;
+  height: 50px;
+  border: none;
+  border-radius: 10px;
+  background-color: #29c555;
+  color: #fff;
+  font-weight: bold;
+`;
 const Mypage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [pwdValid, setPwdValid] = useState(false); // 비밀번호 유효성 검사
@@ -143,20 +166,21 @@ const Mypage = () => {
     setPasswordCheck(e.target.value);
   };
   useEffect(() => {
-    const getInfo = async () => {
-      const rsp = await AxiosApi.getMemberInfo();
-      console.log(rsp.data, "data");
-      setName(rsp.data.name);
-      setLoginEmail(rsp.data.email);
-      setIsKaKao(rsp.data.isKaKao);
-      setIdentityNumber(rsp.data.identityNumber);
-    };
-    if (loginStatus) {
-      getInfo();
-    } else {
-      return null;
-    }
+    //getInfo();
   }, []);
+  const getInfo = async () => {
+    const rsp = await AxiosApi.getMemberInfo();
+    console.log(rsp.data, "data");
+    setName(rsp.data.name);
+    setLoginEmail(rsp.data.email);
+    setIsKaKao(rsp.data.isKaKao);
+    setIdentityNumber(rsp.data.identityNumber);
+  };
+  if (loginStatus) {
+    getInfo();
+  } else {
+    return null;
+  }
   const modify = async () => {
     const user = {
       email: loginEmail,
@@ -168,6 +192,7 @@ const Mypage = () => {
     if (pwdValid) {
       try {
         const response = await AxiosApi.modifyMyinfo(user);
+
         if (response.data) {
           alert("수정에 성공했습니다.");
 
@@ -180,6 +205,25 @@ const Mypage = () => {
       }
     } else {
       alert("유효하지 않은 비밀번호입니다.");
+    }
+  };
+  // 회원탈퇴
+  const { setLoginStatus } = context;
+  const deleteMember = async () => {
+    const userConfirmed = window.confirm("정말 회원 탈퇴 하시겠습니까?");
+    if (userConfirmed) {
+      try {
+        const rsp = await AxiosApi.deleteMember();
+        if (rsp.data) {
+          alert("회원탈퇴가 완료되었습니다.");
+          setLoginStatus(false);
+          localStorage.clear();
+          navigate("/");
+        }
+      } catch (e) {
+        alert("회원탈퇴중 오류가 발생하였습니다.");
+        console.error(e);
+      }
     }
   };
 
@@ -195,7 +239,7 @@ const Mypage = () => {
             <span>{loginEmail}</span>
           </MyinfoContainer>
           {isKaKao ? (
-            <span>카카오 로그인 상태입니다</span>
+            <span className="kakaolog">카카오 로그인 상태입니다</span>
           ) : (
             <>
               <WithMsg>
@@ -225,9 +269,13 @@ const Mypage = () => {
               </WithMsg>
             </>
           )}
+          <ButtonContainer>
+            {isKaKao ? null : <Button onClick={() => modify()}>수정</Button>}
 
-          <button onClick={() => modify()}>수정</button>
-          <button>회원탈퇴</button>
+            <div className="delete" onClick={() => deleteMember()}>
+              회원탈퇴 &gt;
+            </div>
+          </ButtonContainer>
         </InputContainer>
         <InputContainer>
           <span>대출 리스트 수정(넣을게 없어서 일단 써놓음)</span>

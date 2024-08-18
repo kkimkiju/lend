@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import emailjs from "@emailjs/browser";
 import AxiosApi from "../axios/AxiosApi";
+import LogoImg from "../image/로고.png";
 import { useNavigate } from "react-router-dom";
 const Container = styled.div`
-  width: 800px;
+  width: 80%;
   height: 650px;
+  @media only screen and (max-width: 1024px) {
+    height: 550px;
+  }
 `;
 
 const SignContainer = styled.div`
@@ -141,7 +145,17 @@ const AgreementContainer = styled.div`
   padding: 0 24px;
 `;
 const CheckBox = styled.input``;
-
+const Logo = styled.img`
+  width: 180px;
+  height: 110px;
+  object-fit: fill;
+  cursor: pointer;
+  margin-bottom: 32px;
+  @media only screen and (max-width: 1024px) {
+    width: 120px;
+    height: 80px;
+  }
+`;
 const SingUpContainer = ({ isSignIn }) => {
   // 회원가입 컨테이너의 상태관리(표시,비표시)
   const [isTrue, setIsTrue] = useState(true);
@@ -180,7 +194,7 @@ const SingUpContainer = ({ isSignIn }) => {
   const [privacyIsChecked2, setPrivacyIsChecked2] = useState(false);
   const [privacyIsChecked3, setPrivacyIsChecked3] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-
+  const navigate = useNavigate();
   const onChangeEmail = (e) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     setInputEmail(e.target.value);
@@ -411,6 +425,7 @@ const SingUpContainer = ({ isSignIn }) => {
     <Container>
       {isCerCheck === false ? (
         <SignContainer isTrue={isTrue}>
+          <Logo src={LogoImg} onClick={() => navigate("/lend")}></Logo>
           <InputContainer>
             <WithMsg>
               <Input

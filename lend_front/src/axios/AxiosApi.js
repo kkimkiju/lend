@@ -96,6 +96,11 @@ const AxiosApi = {
     console.log("getMemberInfo 실행");
     return await AxiosInstance.get(`/members/memberinfo`);
   },
+  //회원 탈퇴
+  deleteMember: async () => {
+    console.log("deleteMember 실행");
+    return await AxiosInstance.get(`/members/delmember`);
+  },
   // 비밀번호 찾기
   findPw: async (name, email) => {
     console.log(email, "email , name", name);

@@ -160,6 +160,10 @@ export const Text = styled.div`
     font-weight: 800;
     margin: 2rem 0;
     transition: transform 1s ease-in-out;
+
+    @media only screen and (max-width: 1024px) {
+      font-size: 2.5rem;
+    }
   }
 
   p {

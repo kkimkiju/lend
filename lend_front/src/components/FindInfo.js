@@ -57,6 +57,9 @@ const Input = styled.input`
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  input:focus {
+    outline: 2px solid #29c555;
+  }
 `;
 const Button = styled.div`
   display: flex;
@@ -88,7 +91,6 @@ const WithMsg = styled.div`
   }
 `;
 const FindInfo = forwardRef(({ open }, ref) => {
-  console.log("집에 가고 싶어", open);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isCollect, setIsCollect] = useState(false);
