@@ -192,6 +192,8 @@ export default function Support() {
             content: editedContent,
             modifyTime: response.data.modifyTime,
           });
+          // 게시글 목록 갱신
+          fetchQuestionList(currentPage);
         }
       } catch (error) {
         console.error(error.response);
@@ -375,8 +377,8 @@ export default function Support() {
           </Box>
         )}
         {FAQBoard && (
-          <Box>
-            <Item>
+          <FAQBox>
+            <FAQItem>
               <DropDownButton onClick={DropDownHandler("menu1")}>
                 대출
               </DropDownButton>
@@ -386,11 +388,16 @@ export default function Support() {
               <DropDownButton onClick={DropDownHandler("menu3")}>
                 기타오류
               </DropDownButton>
-            </Item>
+
+            </FAQItem>
+            <Item>
             <ListItem>
               {dropDown && <DropdownComponent number={dropDown} />}
             </ListItem>
-          </Box>
+            </Item>
+            
+
+          </FAQBox>
         )}
       </Container>
     </Body>
@@ -408,6 +415,12 @@ const Container = styled.div`
   align-items: center;
   width: 100dvw;
   height: 100dvh;
+`;
+const Box = styled.div`
+  width: 60vw;
+  min-height: 550px;
+  flex-direction: row;
+  justify-content: center;
 `;
 const SearchBox = styled.div`
   justify-content: flex-start;
@@ -478,13 +491,7 @@ const PageButton = styled(Button)`
     background-color: ${(props) => (props.active ? "#0056b3" : "#e9ecef")};
   }
 `;
-const Box = styled.div`
-  width: 60vw;
-  min-height: 550px;
 
-  flex-direction: row;
-  justify-content: center;
-`;
 const ListItem = styled.div`
   display: flex;
   flex-direction: column;
@@ -512,13 +519,7 @@ const Item = styled.div`
     justify-content: flex-end;
   }
 `;
-const DropDownButton = styled.button`
-  border: 0;
-  border-radius: 2vw;
-  background-color: transparent;
-  padding: 2vw; /* 여백 추가 */
-  transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
-`;
+
 
 const PostInfoBox = styled.div`
   display: flex;
@@ -596,4 +597,25 @@ const ListOfPost = styled.div`
     width: 2vw;
     text-align: left;
   }
+`;
+const FAQBox =styled.div`
+width: 70vw;
+display: flex;
+`
+const FAQItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  & > button:hover {
+    background-color: rgb(240, 240, 240);
+  }
+`
+const DropDownButton = styled.button`
+  width: 10vw;
+  height: 5vw;
+  font-size: 1.5vw;
+  border: 0;
+  background-color: transparent;
+  padding: 2vw; /* 여백 추가 */
+  transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
 `;

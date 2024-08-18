@@ -40,7 +40,6 @@ export const Toggle = ({ switchState, setSwitchState }) => {
 };
 const Body = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   width: auto;
   height: auto;
