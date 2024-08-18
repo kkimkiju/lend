@@ -277,9 +277,6 @@ const Mypage = () => {
             </div>
           </ButtonContainer>
         </InputContainer>
-        <InputContainer>
-          <span>대출 리스트 수정(넣을게 없어서 일단 써놓음)</span>
-        </InputContainer>
       </Layout>
     </Container>
   );

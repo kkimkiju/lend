@@ -1,14 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.ShooppingcartDto;
+import com.example.demo.entity.Member;
 import com.example.demo.service.ShooppingcartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -34,5 +37,15 @@ public class ShooppingcartController {
         System.out.println("Member ID: " + memberId);
         System.out.println("Pageable: " + pageable);
         return ResponseEntity.ok(result);
+    }
+
+
+    @GetMapping("/delete")
+    public ResponseEntity<List<ShooppingcartDto>> deleteQuestion(@RequestParam String loan_name){
+    String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = new Member();
+        member.setEmail(memberEmail);
+        shooppingcartService.deletecart(member, loan_name);
+        return ResponseEntity.noContent().build();
     }
 }

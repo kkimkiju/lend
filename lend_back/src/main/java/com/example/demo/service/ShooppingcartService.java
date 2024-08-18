@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ShooppingcartDto;
 import com.example.demo.entity.Member;
+import com.example.demo.entity.Question;
 import com.example.demo.entity.Shooppingcart;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.ShooppingcartRepository;
@@ -10,11 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.example.demo.security.SecurityUtil.getCurrentMemberId;
 
 @Slf4j
 @Service
@@ -63,6 +67,7 @@ public class ShooppingcartService {
         result.put("totalItems", shooppingcartPage.getTotalElements());
         return result;
     }
+
     private ShooppingcartDto convertEntityToDto(Shooppingcart shooppingcart) {
         ShooppingcartDto shooppingcartDto = new ShooppingcartDto();
         shooppingcartDto.setMemberId(shooppingcart.getMember().getEmail());
@@ -72,4 +77,11 @@ public class ShooppingcartService {
         shooppingcartDto.setLoan_category(shooppingcart.getLoan_category());
         return shooppingcartDto;
     }
+
+
+    @Transactional
+    public void deletecart(Member memberId, String loan_name) {
+
+        shooppingcartRepository.deleteByMemberAndLoanName(memberId, loan_name);
+    };
 }

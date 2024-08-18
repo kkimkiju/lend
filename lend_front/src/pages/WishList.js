@@ -3,25 +3,6 @@ import styled from "styled-components";
 import { Bar } from "react-chartjs-2";
 import AxiosApi from "../axios/AxiosApi";
 import Paging from "./loaninfo/paging";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// Chart.js 등록
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
 
 // styled-components 사용하여 스타일 정의
 const Container = styled.div`
@@ -124,13 +105,27 @@ const EmptyMessage = styled.div`
   }
 `;
 
-const GraphContainer = styled.div`
+const ButtonContainer = styled.div`
   display: flex;
-  align-items: center;
   justify-content: center;
-  width: 80%;
-  max-width: 1000px;
-  margin-top: 40px;
+  align-items: center;
+  gap: 25px;
+  margin-top: 30px;
+`;
+
+const Button = styled.button`
+  width: 100px;
+  height: 30px;
+  white-space: nowrap;
+  background-color: #29c555;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  &:hover {
+    cursor: pointer;
+    background-color: yellow;
+    color: black;
+  }
 `;
 
 const WishList = () => {
@@ -151,73 +146,6 @@ const WishList = () => {
     };
     userinfo();
   }, []);
-
-  // 금리 데이터를 위한 차트 설정
-  const rateData = {
-    labels: wishList.map((item) => item.title),
-    datasets: [
-      {
-        label: "금리 (%)",
-        data: wishList.map((item) => item.rate),
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  // 한도 데이터를 위한 차트 설정
-  const limitData = {
-    labels: wishList.map((item) => item.title),
-    datasets: [
-      {
-        label: "한도 (만원)",
-        data: wishList.map((item) => item.limit),
-        backgroundColor: "rgba(255, 99, 132, 0.6)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "대출 상품 비교",
-        font: {
-          size: 20,
-          weight: "bold",
-        },
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            return `${context.dataset.label}: ${context.raw} ${
-              context.dataset.label === "금리 (%)" ? "%" : "만원"
-            }`;
-          },
-        },
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color: "rgba(0, 0, 0, 0.1)",
-        },
-      },
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: "rgba(0, 0, 0, 0.1)",
-        },
-      },
-    },
-  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -244,6 +172,24 @@ const WishList = () => {
     }
   }, [useemail, currentPage]);
 
+  const Apply = async (loan_name) => {
+    const applyconfirm = window.confirm("해당 상품을 신청하시겠습니까?");
+    if (applyconfirm) {
+      await AxiosApi.deleteShopping(loan_name);
+      alert("신청이 완료 되었습니다.");
+      window.location.reload();
+    }
+  };
+
+  const Delete = async (loan_name) => {
+    const applyconfirm = window.confirm("해당 대출 상품을 삭제하시겠습니까?");
+    if (applyconfirm) {
+      await AxiosApi.deleteShopping(loan_name);
+      alert("삭제가 완료되었습니다.");
+      window.location.reload();
+    }
+  };
+
   return (
     <Container>
       <Header>
@@ -258,8 +204,12 @@ const WishList = () => {
               <ItemTitle>{item.loan_name || "정보 없음"}</ItemTitle>
               <ItemDescription>
                 금리: {item.rate || "정보 없음"}%, 한도:{" "}
-                {item.limit || "정보 없음"}만원
+                {item.limit || "정보 없음"} (만원)
               </ItemDescription>
+              <ButtonContainer>
+                <Button onClick={() => Apply(item.loan_name)}>신청</Button>
+                <Button onClick={() => Delete(item.loan_name)}>삭제</Button>
+              </ButtonContainer>
             </Item>
           ))
         )}
@@ -270,34 +220,6 @@ const WishList = () => {
           onPageChange={handlePageChange}
         />
       </List>
-      {wishList.length > 1 && (
-        <>
-          <GraphContainer>
-            <Bar
-              data={rateData}
-              options={{
-                ...options,
-                plugins: {
-                  ...options.plugins,
-                  title: { display: true, text: "금리 비교 (%)" },
-                },
-              }}
-            />
-          </GraphContainer>
-          <GraphContainer>
-            <Bar
-              data={limitData}
-              options={{
-                ...options,
-                plugins: {
-                  ...options.plugins,
-                  title: { display: true, text: "한도 비교 (만원)" },
-                },
-              }}
-            />
-          </GraphContainer>
-        </>
-      )}
     </Container>
   );
 };

@@ -221,6 +221,14 @@ const AxiosApi = {
       },
     });
   },
+
+  deleteShopping: async (loan_name) => {
+    return await AxiosInstance.get("/wishlist/delete", {
+      params: {
+        loan_name: loan_name,
+      },
+    });
+  },
   // 문의게시판 ----------------------
 };
 

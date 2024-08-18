@@ -450,6 +450,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
       );
       if (rsp.data) {
         alert("장바구니에 대출 정보를 담았습니다.");
+        window.location.reload();
       } else {
         alert("장바구니에 못담았습니다.");
       }
