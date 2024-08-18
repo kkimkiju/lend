@@ -253,7 +253,7 @@ export default function Support() {
                   <div>{"댓글"}</div>
                   <div>작성자</div>
                   <div>작성일</div>
-                  <div>답변 상태</div>
+                  <div>답변상태</div>
                 </TitleOfPost>
                 {questionList.map((question, index) => (
                   <div key={question.id}>
@@ -328,9 +328,9 @@ export default function Support() {
                 {/* 수정일이 없거나 작성일과 동일하면 표시하지 않음 */}
                 {currentPost.createTime === currentPost.modifyTime || currentPost.modifyTime === null 
                 ? "" 
-                : <><span>수정일</span><span>{currentPost.modifyTime}</span> </> }
-                {editMode ? ( <Toggle switchState={switchState} setSwitchState={setSwitchState}/> ) : ""}
+                : <><span>수정일</span><span>{currentPost.modifyTime}</span></> }
               </PostInfoBox>
+              {editMode ? ( <Toggle switchState={switchState} setSwitchState={setSwitchState}/> ) : ""}
               {editMode ? (
                 <textarea
                   className="content"
@@ -388,7 +388,6 @@ export default function Support() {
               <DropDownButton onClick={DropDownHandler("menu3")}>
                 기타오류
               </DropDownButton>
-
             </FAQItem>
             <Item>
             <ListItem>
@@ -413,14 +412,17 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 100dvw;
-  height: 100dvh;
+  width: 95dvw;
+  height: 75dvh;
 `;
 const Box = styled.div`
   width: 60vw;
-  min-height: 550px;
+  height: 60vh;
   flex-direction: row;
   justify-content: center;
+  @media (max-width: 500px){
+    height: 40vh;
+  }
 `;
 const SearchBox = styled.div`
   justify-content: flex-start;
@@ -445,8 +447,13 @@ const ButtonBox = styled.div`
     // 질문하기 글작성 버튼
     float: right;
     white-space: nowrap;
-    margin-left: 800px;
+    margin-left: 58vw;
     padding: 0 1vw;
+    @media (max-width:500px){
+      width: 25vw;
+      height: 3vh;
+      margin-left: 45vw;
+    }
   }
   > .editpost {
     // 글 수정 관련 버튼
@@ -458,12 +465,18 @@ const Button = styled.button`
   width: auto;
   height: auto;
   border: 0;
-  border-radius: 5px;
+  border-radius: .5vw;
   white-space: nowrap;
-  font-size: 20px;
+  font-size: 1.5vw;
   color: white;
   background-color: #29c555;
-  margin: 10px 100px;
+  margin: .5vw 8vw;
+  @media (max-width:500px){
+    width: 30vw;
+    height: 4vh;
+    font-size: 3vw;
+    margin: .5vh 3vw;
+  }
 `;
 const EditPostButton = styled.button`
   width: auto;
@@ -475,6 +488,11 @@ const EditPostButton = styled.button`
   background-color: white;
   margin: 0 5px;
   padding: 2px 20px;
+  @media (max-width:500px){
+    font-size: 3vw;
+    margin: 0 1vw;
+    padding: .2vh 1vw;
+  }
 `;
 const PageButtonBox = styled.div``;
 const PageButton = styled(Button)`
@@ -485,10 +503,15 @@ const PageButton = styled(Button)`
   cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   opacity: ${(props) => (props.disabled ? "0.6" : "1")};
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
-  margin: 0 5px;
-  padding: 8px 16px;
+  margin: 0 .2vw;
+  padding: .3vw .5vw;
   &:hover {
     background-color: ${(props) => (props.active ? "#0056b3" : "#e9ecef")};
+  }
+  @media(max-width: 500px){
+    width: 5vw;
+    margin: 0vh 1vw;
+    padding: .1vw .1vw;
   }
 `;
 
@@ -503,14 +526,21 @@ const Item = styled.div`
     background-color: rgb(240, 240, 240);
   }
   .title {
-    font-size: 40px;
+    font-size: 2.5vw;
     border-left: 5px solid #29c555;
     padding: 0 15px;
+    @media (max-width : 500px){
+      font-size: 7vw;
+    }
   }
   .content {
-    font-size: 30px;
-    min-height: 300px;
+    font-size: 1.5vw;
+    min-height: 40vh;
     white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
+    @media (max-width : 500px){
+      font-size: 4vw;
+      min-height: 20vh;
+    }
   }
   .boardArea:hover {
     background-color: rgba(50, 250, 100, 0.1);
@@ -526,10 +556,16 @@ const PostInfoBox = styled.div`
   align-items: center;
   white-space: nowrap;
   color: gray;
-  margin: 20px 0;
+  margin: .5vw 0;
+  @media (max-width : 500px){
+    margin: 1vh 0;
+  }
   & span {
     margin: 0 4px;
-    font-size: 15px;
+    font-size: 1.5vw;
+    @media (max-width : 500px){
+      font-size: 1.2vw;
+    }
   }
   & span:nth-child(odd) {
     color: white;
@@ -547,41 +583,67 @@ const TitleOfPost = styled.div`
   text-align: center;
   white-space: nowrap;
   border-bottom: 0.2vw solid;
-  margin: 1vw 0 0 0;
+  margin: 1vh 0;
   & div {
     width: 10vw;
-    font-size: 1vw;
-    margin: 0;
+    font-size: 1.2vw;
+    @media (max-width:500px){
+    font-size: 2.8vw;
+  }
   }
   & div:nth-child(1) {
-    // 게시글리스트 번호부분
+    // 게시글리스트 번호부분 모바일 안보이게
     width: 5vw;
+    @media (max-width:500px){
+      display: none;
+    }
   }
   & div:nth-child(2) {
     // 게시글리스트 제목부분
     width: 20vw;
+    @media (max-width:500px){
+      width: 38vw;
+    }
   }
   & div:nth-child(3) {
     // 댓글수 부분
     width: 2vw;
+    @media (max-width:500px){
+      display: none;
+    }
+  }
+  & div:nth-child(5) {
+    // 작성일 부분
+    @media (max-width:500px){
+      display: none;
+    }
   }
 `;
 const ListOfPost = styled.div`
-  width: 60;
+  width: 60vw;
   height: 2.5vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
   text-align: center;
   white-space: nowrap;
+  @media (max-width:500px) {
+      margin: 1vh 0;
+    }
   & div {
     width: 10vw;
     height: auto;
-    font-size: 1vw;
+    font-size: 1.2vw;
+    @media (max-width:500px){
+    font-size: 3vw;
+  }
   }
   & div:nth-child(1) {
     // 게시글리스트 번호부분
     width: 5vw;
+    @media (max-width:500px){
+      display: none;
+    }
   }
   & div:nth-child(2) {
     // 게시글리스트 제목부분
@@ -591,16 +653,31 @@ const ListOfPost = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     word-break: break-all;
+    @media (max-width:500px){
+      width: 38vw;
+    }
   }
   & div:nth-child(3) {
     // 댓글수 부분
     width: 2vw;
     text-align: left;
+    @media (max-width:500px){
+      display: none;
+    }
+  }
+  & div:nth-child(5){
+    // 작성일 부분
+    @media (max-width:500px){
+      display: none;
+    }
   }
 `;
 const FAQBox =styled.div`
 width: 70vw;
 display: flex;
+@media (max-width:500px){
+  flex-direction: column;
+}
 `
 const FAQItem = styled.div`
   display: flex;
@@ -609,6 +686,11 @@ const FAQItem = styled.div`
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
+  @media (max-width:500px){
+  height: 5vh;
+  flex-direction: row;
+  justify-content: center;
+}
 `
 const DropDownButton = styled.button`
   width: 10vw;
@@ -618,4 +700,10 @@ const DropDownButton = styled.button`
   background-color: transparent;
   padding: 2vw; /* 여백 추가 */
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
+  @media (max-width:500px){
+    width: 20vw;
+    height: 10vw;
+      font-size: 3vw;
+      margin: 2vh 0;
+    }
 `;

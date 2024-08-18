@@ -43,6 +43,11 @@ const Body = styled.div`
   align-items: center;
   width: auto;
   height: auto;
+  margin-left: .2vw;
+  @media (max-width: 500px){
+      height: 4vw;
+      margin-left: .5vw;
+    }
 `;
 const ToggleContainer = styled.div`
   position: relative;
@@ -51,8 +56,12 @@ const ToggleContainer = styled.div`
   > .toggle-container {
     width: 50px;
     height: 30px;
-    border-radius: 30px;
+    border-radius: 10vw;
     background-color: rgb(233, 233, 234);
+    @media (max-width: 500px){
+      width: 7vw;
+      height: 3vw;
+    }
   }
   //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
   > .toggle--checked {
@@ -69,11 +78,21 @@ const ToggleContainer = styled.div`
     border-radius: 50%;
     background-color: rgb(255, 254, 255);
     transition: 0.5s;
-    //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
+    @media (max-width: 500px){
+      top: .5vw;
+      left: 1vw;
+      width: 2vw;
+      height: 2vw;
+    }
+    
   }
+  //.toggle--checked 클래스가 활성화 되었을 경우의 CSS를 구현
   > .toggle--checked {
     left: 23px;
     transition: 0.5s;
+    @media (max-width: 500px){
+      left: 4vw;
+    }
   }
 `;
 const Desc = styled.div`
@@ -83,6 +102,10 @@ const Desc = styled.div`
   align-items: center;
   width: 50px; // 필요에 따라 너비를 조정합니다.
   height: 35px; // 필요에 따라 높이를 조정합니다.
+  @media (max-width: 500px){
+    width: 7vw;
+    font-size: 1.5vw;
+  }
 
   .OFF,
   .ON {

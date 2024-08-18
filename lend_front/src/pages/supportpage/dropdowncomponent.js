@@ -113,13 +113,16 @@ width: 59vw;
 & ul{
   font-size: 2vw;
   list-style: none;
+  @media (max-width:500px){
+      font-size: 4vw;
+    }
 }
 li> button:hover {
     background-color: rgba(50, 250, 100, 0.1);
   }
 span{
   padding: 0 1vw;
-  border-left: .5vw solid #29c555;
+  border-left: .4vw solid #29c555;
 }
 `
 const InfoButton = styled.button`
@@ -130,4 +133,7 @@ const InfoButton = styled.button`
   background-color: transparent;
   padding: 1.5vw; /* 여백 추가 */
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
+  @media (max-width:500px){
+      font-size: 3vw;
+    }
 `;

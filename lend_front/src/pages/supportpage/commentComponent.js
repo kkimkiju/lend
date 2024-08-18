@@ -177,7 +177,7 @@ export default function CommentComponent({
       return (
         <div
           key={comment.id}
-          style={{ marginLeft: comment.parentId ? "20px" : "0" }}
+          style={{ marginLeft: comment.parentId ? "2vw" : "0" }}
         >
           <Name authority={comment.memberResDto.authority}>{comment.memberResDto.name}</Name>
           {comment.deletedStatus ? (
@@ -192,7 +192,7 @@ export default function CommentComponent({
                   }
                 />
               ) : (
-                <div style={{ whiteSpace: "pre-wrap" }}>{comment.content}</div>
+                <div style={{ display: "block" }}>{comment.content}</div>
               )}
               <CommentButtonBox>
                 {isOwner && (
@@ -229,7 +229,7 @@ export default function CommentComponent({
                     }
                   />
                   <CommentButtonBox>
-                    <Button onClick={handleSaveNestedComment}>댓글 저장</Button>
+                    <Button onClick={handleSaveNestedComment}>등록</Button>
                   </CommentButtonBox>
                 </>
               )}
@@ -254,6 +254,7 @@ export default function CommentComponent({
                   <textarea
                     type="text"
                     placeholder="댓글을 입력하세요."
+                    maxlength="100"
                     value={contentOfComment}
                     onChange={(e) => setContentOfComment(e.target.value)}
                   />
@@ -285,9 +286,12 @@ const Box = styled.div`
   border-top: 1px solid gray;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 70vw;
   > textarea {
     margin: 20px 50px;
+    @media (max-width : 500px){
+      width: 50vw
+    }
   }
 `;
 const ButtonBox = styled.div`
@@ -320,6 +324,11 @@ const Button = styled.button`
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
   margin: 0 10px;
   padding: 5px 0;
+  @media (max-width : 500px){
+    width: 6vw;
+    height: 6vw;
+    font-size: 2vw;
+  }
 `;
 const Item = styled.div`
   flex-direction: column;

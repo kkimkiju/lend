@@ -78,9 +78,17 @@ export default function InfoComponent ({ infoInput }){
 };
 
 const Body =styled.div`
-
+ul{
+  padding-left: 2vw;
+  @media (max-width:500px){
+    padding-left: 3vw;
+  }
+}
 li{
   font-size: 1.2vw;
   white-space: nowrap;
+  @media (max-width:500px){
+    font-size: 2.5vw;
+  }
 }
 `

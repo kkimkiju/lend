@@ -155,6 +155,11 @@ const Item = styled.div`
     border-radius: 0.5vw;
     margin: 2vh 0;
     padding: 0.1vw 0 0 0.5vw;
+    @media (max-width : 500px){
+      width: 70vw;
+      height: 20vh;
+      font-size: 5vw;
+    }
   }
   .ContentInput {
     width: 50vw;
@@ -171,6 +176,10 @@ const Item = styled.div`
     scrollbar-width: none; /* Firefox */
     ::-webkit-scrollbar {
       display: none; /* Chrome, Safari, Opera*/
+    }
+    @media (max-width : 500px){
+      width: 70vw;
+      font-size: 3vw;
     }
   }
   & > button:hover {
