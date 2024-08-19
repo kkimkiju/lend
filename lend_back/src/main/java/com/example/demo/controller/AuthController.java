@@ -40,8 +40,8 @@ public class AuthController {
         return ResponseEntity.ok(isTrue);
     }
     @PostMapping("/pw/new")
-    public ResponseEntity<Boolean> getNewPw(@RequestBody MemberResDto memberResDto){
-        boolean isTrue  = memberService.findByNameAndEmail(memberResDto);
+    public ResponseEntity<MemberResDto> getNewPw(@RequestBody MemberResDto memberResDto){
+        MemberResDto isTrue  = memberService.findByNameAndEmail(memberResDto);
         return ResponseEntity.ok(isTrue);
     }
     // 아이디 찾기

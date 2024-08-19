@@ -77,17 +77,20 @@ public class MemberService {
         }
     }
     // 비밀 번호 찾기 ( 새로운 비밀 번호)
-    public boolean findByNameAndEmail(MemberResDto memberResDto) {
+    public MemberResDto findByNameAndEmail(MemberResDto memberResDto) {
+        System.out.println("memberResDto : "  + memberResDto.getEmail());
         Optional<Member> mem = memberRepository.findByEmail(memberResDto.getEmail());
+        System.out.println(mem + "mem");
         if(mem.isPresent()) {
             Member member = mem.get();
             member.setEmail(memberResDto.getEmail());
             member.setPassword(passwordEncoder.encode(memberResDto.getPassword()));
-            return true;
+            System.out.println(member.getPassword() + " , " + member.getEmail());
+            return MemberResDto.of(memberRepository.save(member));
         }
         else {
             log.error("새로운 비밀 번호등록중 에러");
-            return false;
+            return null;
         }
     }
 

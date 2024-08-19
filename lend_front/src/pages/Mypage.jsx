@@ -169,12 +169,12 @@ const Mypage = () => {
     setPasswordCheck(e.target.value);
   };
   useEffect(() => {
-    //getInfo();
-    // if (loginStatus) {
-    //   getInfo();
-    // } else {
-    //   return null;
-    // }
+    getInfo();
+    if (loginStatus) {
+      getInfo();
+    } else {
+      return null;
+    }
   }, []);
   const getInfo = async () => {
     const rsp = await AxiosApi.getMemberInfo();

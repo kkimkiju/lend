@@ -230,14 +230,14 @@ const Loaninfo = () => {
         <Loan>
           <LoaninfoList loanitem={loanitem} onClickde={onClickde} />
         </Loan>
-        <Pagbox>
-          <Paging
-            page={page}
-            itemsCountPerPage={itemsCountPerPage}
-            totalItemsCount={totalItemsCount}
-            onPageChange={handlePageChange}
-          />
-        </Pagbox>
+        {/* <Pagbox> */}
+        <Paging
+          page={page}
+          itemsCountPerPage={itemsCountPerPage}
+          totalItemsCount={totalItemsCount}
+          onPageChange={handlePageChange}
+        />
+        {/* </Pagbox> */}
       </Loanbox>
       <Detail
         open={deOpen}
