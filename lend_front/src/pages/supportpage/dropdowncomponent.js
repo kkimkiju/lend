@@ -114,7 +114,8 @@ width: 59vw;
   font-size: 2vw;
   list-style: none;
   @media (max-width:500px){
-      font-size: 4vw;
+    font-size: 6vw;
+    padding-left: 2vw;
     }
 }
 li> button:hover {
@@ -134,6 +135,8 @@ const InfoButton = styled.button`
   padding: 1.5vw; /* 여백 추가 */
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
   @media (max-width:500px){
-      font-size: 3vw;
+    width: 90vw;
+    font-size: 4vw;
+    margin: 1vh 0;
     }
 `;

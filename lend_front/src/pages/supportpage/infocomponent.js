@@ -30,9 +30,8 @@ export default function InfoComponent ({ infoInput }){
       )}
       {infoInput === "info5" && (
         <ul>
-          <li>메인페이지에서 "Try it" 버튼 클릭 후 여기서 회원가입 버튼을 눌러 회원가입이 가능합니다. </li>
-          
-          <li>(카카오톡 로그인 필요)</li>
+          <li>메인페이지에서 "Try it" 버튼 클릭 후 여기서 회원가입 버튼을 눌러</li>
+          <li> 회원가입이 가능합니다. (카카오톡 로그인 필요)</li>
         </ul>
       )}
       {infoInput === "info6" && (
@@ -88,7 +87,7 @@ li{
   font-size: 1.2vw;
   white-space: nowrap;
   @media (max-width:500px){
-    font-size: 2.5vw;
+    font-size: 2.8vw;
   }
 }
 `

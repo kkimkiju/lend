@@ -302,7 +302,7 @@ export default function Support() {
               >
                 {">"}
               </PageButton>
-            </PageButtonBox>
+              </PageButtonBox>
           </>
         )}
         {detailedPost && (
@@ -412,7 +412,7 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  width: 95dvw;
+  width: 100dvw;
   height: 75dvh;
 `;
 const Box = styled.div`
@@ -420,8 +420,10 @@ const Box = styled.div`
   height: 60vh;
   flex-direction: row;
   justify-content: center;
+  margin-bottom: 2vh;
   @media (max-width: 500px){
-    height: 40vh;
+    width: 95vw;
+    height: 85vh;
   }
 `;
 const SearchBox = styled.div`
@@ -435,13 +437,16 @@ const SearchInput = styled.input`
 const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: auto;
   height: auto;
   :hover {
     background-color: #ddd;
     color: black;
+  }
+  @media (max-width:500px){
+    width: 95vw;
   }
   > .writepost {
     // 질문하기 글작성 버튼
@@ -452,7 +457,7 @@ const ButtonBox = styled.div`
     @media (max-width:500px){
       width: 25vw;
       height: 3vh;
-      margin-left: 45vw;
+      margin-left: 70vw;
     }
   }
   > .editpost {
@@ -494,7 +499,10 @@ const EditPostButton = styled.button`
     padding: .2vh 1vw;
   }
 `;
-const PageButtonBox = styled.div``;
+const PageButtonBox = styled.div`
+display: flex;
+justify-content: center;
+`;
 const PageButton = styled(Button)`
   border-radius: 10vw;
   background-color: ${(props) => (props.active ? "#29c555" : "#fff")};
@@ -509,7 +517,8 @@ const PageButton = styled(Button)`
     background-color: ${(props) => (props.active ? "#0056b3" : "#e9ecef")};
   }
   @media(max-width: 500px){
-    width: 5vw;
+    width: 8vw;
+    font-size: 5vw;
     margin: 0vh 1vw;
     padding: .1vw .1vw;
   }
@@ -518,16 +527,24 @@ const PageButton = styled(Button)`
 const ListItem = styled.div`
   display: flex;
   flex-direction: column;
+  
+  @media(max-width: 500px){
+    align-items: flex-start;
+    width: 95vw;
+  }
 `;
 const Item = styled.div`
   display: flex;
   flex-direction: column;
+  /* align-items: center; */
+  height: 60vh;
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
   .title {
     font-size: 2.5vw;
     border-left: 5px solid #29c555;
+    margin: 1vh 0;
     padding: 0 15px;
     @media (max-width : 500px){
       font-size: 7vw;
@@ -584,11 +601,16 @@ const TitleOfPost = styled.div`
   white-space: nowrap;
   border-bottom: 0.2vw solid;
   margin: 1vh 0;
+  padding: 1vw 0 ;
+  @media (max-width : 500px){
+    width: 95vw;
+    }
   & div {
     width: 10vw;
     font-size: 1.2vw;
     @media (max-width:500px){
-    font-size: 2.8vw;
+      width: 20vw;
+    font-size: 4vw;
   }
   }
   & div:nth-child(1) {
@@ -602,7 +624,7 @@ const TitleOfPost = styled.div`
     // 게시글리스트 제목부분
     width: 20vw;
     @media (max-width:500px){
-      width: 38vw;
+      width: 50vw;
     }
   }
   & div:nth-child(3) {
@@ -628,14 +650,16 @@ const ListOfPost = styled.div`
   text-align: center;
   white-space: nowrap;
   @media (max-width:500px) {
-      margin: 1vh 0;
+      width: 95vw;
+      margin: 2vh 0;
     }
   & div {
     width: 10vw;
     height: auto;
     font-size: 1.2vw;
     @media (max-width:500px){
-    font-size: 3vw;
+      width: 20vw;
+    font-size: 4vw;
   }
   }
   & div:nth-child(1) {
@@ -654,7 +678,7 @@ const ListOfPost = styled.div`
     text-overflow: ellipsis;
     word-break: break-all;
     @media (max-width:500px){
-      width: 38vw;
+      width: 50vw;
     }
   }
   & div:nth-child(3) {
@@ -676,6 +700,7 @@ const FAQBox =styled.div`
 width: 70vw;
 display: flex;
 @media (max-width:500px){
+  width: 95vw;
   flex-direction: column;
 }
 `
@@ -703,7 +728,7 @@ const DropDownButton = styled.button`
   @media (max-width:500px){
     width: 20vw;
     height: 10vw;
-      font-size: 3vw;
+      font-size: 4vw;
       margin: 2vh 0;
     }
 `;

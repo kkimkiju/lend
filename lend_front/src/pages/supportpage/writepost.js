@@ -156,7 +156,7 @@ const Item = styled.div`
     margin: 2vh 0;
     padding: 0.1vw 0 0 0.5vw;
     @media (max-width : 500px){
-      width: 70vw;
+      width: 80vw;
       height: 20vh;
       font-size: 5vw;
     }
@@ -178,7 +178,8 @@ const Item = styled.div`
       display: none; /* Chrome, Safari, Opera*/
     }
     @media (max-width : 500px){
-      width: 70vw;
+      width: 80vw;
+      height: 80vw;
       font-size: 3vw;
     }
   }
