@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
+import Common from "../../utils/Common";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
 import Back from "../../image/backbutton.png";
 import Send from "../../image/sendbutton.png";
-import Common from "../../utils/Common";
+import AdminHeader from "../../components/AdminHeader";
 
 const ChatContainer = styled.div`
   padding: 20px;
@@ -101,20 +102,19 @@ const Chatting = () => {
   const ws = useRef(null);
   const navigate = useNavigate();
 
-  // 사용자 정보 가져오기
   useEffect(() => {
     const getMember = async () => {
       try {
         const rsp = await AxiosApi.getMemberInfo();
+        console.log(rsp.data);
         setSender(rsp.data.email);
       } catch (error) {
-        console.error("Error fetching member info:", error);
+        console.log(error);
       }
     };
     getMember();
   }, []);
 
-  // 메시지 가져오기
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -126,30 +126,24 @@ const Chatting = () => {
         setMessages(fetchedMessages);
         console.log("Messages fetched:", fetchedMessages);
       } catch (error) {
-        console.error("Error fetching messages:", error);
+        console.error("Error fetching messages", error);
       }
     };
     fetchMessages();
   }, [roomId]);
 
-  // 메시지 리스트가 변경될 때 스크롤 자동 하단 이동
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  // 스크롤을 하단으로 이동
   const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // 메시지 입력 처리
-  const onChangeMsg = (e) => {
+  const onChangMsg = (e) => {
     setInputMsg(e.target.value);
   };
 
-  // Enter 키 처리
   const onEnterKey = (e) => {
     if (e.key === "Enter" && inputMsg.trim() !== "") {
       e.preventDefault();
@@ -157,23 +151,20 @@ const Chatting = () => {
     }
   };
 
-  // 메시지 전송
   const onClickMsgSend = () => {
     if (ws.current && inputMsg.trim() !== "") {
-      const newMessage = {
-        type: "TALK",
-        roomId: roomId,
-        sender: sender,
-        message: inputMsg,
-      };
-
-      ws.current.send(JSON.stringify(newMessage));
-      setMessages((prevItems) => [...prevItems, newMessage]);
+      ws.current.send(
+        JSON.stringify({
+          type: "TALK",
+          roomId: roomId,
+          sender: sender,
+          message: inputMsg,
+        })
+      );
       setInputMsg("");
     }
   };
 
-  // 채팅 종료
   const onClickMsgClose = () => {
     if (ws.current) {
       ws.current.send(
@@ -189,46 +180,31 @@ const Chatting = () => {
     navigate(-1);
   };
 
-  // WebSocket 연결
   useEffect(() => {
     const connectWebSocket = () => {
       ws.current = new WebSocket(Common.SOCKET_URL);
 
       ws.current.onopen = () => {
-        console.log("Connected to WebSocket");
+        console.log("connected to " + Common.SOCKET_URL);
         setSocketConnected(true);
       };
 
       ws.current.onmessage = (evt) => {
-        try {
-          const data = JSON.parse(evt.data);
-          console.log("Received message: ", data.message);
-
-          setMessages((prevItems) => [
-            ...prevItems,
-            {
-              type: data.type,
-              roomId: data.roomId,
-              sender: data.sender,
-              message: data.message,
-              localDateTime: new Date(), // 추가: 수신 시각을 현재로 설정 (필요에 따라 수정)
-            },
-          ]);
-        } catch (error) {
-          console.error("Error parsing message:", error);
-        }
+        const data = JSON.parse(evt.data);
+        console.log("Received message: ", data.message);
+        setMessages((prevItems) => [...prevItems, data]);
       };
 
       ws.current.onclose = () => {
         console.log("WebSocket closed, attempting to reconnect...");
         setSocketConnected(false);
         setTimeout(() => {
-          connectWebSocket(); // 5초 후 재연결 시도
+          connectWebSocket(); // 일정 시간 후 재연결 시도
         }, 5000);
       };
 
       ws.current.onerror = (error) => {
-        console.error("WebSocket error:", error);
+        console.error("WebSocket error: ", error);
         ws.current.close();
       };
     };
@@ -242,7 +218,6 @@ const Chatting = () => {
     };
   }, []);
 
-  // WebSocket 연결 후 초기 메시지 전송
   useEffect(() => {
     if (socketConnected && sender) {
       ws.current.send(
@@ -254,7 +229,7 @@ const Chatting = () => {
         })
       );
     }
-  }, [socketConnected, sender, roomId]);
+  }, [socketConnected, sender]);
 
   return (
     <ChatContainer>
@@ -266,7 +241,9 @@ const Chatting = () => {
         {messages.map((msg, index) => (
           <Contents key={index} isSender={msg.sender === sender}>
             {msg.sender !== sender && <Sender>Lend 상담원</Sender>}
-            <Message isSender={msg.sender === sender}>{msg.message}</Message>
+            <Message isSender={msg.sender === sender}>
+              {`${msg.message}`}
+            </Message>
           </Contents>
         ))}
         <div ref={messagesEndRef} />
@@ -275,7 +252,7 @@ const Chatting = () => {
         <Input
           placeholder="문자 전송"
           value={inputMsg}
-          onChange={onChangeMsg}
+          onChange={onChangMsg}
           onKeyUp={onEnterKey}
         />
         <SendButton onClick={onClickMsgSend} />

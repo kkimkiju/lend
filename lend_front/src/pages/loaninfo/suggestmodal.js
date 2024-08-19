@@ -205,7 +205,7 @@ const Suggestmodal = (props) => {
   const Recommexe = async () => {
     if (category === "일반신용대출") {
       if (open) {
-        fetch(`http://localhost:5000/api/recommend_loan_products`, {
+        fetch(`http://192.168.10.6:5000/api/recommend_loan_products`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -225,7 +225,7 @@ const Suggestmodal = (props) => {
       }
     } else if (category == "전세자금대출") {
       if (open) {
-        fetch(`http://localhost:5000/api/jeonse_loan`, {
+        fetch(`http://192.168.10.6:5000/api/jeonse_loan`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -246,7 +246,7 @@ const Suggestmodal = (props) => {
       }
     } else if (category == "주택담보대출") {
       if (open) {
-        fetch(`http://localhost:5000/api/mortgage_loan`, {
+        fetch(`http://192.168.10.6:5000/api/mortgage_loan`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -268,7 +268,7 @@ const Suggestmodal = (props) => {
       }
     } else {
       if (open) {
-        fetch(`http://localhost:5000/api/people_finloan_recommendation`, {
+        fetch(`http://192.168.10.6:5000/api/people_finloan_recommendation`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

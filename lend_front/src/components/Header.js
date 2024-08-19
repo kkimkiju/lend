@@ -1,12 +1,30 @@
 import styled from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import AxiosApi from "../axios/AxiosApi";
 import Logo from "../image/로고.png";
 import { useContext } from "react";
 import { UserContext } from "../context/UserStore";
+
 const Header = () => {
   const navigate = useNavigate();
   const context = useContext(UserContext);
   const { loginStatus } = context;
+  const [findAdmin, setFindAdmin] = useState("");
+
+  useEffect(() => {
+    const userinfo = async () => {
+      try {
+        const rsp = await AxiosApi.getMemberInfo();
+        setFindAdmin(rsp.data.email);
+        console.log(rsp.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    userinfo();
+  }, []);
+
   return (
     <Body>
       <Container>
@@ -25,6 +43,11 @@ const Header = () => {
             <Menu as={Link} to="/lend/mypage">
               마이 페이지
             </Menu>
+            {findAdmin === "admin" && (
+              <Menu as={Link} to="/lend/chatlist">
+                실시간 문의
+              </Menu>
+            )}
           </Box>
         ) : (
           <Box>
@@ -106,7 +129,7 @@ const Menu = styled.div`
   }
 
   @media (max-width: 500px) {
-    font-size: 3vw;
-    margin-left: 3vw;
+    font-size: 10px;
+    margin-left: 1px;
   }
 `;

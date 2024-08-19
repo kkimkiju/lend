@@ -251,7 +251,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
   useEffect(() => {
     if (categorybu == "일반신용대출") {
       if (open && loan) {
-        fetch(`http://localhost:5000/api/recommendations`, {
+        fetch(`http://192.168.10.6:5000/api/recommendations`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -272,7 +272,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
       }
     } else if (categorybu == "전세자금대출") {
       if (open && loan) {
-        fetch(`http://localhost:5000/api/loan_recommendations`, {
+        fetch(`http://192.168.10.6:5000/api/loan_recommendations`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -293,7 +293,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
       }
     } else if (categorybu == "주택담보대출") {
       if (open && loan) {
-        fetch(`http://localhost:5000/api/loan_similarity`, {
+        fetch(`http://192.168.10.6:5000/api/loan_similarity`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -314,7 +314,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
       }
     } else {
       if (open && loan) {
-        fetch(`http://localhost:5000/api/recommend_loans`, {
+        fetch(`http://192.168.10.6:5000/api/recommend_loans`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

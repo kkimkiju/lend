@@ -154,15 +154,14 @@ const Chatting = () => {
 
   const onClickMsgSend = () => {
     if (ws.current && inputMsg.trim() !== "") {
-      const newMessage = {
-        type: "TALK",
-        roomId: roomId,
-        sender: sender,
-        message: inputMsg,
-      };
-
-      ws.current.send(JSON.stringify(newMessage));
-      setMessages((prevItems) => [...prevItems, newMessage]);
+      ws.current.send(
+        JSON.stringify({
+          type: "TALK",
+          roomId: roomId,
+          sender: sender,
+          message: inputMsg,
+        })
+      );
       setInputMsg("");
     }
   };
@@ -204,16 +203,10 @@ const Chatting = () => {
         setSocketConnected(true);
       };
 
-      ws.current.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log("Received message:", data);
-
-          // 메시지를 상태에 추가
-          setMessages((prevMessages) => [...prevMessages, data]);
-        } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
-        }
+      ws.current.onmessage = (evt) => {
+        const data = JSON.parse(evt.data);
+        console.log("Received message: ", data.message);
+        setMessages((prevItems) => [...prevItems, data]);
       };
 
       ws.current.onclose = () => {

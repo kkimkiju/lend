@@ -1,8 +1,8 @@
 import axios from "axios";
 import AxiosInstance from "./AxiosInstance";
 
-// const LEND_DOMAIN = "http://192.168.10.6:8118";
-const LEND_DOMAIN = "http://localhost:8118";
+const LEND_DOMAIN = "http://192.168.10.6:8118";
+// const LEND_DOMAIN = "http://localhost:8118";
 const AxiosApi = {
   // 발행된 토큰을 로컬에 저장
   setAccessToken: (token) => {
