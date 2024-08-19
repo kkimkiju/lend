@@ -14,29 +14,15 @@ const Container = styled.div`
 `;
 const Adbox = styled.div`
   width: 100%;
+  @media (max-width: 500px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
+
 const Sett = styled.div`
   display: flex;
   position: relative;
-`;
-const CategorySelect = styled.select`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  width: 15%;
-  height: 40px;
-  background-color: #fff;
-`;
-const Textinput = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  width: 15%;
-  height: 21px;
-  background-color: #fff;
-  margin-left: 10px;
 `;
 
 const Loanbox = styled.div`
@@ -89,10 +75,32 @@ const Categbut = styled.button`
   background-color: #4caf50;
   color: white;
   cursor: pointer;
+  @media (max-width: 500px) {
+    display: none;
+  }
+`;
+const CategorySelect = styled.select`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  width: 52%;
+  height: 40px;
+  background-color: #fff;
+  @media (min-width: 500px) {
+    display: none;
+  }
 `;
 const Sububox = styled.div`
   position: absolute;
   right: 1px;
+`;
+const Pagbox = styled.div`
+  width: 87%;
+
+  @media (min-width: 500px) {
+    display: none;
+  }
 `;
 
 const Loaninfo = () => {
@@ -202,6 +210,16 @@ const Loaninfo = () => {
         <Sububox>
           <Categbut onClick={sugopen}>내게 맞는 대출 상품 추천 받기</Categbut>
         </Sububox>
+        <CategorySelect
+          value={categorybu}
+          onChange={(e) => handleCategoryChange(e.target.value)}
+        >
+          <option value="">대출 종류를 선택해주세요</option>
+          <option value="일반신용대출">일반신용대출</option>
+          <option value="전세자금대출">전세자금대출</option>
+          <option value="주택담보대출">주택담보대출</option>
+          <option value="서민금융진흥원대출">서민금융진흥원대출</option>
+        </CategorySelect>
       </Sett>
       <Loanbox>
         <Loantit>
@@ -212,12 +230,14 @@ const Loaninfo = () => {
         <Loan>
           <LoaninfoList loanitem={loanitem} onClickde={onClickde} />
         </Loan>
-        <Paging
-          page={page}
-          itemsCountPerPage={itemsCountPerPage}
-          totalItemsCount={totalItemsCount}
-          onPageChange={handlePageChange}
-        />
+        <Pagbox>
+          <Paging
+            page={page}
+            itemsCountPerPage={itemsCountPerPage}
+            totalItemsCount={totalItemsCount}
+            onPageChange={handlePageChange}
+          />
+        </Pagbox>
       </Loanbox>
       <Detail
         open={deOpen}

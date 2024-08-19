@@ -92,8 +92,8 @@ const SlideBox = styled.div`
     background-position: center; // 이미지 중앙 정렬
   }
   @media (max-width: 500px) {
-    width: 100%;
-    height: 90svh;
+    width: 50%;
+    height: 50svh;
   }
 `;
 

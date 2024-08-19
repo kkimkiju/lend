@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ElasticsearchAxios from "../../axios/ElasticsearchAxios";
 import AxiosApi from "../../axios/AxiosApi";
+import Footer from "../../components/Footer";
 
 const Container = styled.div`
   width: 50%;
@@ -304,82 +305,89 @@ const Sugg = () => {
   };
 
   return (
-    <Bbox>
-      <Container>
-        <Test1 />
-        <h2>{loanitem["금융 상품명"] || "정보 없음"}</h2>
-        <Grayline />
-        <Gbox>
-          <Lowbox>
-            <strong>이자율</strong>
-            <Lowboxtext>
-              {loanitem["평균 금리"] ||
-                loanitem["전처리 이자율 "] ||
-                "정보 없음"}
-            </Lowboxtext>
-          </Lowbox>
-          <Grayline2 />
-          <Lowbox>
-            <strong>대출 한도</strong>
-            <Lowboxtext>
-              {loanitem["대출 한도"] || loanitem["대출한도"] || "정보 없음"}
-            </Lowboxtext>
-          </Lowbox>
-        </Gbox>
-        <Wbox>
-          <Wwbox>
-            <Wlowbox>
-              <strong>은행명</strong>
-              <Lowwboxtext>
-                {loanitem["금융회사 명"] || "정보 없음"}
-              </Lowwboxtext>
-            </Wlowbox>
-            <Wlowbox>
-              <strong>대출종류명</strong>
-              <Lowwboxtext>{loanitem["대출종류명"] || "정보 없음"}</Lowwboxtext>
-            </Wlowbox>
-            <Wlowbox>
-              <strong>가입방법</strong>
-              <Lowwboxtext
-                title={loanitem["가입 방법"] || loanitem["신청 방법"]}
-              >
-                {loanitem["가입 방법"] || loanitem["신청 방법"] || "정보 없음"}
-              </Lowwboxtext>
-            </Wlowbox>
-          </Wwbox>
+    <>
+      <Bbox>
+        <Container>
+          <Test1 />
+          <h2>{loanitem["금융 상품명"] || "정보 없음"}</h2>
           <Grayline />
-          <Wwbox>
-            <Hwlowbox>
-              <strong>{getLabel(loanitem)}</strong>
-              <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
-            </Hwlowbox>
-            <Hwlowbox>
-              <strong>{de(category)}</strong>
-              <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
-            </Hwlowbox>
-          </Wwbox>
-        </Wbox>
-        <Pbox>
-          <p>
-            <strong>{are(category)}:</strong>
-            {are1(category, loanitem)}
-          </p>
-          <p>
-            <strong>{agee(category)}:</strong> {agee1(category, loanitem)}
-          </p>
-          <p>
-            <strong>{qq(category)}:</strong>
-            {qq1(category, loanitem)}
-          </p>
-          <p>
-            <strong>보증기관:</strong>
-            {ww1(category, loanitem)}
-          </p>
-        </Pbox>
+          <Gbox>
+            <Lowbox>
+              <strong>이자율</strong>
+              <Lowboxtext>
+                {loanitem["평균 금리"] ||
+                  loanitem["전처리 이자율 "] ||
+                  "정보 없음"}
+              </Lowboxtext>
+            </Lowbox>
+            <Grayline2 />
+            <Lowbox>
+              <strong>대출 한도</strong>
+              <Lowboxtext>
+                {loanitem["대출 한도"] || loanitem["대출한도"] || "정보 없음"}
+              </Lowboxtext>
+            </Lowbox>
+          </Gbox>
+          <Wbox>
+            <Wwbox>
+              <Wlowbox>
+                <strong>은행명</strong>
+                <Lowwboxtext>
+                  {loanitem["금융회사 명"] || "정보 없음"}
+                </Lowwboxtext>
+              </Wlowbox>
+              <Wlowbox>
+                <strong>대출종류명</strong>
+                <Lowwboxtext>
+                  {loanitem["대출종류명"] || "정보 없음"}
+                </Lowwboxtext>
+              </Wlowbox>
+              <Wlowbox>
+                <strong>가입방법</strong>
+                <Lowwboxtext
+                  title={loanitem["가입 방법"] || loanitem["신청 방법"]}
+                >
+                  {loanitem["가입 방법"] ||
+                    loanitem["신청 방법"] ||
+                    "정보 없음"}
+                </Lowwboxtext>
+              </Wlowbox>
+            </Wwbox>
+            <Grayline />
+            <Wwbox>
+              <Hwlowbox>
+                <strong>{getLabel(loanitem)}</strong>
+                <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
+              </Hwlowbox>
+              <Hwlowbox>
+                <strong>{de(category)}</strong>
+                <Lowwboxtext>{getDisplayValue(loanitem)}</Lowwboxtext>
+              </Hwlowbox>
+            </Wwbox>
+          </Wbox>
+          <Pbox>
+            <p>
+              <strong>{are(category)}:</strong>
+              {are1(category, loanitem)}
+            </p>
+            <p>
+              <strong>{agee(category)}:</strong> {agee1(category, loanitem)}
+            </p>
+            <p>
+              <strong>{qq(category)}:</strong>
+              {qq1(category, loanitem)}
+            </p>
+            <p>
+              <strong>보증기관:</strong>
+              {ww1(category, loanitem)}
+            </p>
+          </Pbox>
 
-        <Button onClick={wishlistsave}>장바구니 담기</Button>
-      </Container>
-    </Bbox>
+          <Button onClick={wishlistsave}>장바구니 담기</Button>
+        </Container>
+      </Bbox>
+      <Footer />
+    </>
   );
 };
 

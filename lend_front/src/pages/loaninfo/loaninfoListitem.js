@@ -19,6 +19,9 @@ const TiContain = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media (max-width: 500px) {
+    font-size: 13px;
+  }
 `;
 
 const DetTitle = styled.h3`
@@ -28,6 +31,9 @@ const DetTitle = styled.h3`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media (max-width: 500px) {
+    font-size: 13px;
+  }
 `;
 
 const Detamo = styled.p`
@@ -37,6 +43,9 @@ const Detamo = styled.p`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media (max-width: 500px) {
+    font-size: 13px;
+  }
 `;
 
 const Detdate = styled.p`
@@ -46,12 +55,15 @@ const Detdate = styled.p`
   justify-content: center;
   align-items: center;
   text-align: center;
+  @media (max-width: 500px) {
+    font-size: 13px;
+  }
 `;
 const LoaninfoListitem = ({ loanitem, onClickde }) => {
   // title이 undefined일 경우 처리
   const truncateTitle = (title) => {
     if (!title) return "No title available"; // 기본값을 설정하거나 빈 문자열 반환
-    return title.length > 25 ? title.substring(0, 25) + "..." : title;
+    return title.length > 10 ? title.substring(0, 10) + "..." : title;
   };
 
   return (
