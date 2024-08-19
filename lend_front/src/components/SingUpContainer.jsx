@@ -331,10 +331,10 @@ const SingUpContainer = ({ isSignIn }) => {
       };
       try {
         await emailjs.send(
-          "service_qx3ym3i",
-          "template_vhak8ft",
+          "service_fu65d2x",
+          "template_ubt738r",
           templateParams,
-          "Tn-4FKW92eyP7rCTI"
+          "HuDGKNw851eq0DIbU"
         );
 
         setCheckEmail(inputEmail);
