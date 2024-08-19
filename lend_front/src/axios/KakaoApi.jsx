@@ -1,7 +1,7 @@
 import axios from "axios";
 const LEND_DOMAIN = "http://localhost:8118";
 const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
-const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
+const redirect_uri = "http://192.168.10.6:3000/lend"; //Redirect URI
 const KakaoApi = {
   getToken: async (code) => {
     console.log("getToken 실행");
