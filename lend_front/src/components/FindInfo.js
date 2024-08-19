@@ -38,7 +38,9 @@ const ModalStyle = styled.div`
     border: 0.8px solid;
     background-color: white;
     overflow: hidden;
-
+    @media only screen and (max-width: 500px) {
+      width: 80%;
+    }
     div {
       padding: 16px;
       border-bottom: 2px solid #dee2e6;

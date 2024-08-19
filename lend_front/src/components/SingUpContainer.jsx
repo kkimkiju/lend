@@ -35,6 +35,7 @@ const SignContainer = styled.div`
   transform: ${(props) => (props.isTrue ? "scale(0)" : "scale(1)")};
   @media only screen and (max-width: 500px) {
     border-radius: 50px;
+    height: 97%;
   }
 `;
 const InputContainer = styled.div`
@@ -45,6 +46,9 @@ const InputContainer = styled.div`
   width: 50%;
   input:focus {
     outline: 2px solid #29c555;
+  }
+  @media only screen and (max-width: 500px) {
+    gap: 0.5rem;
   }
 `;
 const Input = styled.input`
@@ -58,6 +62,22 @@ const Input = styled.input`
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     padding: 7px;
+  }
+`;
+const InfoInput = styled.input`
+  all: unset;
+  text-align: start;
+  width: 80%;
+  height: 16px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    padding: 7px;
+    width: 100%;
+    height: 8px;
+    font-size: 8px;
   }
 `;
 
@@ -81,6 +101,17 @@ const DateOfBirth = styled.div`
   align-items: center;
   gap: 1rem;
   padding: 0 27px;
+  span {
+    @media only screen and (max-width: 500px) {
+      display: none;
+    }
+  }
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    gap: 0.1rem;
+    padding: 0;
+    width: 115%;
+  }
 `;
 const CertificationInput = styled.input`
   all: unset;
@@ -92,6 +123,10 @@ const CertificationInput = styled.input`
   border-radius: 5px;
   text {
     border-bottom: 2px solid #000;
+  }
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    padding: 7px;
   }
 `;
 const Button = styled.div`
@@ -131,6 +166,12 @@ const ConfirmButton = styled.div`
   color: #fff;
   background-color: #29c555;
   cursor: pointer;
+  @media only screen and (max-width: 500px) {
+    font-size: 12px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+  }
 `;
 const BackButton = styled.div`
   display: flex;
@@ -144,6 +185,12 @@ const BackButton = styled.div`
   color: #fff;
   background-color: #29c555;
   cursor: pointer;
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+  }
 `;
 const CompelteButton = styled.div`
   display: flex;
@@ -158,6 +205,12 @@ const CompelteButton = styled.div`
   background-color: ${(props) => (props.isComplete ? "#29c555" : "#c3cbd1")};
   cursor: pointer;
   user-select: none;
+  @media only screen and (max-width: 500px) {
+    font-size: 8px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+  }
 `;
 const AgreementContainer = styled.div`
   display: flex;
@@ -165,6 +218,14 @@ const AgreementContainer = styled.div`
 
   text-align: start;
   padding: 0 24px;
+  label {
+    @media only screen and (max-width: 500px) {
+      font-size: 6px;
+    }
+  }
+  @media only screen and (max-width: 500px) {
+    padding: 0;
+  }
 `;
 const CheckBox = styled.input``;
 const Logo = styled.img`
@@ -511,14 +572,14 @@ const SingUpContainer = ({ isSignIn }) => {
       ) : (
         <SignContainer isTrue={isTrue}>
           <InputContainer>
-            <Input
+            <InfoInput
               type="text"
               placeholder="이름"
               onChange={(e) => handleName(e)}
-            ></Input>
+            ></InfoInput>
 
             <WithMsg>
-              <Input
+              <InfoInput
                 type="password"
                 placeholder="비밀번호"
                 onChange={onChangePassword}
@@ -531,11 +592,11 @@ const SingUpContainer = ({ isSignIn }) => {
               )}
             </WithMsg>
             <WithMsg>
-              <Input
+              <InfoInput
                 type="password"
                 placeholder="비밀번호 확인 "
                 onChange={handlePwCheck}
-              ></Input>
+              ></InfoInput>
               {passwordCheck.length > 0 && (
                 <div className={pwdValid ? "success" : "error"}>
                   {passwordheckError}
@@ -544,20 +605,20 @@ const SingUpContainer = ({ isSignIn }) => {
             </WithMsg>
             <WithMsg>
               <DateOfBirth>
-                <Input
+                <InfoInput
                   onChange={(e) => handleDateChange(e)}
                   maxLength="6"
                   placeholder="생년월일"
                   value={date}
                 />
                 -
-                <Input
+                <InfoInput
                   maxLength="1"
                   style={{ width: "10%" }}
                   onChange={(e) => handleIDNumChange(e)}
                   value={identifyNum}
                 />
-                ●●●●●●
+                <span>●●●●●●</span>
               </DateOfBirth>
               {!date && date.length > 0 ? (
                 <div className={date ? "success" : "error"}>

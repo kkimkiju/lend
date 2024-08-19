@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
   body,button,input,textarea {
     font-family: 'GmarketSansMedium', sans-serif;
   }
+  
 `;
 
 export default GlobalStyle;

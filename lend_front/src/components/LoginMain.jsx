@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import LogoImg from "../image/로고.png";
 import LoginComponent from "./LoginComponent";
 import KaKaoImg from "../image/카카오btn.png";
-import FindInfo from "./FindInfo";
 import { UserContext } from "../context/UserStore";
 const fadeIn = keyframes`
   from {
@@ -32,13 +31,17 @@ const Container = styled.div`
   transform: ${(props) => (props.isTrue ? "scale(1)" : "scale(0)")};
   @media only screen and (max-width: 1024px) {
     height: 80%;
-    padding: 56px;
+    padding: 52px 0;
   }
   @media only screen and (max-width: 500px) {
     height: 65%;
     border-radius: 50px;
-    padding: 0;
     gap: 0.5rem;
+  }
+  .error {
+    @media only screen and (max-width: 500px) {
+      font-size: 7px;
+    }
   }
 `;
 const Logo = styled.img`

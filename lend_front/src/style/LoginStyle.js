@@ -4,7 +4,7 @@ import styled, { css, createGlobalStyle, keyframes } from "styled-components";
 export const Container = styled.div`
   position: relative;
   min-height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 
   &::before {
     content: "";
@@ -24,6 +24,9 @@ export const Container = styled.div`
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     border-bottom-right-radius: max(50vw, 50vh);
     border-top-left-radius: max(50vw, 50vh);
+
+    @media only screen and (max-width: 500px) {
+    }
   }
 
   ${(props) =>
@@ -69,6 +72,9 @@ export const Col = styled.div`
     border-top-right-radius: 2rem;
     transform: translateY(100%);
     transition: 1s ease-in-out;
+  }
+  @media only screen and (max-width: 500px) {
+    background-color: inherit;
   }
 `;
 
