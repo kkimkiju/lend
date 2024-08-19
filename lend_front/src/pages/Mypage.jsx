@@ -170,6 +170,11 @@ const Mypage = () => {
   };
   useEffect(() => {
     //getInfo();
+    // if (loginStatus) {
+    //   getInfo();
+    // } else {
+    //   return null;
+    // }
   }, []);
   const getInfo = async () => {
     const rsp = await AxiosApi.getMemberInfo();
@@ -179,11 +184,7 @@ const Mypage = () => {
     setIsKaKao(rsp.data.isKaKao);
     setIdentityNumber(rsp.data.identityNumber);
   };
-  if (loginStatus) {
-    getInfo();
-  } else {
-    return null;
-  }
+
   const modify = async () => {
     const user = {
       email: loginEmail,

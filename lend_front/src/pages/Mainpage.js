@@ -21,6 +21,7 @@ const Mainpage = () => {
     setLoginStatus(false);
     localStorage.clear();
     navigate("/");
+    console.log("loginStatus in", loginStatus);
   };
 
   const kakaoToken = async () => {
@@ -43,6 +44,9 @@ const Mainpage = () => {
       kakaoToken(); // 초기 렌더링 시에만 카카오 API 호출
     }
   }, [accToken]);
+  useEffect(() => {
+    console.log("loginStatus", loginStatus);
+  }, []);
   // 네이버
   // useEffect(() => {
   //   const code = new URL(window.location.href).searchParams.get("code");
