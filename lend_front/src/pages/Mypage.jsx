@@ -51,6 +51,9 @@ const InputContainer = styled.div`
   .kakaolog {
     padding: 16px;
   }
+  @media (max-width: 500px) {
+    width: 100%;
+  }
 `;
 const Input = styled.input`
   all: unset;

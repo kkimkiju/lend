@@ -34,7 +34,7 @@ const Container = styled.div`
     padding: 52px 0;
   }
   @media only screen and (max-width: 500px) {
-    height: 65%;
+    height: 75%;
     border-radius: 50px;
     gap: 0.5rem;
   }
