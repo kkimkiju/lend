@@ -108,7 +108,7 @@ const AxiosApi = {
   },
   // 비밀번호 찾기
   findNewPw: async (user) => {
-    console.log(user, "user");
+    console.log(user, "findNewPw");
     return await axios.post(`${LEND_DOMAIN}/auth/pw/new`, user);
   },
 

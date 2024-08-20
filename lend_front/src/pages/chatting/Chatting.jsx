@@ -5,7 +5,6 @@ import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
 import Back from "../../image/backbutton.png";
 import Send from "../../image/sendbutton.png";
-import AdminHeader from "../../components/AdminHeader";
 
 const ChatContainer = styled.div`
   padding: 20px;

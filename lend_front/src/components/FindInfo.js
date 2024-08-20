@@ -172,31 +172,7 @@ const FindInfo = forwardRef(({ open }, ref) => {
   const handlePwCheck = (e) => {
     setPasswordCheck(e.target.value);
   };
-  const modify = async () => {
-    const user = {
-      email: email,
-      password: newPassword,
-      // identityNumber: identityNumber,
-      // name: name,
-      // isKaKao: false,
-    };
-    if (pwdValid) {
-      try {
-        const response = await AxiosApi.extraInfo(user);
-        if (response.data) {
-          alert("수정에 성공했습니다.");
 
-          console.log(response.data);
-          navigate("/lend/login");
-        }
-      } catch (e) {
-        console.log(e);
-        alert("수정에 실패했습니다.");
-      }
-    } else {
-      alert("유효하지 않은 비밀번호입니다.");
-    }
-  };
   // 이메일 인증
   const onClickCert = async () => {
     setIsClicked(true);
@@ -246,6 +222,7 @@ const FindInfo = forwardRef(({ open }, ref) => {
       email: email,
       password: newPassword,
     };
+    console.log(user, "user");
     try {
       const rsp = await AxiosApi.findNewPw(user);
       if (rsp.data) {
@@ -257,7 +234,28 @@ const FindInfo = forwardRef(({ open }, ref) => {
       console.error(e);
     }
   };
+  const modify = async () => {
+    const user = {
+      email: email,
+      password: newPassword,
+    };
+    if (pwdValid) {
+      try {
+        const response = await AxiosApi.extraInfo(user);
+        if (response.data) {
+          alert("수정에 성공했습니다.");
 
+          console.log(response.data);
+          navigate("/lend/login");
+        }
+      } catch (e) {
+        console.log(e);
+        alert("수정에 실패했습니다.");
+      }
+    } else {
+      alert("유효하지 않은 비밀번호입니다.");
+    }
+  };
   return (
     <ModalStyle>
       <div className={open ? "openModal modal" : "modal"}>
@@ -321,12 +319,14 @@ const FindInfo = forwardRef(({ open }, ref) => {
             )}
             {/* 확인버튼 분기 */}
             {isCerCheck ? (
+              // 비밀번호 변경 확인
               <Button onClick={() => newPw()}>확인</Button>
             ) : (
               <>
                 {isCollect ? (
                   <>
                     {isClicked ? (
+                      // 이메일 인증번호 확인
                       <Button
                         onClick={() => onClick()}
                         // // 4자리 입력
@@ -345,6 +345,7 @@ const FindInfo = forwardRef(({ open }, ref) => {
                     )}
                   </>
                 ) : (
+                  // 아이디 비밀번호 찾기 확인버튼
                   <Button onClick={() => handleSearch()}>확인</Button>
                 )}
               </>
