@@ -12,8 +12,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface ShooppingcartRepository extends JpaRepository<Shooppingcart, Long> {
     Page<Shooppingcart> findByMember(Member member, Pageable pageable);
+    boolean existsByMemberAndLoanId(Member member, Long loan_id);
     @Modifying
-    @Query("DELETE FROM Shooppingcart s WHERE s.member = :member AND s.loan_name = :loan_name")
-    void deleteByMemberAndLoanName(@Param("member") Member member, @Param("loan_name") String loan_name);
+    @Query("DELETE FROM Shooppingcart s WHERE s.member = :member AND s.loanId = :loanId")
+    void deleteByMemberAndLoanId(@Param("member") Member member, @Param("loanId") Long loanId);
 }
 

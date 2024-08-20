@@ -438,24 +438,30 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
     loan._source["대출한도"] || loan._source["대출 한도"] || "정보 없음";
 
   const wishlistsave = async () => {
-    try {
-      const rsp = await AxiosApi.WishListsave(
-        useemail,
-        age,
-        loan_id,
-        loan_name,
-        loan_category,
-        rate,
-        lim
-      );
-      if (rsp.data) {
-        alert("장바구니에 대출 정보를 담았습니다.");
-        window.location.reload();
-      } else {
-        alert("장바구니에 못담았습니다.");
+    const isRequest = await AxiosApi.searchAllRequest(useemail, loan_id);
+    if (!isRequest.data) {
+      alert("이미 신청한 상품입니다.");
+      return;
+    } else {
+      try {
+        const rsp = await AxiosApi.WishListsave(
+          useemail,
+          age,
+          loan_id,
+          loan_name,
+          loan_category,
+          rate,
+          lim
+        );
+        if (rsp.data) {
+          alert("장바구니에 대출 정보를 담았습니다.");
+          window.location.reload();
+        } else {
+          alert("장바구니에 못담았습니다.");
+        }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   };
   return (

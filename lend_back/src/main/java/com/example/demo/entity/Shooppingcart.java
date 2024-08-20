@@ -30,7 +30,7 @@ public class Shooppingcart {
     private String loan_category;
 
     @Column(name = "loan_id", nullable = false)
-    private Long loan_id;
+    private Long loanId;
 
     @Column(name = "userage", nullable = false)
     private String userage;

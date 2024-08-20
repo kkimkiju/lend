@@ -5,18 +5,30 @@ import { UserContext } from "../context/UserStore";
 import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   background: linear-gradient(to right, #f9f9f9, #e0e0e0);
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+    height: 100%;
+  }
 `;
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 60%;
+  width: 50%;
   height: 100%;
-  margin: 20px 20%;
+  margin-top: 100px;
+
+  @media (max-width: 500px) {
+    margin-top: 0px;
+  }
 `;
 const MyinfoContainer = styled.div`
   display: flex;
@@ -38,7 +50,8 @@ const InputContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   align-items: center;
-  width: 50%;
+  width: 60%;
+
   margin: 50px 0;
   background-color: #fff;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
@@ -71,12 +84,13 @@ const Header = styled.div`
   text-align: center;
   border-radius: 12px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  width: 40%;
   max-width: 600px;
   margin-top: 20px;
   position: relative;
 
   @media (max-width: 500px) {
+    width: 60%;
     padding: 15px 20px;
     border-radius: 8px;
   }
@@ -87,7 +101,7 @@ const Title = styled.h1`
   font-weight: bold;
 
   @media (max-width: 500px) {
-    font-size: 24px;
+    font-size: 18px;
   }
 `;
 const WithMsg = styled.div`
@@ -117,13 +131,38 @@ const ButtonContainer = styled.div`
   }
 `;
 const Button = styled.button`
-  width: 100px;
-  height: 50px;
+  cursor: pointer;
+  width: 70px;
+  height: 40px;
   border: none;
   border-radius: 10px;
   background-color: #29c555;
   color: #fff;
   font-weight: bold;
+`;
+
+const LoanItem = styled.div`
+  width: 20vw;
+  background-color: #fff;
+  margin: 30px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 500px) {
+    width: 50vw;
+  }
+`;
+
+const LoanName = styled.h3`
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #29c555;
+`;
+
+const LoanInfo = styled.p`
+  margin: 0;
+  color: #555;
 `;
 const Mypage = () => {
   const [newPassword, setNewPassword] = useState("");
@@ -138,6 +177,7 @@ const Mypage = () => {
   const navigate = useNavigate();
   const context = useContext(UserContext);
   const { loginStatus } = context;
+  const [loans, setLoans] = useState([]);
 
   // 새로운 비밀번호 입력
   const onChangePassword = (e) => {
@@ -169,20 +209,35 @@ const Mypage = () => {
     setPasswordCheck(e.target.value);
   };
   useEffect(() => {
-    getInfo();
     if (loginStatus) {
       getInfo();
+      getLoan();
     } else {
       return null;
     }
   }, []);
   const getInfo = async () => {
     const rsp = await AxiosApi.getMemberInfo();
-    console.log(rsp.data, "data");
     setName(rsp.data.name);
     setLoginEmail(rsp.data.email);
     setIsKaKao(rsp.data.isKaKao);
     setIdentityNumber(rsp.data.identityNumber);
+  };
+
+  const getLoan = async () => {
+    try {
+      const rsp = await AxiosApi.getMyLoan();
+      const loansData = rsp.data.map((loan) => ({
+        id: loan.id,
+        loanName: loan.loanName,
+        loanAmount: loan.loanAmount,
+        loanPeriod: loan.loanPeriod,
+      }));
+      setLoans(loansData);
+      console.log(loans);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const modify = async () => {
@@ -280,6 +335,21 @@ const Mypage = () => {
               회원탈퇴 &gt;
             </div>
           </ButtonContainer>
+        </InputContainer>
+      </Layout>
+      <Layout>
+        <Header>
+          <Title>나의 대출 신청</Title>
+        </Header>
+        <InputContainer>
+          {loans.map((loan) => (
+            <LoanItem key={loan.id}>
+              <LoanName>{loan.loanName}</LoanName>
+              <LoanInfo>대출 금액: {loan.loanAmount}</LoanInfo>
+              <LoanInfo>대출 기간: {loan.loanPeriod}</LoanInfo>
+              <button>자세히보기</button>
+            </LoanItem>
+          ))}
         </InputContainer>
       </Layout>
     </Container>

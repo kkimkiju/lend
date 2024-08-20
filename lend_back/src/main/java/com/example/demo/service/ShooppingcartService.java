@@ -27,14 +27,21 @@ public class ShooppingcartService {
     private final ShooppingcartRepository shooppingcartRepository;
     private final MemberRepository memberRepository;
 
+    public boolean getAllApplyList(String email, Long loanId) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        return !shooppingcartRepository.existsByMemberAndLoanId(member, loanId);
+    }
+
     public boolean saveWishlist(ShooppingcartDto shooppingcartDto) {
         try {
             Member member = memberRepository.findByEmail(shooppingcartDto.getMemberId())
-                    .orElseThrow(() -> new IllegalArgumentException("Author not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
             Shooppingcart shooppingcart = new Shooppingcart();
             shooppingcart.setMember(member);
-            shooppingcart.setLoan_id(shooppingcartDto.getLoan_id());
+            shooppingcart.setLoanId(shooppingcartDto.getLoan_id());
             shooppingcart.setLoan_name(shooppingcartDto.getLoan_name());
             shooppingcart.setLoan_category(shooppingcartDto.getLoan_category());
             shooppingcart.setUserage(shooppingcartDto.getUserage());
@@ -47,7 +54,6 @@ public class ShooppingcartService {
             e.printStackTrace();
             return false;
         }
-
     }
 
     public Map<String, Object> getCart(String memberId, Pageable pageable) {
@@ -73,6 +79,7 @@ public class ShooppingcartService {
         shooppingcartDto.setMemberId(shooppingcart.getMember().getEmail());
         shooppingcartDto.setRate(shooppingcart.getRate());
         shooppingcartDto.setLim(shooppingcart.getLim());
+        shooppingcartDto.setLoan_id(shooppingcart.getLoanId());
         shooppingcartDto.setLoan_name(shooppingcart.getLoan_name());
         shooppingcartDto.setLoan_category(shooppingcart.getLoan_category());
         return shooppingcartDto;
@@ -80,8 +87,10 @@ public class ShooppingcartService {
 
 
     @Transactional
-    public void deletecart(Member memberId, String loan_name) {
+    public void deletecart(Member memberId, Long loan_id) {
 
-        shooppingcartRepository.deleteByMemberAndLoanName(memberId, loan_name);
-    };
+        shooppingcartRepository.deleteByMemberAndLoanId(memberId, loan_id);
+    }
+
+    ;
 }

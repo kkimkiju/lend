@@ -1,12 +1,16 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.MemberResDto;
 import com.example.demo.dto.ShooppingcartDto;
 import com.example.demo.entity.Member;
+import com.example.demo.entity.MyLoan;
+import com.example.demo.service.MyLoanService;
 import com.example.demo.service.ShooppingcartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -20,13 +24,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ShooppingcartController {
     private final ShooppingcartService shooppingcartService;
-
+    private final MyLoanService myLoanService;
 
     @PostMapping("/ssave")
     public ResponseEntity<Boolean> saveWishlist(@RequestBody ShooppingcartDto shooppingcartDto){
         boolean isTrue = shooppingcartService.saveWishlist(shooppingcartDto);
         return ResponseEntity.ok(isTrue);
     }
+    // 전체 조회기능 (신청한 사람 재 신청 막기위해 생성 )
+    @GetMapping("/all-list/{email}/{loanId}")
+    public  ResponseEntity<Boolean> allApplyList(@PathVariable String email,@PathVariable Long loanId){
+        boolean isTrue = shooppingcartService.getAllApplyList(email,loanId);
+        return ResponseEntity.ok(isTrue);
+    }
+
     @GetMapping("/cart/{memberId}")
     public ResponseEntity<Map<String, Object>> cartDetail(
             @PathVariable String memberId,
@@ -41,11 +52,26 @@ public class ShooppingcartController {
 
 
     @GetMapping("/delete")
-    public ResponseEntity<List<ShooppingcartDto>> deleteQuestion(@RequestParam String loan_name){
+    public ResponseEntity<List<ShooppingcartDto>> deleteQuestion(@RequestParam Long loan_id){
     String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = new Member();
         member.setEmail(memberEmail);
-        shooppingcartService.deletecart(member, loan_name);
+        shooppingcartService.deletecart(member, loan_id);
         return ResponseEntity.noContent().build();
+    }
+    @PostMapping("/submit")
+    public ResponseEntity<String> submitLoanApplication(@RequestBody MyLoan myLoan) {
+        try {
+            myLoanService.saveLoanApplication(myLoan);
+            return new ResponseEntity<>("대출 신청이 완료되었습니다.", HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("서버 오류. 다시 시도해 주세요.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/loaninfo")
+    public ResponseEntity<List<MyLoan>> memberInfo() {
+        List<MyLoan> myLoans =myLoanService.getMyLoan(SecurityContextHolder.getContext().getAuthentication().getName());
+        return ResponseEntity.ok(myLoans);
     }
 }

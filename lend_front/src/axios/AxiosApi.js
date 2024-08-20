@@ -1,8 +1,8 @@
 import axios from "axios";
 import AxiosInstance from "./AxiosInstance";
 
-//const LEND_DOMAIN = "http://192.168.10.6:8118";
-const LEND_DOMAIN = "http://localhost:8118";
+const LEND_DOMAIN = "http://192.168.10.6:8118";
+// const LEND_DOMAIN = "http://localhost:8118";
 
 const AxiosApi = {
   // 발행된 토큰을 로컬에 저장
@@ -191,6 +191,12 @@ const AxiosApi = {
     );
   },
   // 찜목록 등록
+
+  searchAllRequest: async (email, loanId) => {
+    //중첩된 찜을 못하게 하려는 것
+    return await AxiosInstance.get(`/wishlist/all-list/${email}/${loanId}`);
+  },
+
   WishListsave: async (
     useemail,
     age,
@@ -223,14 +229,22 @@ const AxiosApi = {
     });
   },
 
-  deleteShopping: async (loan_name) => {
+  deleteShopping: async (loan_id) => {
     return await AxiosInstance.get("/wishlist/delete", {
       params: {
-        loan_name: loan_name,
+        loan_id: loan_id,
       },
     });
   },
-  // 문의게시판 ----------------------
+
+  loanApp: async (loanData) => {
+    return await AxiosInstance.post("/wishlist/submit", loanData);
+  },
+
+  getMyLoan: async () => {
+    return await AxiosInstance.get(`/wishlist/loaninfo`);
+  },
 };
+// 문의게시판 ----------------------
 
 export default AxiosApi;

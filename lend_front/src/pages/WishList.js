@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Bar } from "react-chartjs-2";
 import AxiosApi from "../axios/AxiosApi";
 import Paging from "./loaninfo/paging";
+import LoanApp from "./loaninfo/loanApp";
 
 // styled-components 사용하여 스타일 정의
 const Container = styled.div`
@@ -134,7 +135,8 @@ const WishList = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [wishList, setWishList] = useState([]);
   const [useemail, setUseemail] = useState("");
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   useEffect(() => {
     const userinfo = async () => {
       try {
@@ -172,19 +174,29 @@ const WishList = () => {
     }
   }, [useemail, currentPage]);
 
-  const Apply = async (loan_name) => {
-    const applyconfirm = window.confirm("해당 상품을 신청하시겠습니까?");
-    if (applyconfirm) {
-      await AxiosApi.deleteShopping(loan_name);
-      alert("신청이 완료 되었습니다.");
-      window.location.reload();
-    }
+  // const Apply = async (loan_id) => {
+  //   const applyconfirm = window.confirm("해당 상품을 신청하시겠습니까?");
+  //   if (applyconfirm) {
+  //     await AxiosApi.deleteShopping(loan_id);
+  //     alert("신청이 완료 되었습니다.");
+  //     window.location.reload();
+  //   }
+  // };
+
+  const openModal = (item) => {
+    console.log("Opening modal with item:", item);
+    setIsModalOpen(true);
+    setSelectedItem(item);
   };
 
-  const Delete = async (loan_name) => {
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const Delete = async (loan_id) => {
     const applyconfirm = window.confirm("해당 대출 상품을 삭제하시겠습니까?");
     if (applyconfirm) {
-      await AxiosApi.deleteShopping(loan_name);
+      await AxiosApi.deleteShopping(loan_id);
       alert("삭제가 완료되었습니다.");
       window.location.reload();
     }
@@ -207,8 +219,8 @@ const WishList = () => {
                 {item.limit || "정보 없음"} (만원)
               </ItemDescription>
               <ButtonContainer>
-                <Button onClick={() => Apply(item.loan_name)}>신청</Button>
-                <Button onClick={() => Delete(item.loan_name)}>삭제</Button>
+                <Button onClick={() => openModal(item)}>신청</Button>
+                <Button onClick={() => Delete(item.loan_id)}>삭제</Button>
               </ButtonContainer>
             </Item>
           ))
@@ -220,6 +232,7 @@ const WishList = () => {
           onPageChange={handlePageChange}
         />
       </List>
+      {isModalOpen && <LoanApp Item={selectedItem} onClose={closeModal} />}
     </Container>
   );
 };
