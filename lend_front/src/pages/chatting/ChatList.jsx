@@ -3,8 +3,6 @@ import AxiosApi from "../../axios/AxiosApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../../utils/Common";
-import AdminHeader from "../../components/AdminHeader";
-import Header from "../../components/Header";
 const Container = styled.div`
   width: 100%;
   display: flex;
@@ -79,7 +77,6 @@ function ChatList() {
 
   return (
     <>
-      <Header />
       <Container>
         <ChatListContainer>
           <HeaderText>상담 요청 목록</HeaderText>
