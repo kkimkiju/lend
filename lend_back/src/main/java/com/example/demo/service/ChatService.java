@@ -131,10 +131,6 @@ public class ChatService {
         ChatRoomDto room = findRoomById(roomId);
         if (room != null) {
             room.getSessions().add(session); // 채팅방에 입장한 세션 추가
-            if (chatMessage.getSender() != null) { // 채팅방에 입장한 사용자가 있으면
-                chatMessage.setMessage(chatMessage.getSender() + "님이 입장했습니다.");
-                sendMessageToAll(roomId, chatMessage); // 채팅방에 입장 메시지 전송
-            }
             log.debug("New session added: " + session);
         }
     }

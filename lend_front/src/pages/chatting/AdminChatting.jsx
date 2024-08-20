@@ -9,19 +9,30 @@ import AdminChattingSide from "../../components/AdminChattingSide";
 
 const AllContainer = styled.div`
   width: 100vw;
-  height: 100vh;
+  height: 80vh;
+  min-width: 400px;
   display: flex;
   flex-direction: row;
+  @media (max-width: 1024px) {
+    font-size: 14px;
+  }
+  @media (max-width: 400px) {
+    font-size: 12px;
+  }
 `;
 
 const RightContainer = styled.div`
   width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
 `;
 
 const ChatContainer = styled.div`
-  width: 100%;
+  width: 80%;
   padding: 20px;
-  max-width: 800px;
+  /* max-width: 800px; */
   margin: 0 auto;
   background-color: rgba(41, 197, 85, 0.4);
   border-radius: 8px;
@@ -38,7 +49,12 @@ const ChatHeader = styled.div`
 
 const RoomName = styled.div`
   font-size: 1.5em;
-  text-align: center;
+  @media (max-width: 1024px) {
+    font-size: 1.3em;
+  }
+  @media (max-width: 400px) {
+    font-size: 1.2em;
+  }
 `;
 
 const MessagesContainer = styled.div`
@@ -54,18 +70,30 @@ const MessagesContainer = styled.div`
 
 const Contents = styled.div`
   align-self: ${(props) => (props.isSender ? "flex-end" : "flex-start")};
-  max-width: 60%;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
+  @media (max-width: 1024px) {
+    max-width: 420px;
+  }
+  @media (max-width: 600px) {
+    max-width: 200px;
+  }
 `;
 
 const Sender = styled.div`
   display: ${(props) => (props.isSender ? "none" : "block")};
 `;
 
+const MessageAndTime = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 const Message = styled.div`
-  padding: 10px;
-  margin: 10px;
+  padding: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   border-radius: 20px;
   background-color: ${(props) => (props.isSender ? "#29c555" : "#ffffff")};
   border: ${(props) =>
@@ -73,14 +101,40 @@ const Message = styled.div`
   color: ${(props) => (props.isSender ? "#ffffff" : "#000000")};
 `;
 
+const SendTime1 = styled.div`
+  display: ${(props) => (props.isSender ? "block" : "none")};
+  align-self: flex-end;
+  margin-bottom: 10px;
+  margin-right: 2px;
+  white-space: nowrap;
+`;
+const SendTime2 = styled.div`
+  display: ${(props) => (props.isSender ? "none" : "block")};
+  align-self: flex-end;
+  margin-bottom: 10px;
+  margin-left: 2px;
+  white-space: nowrap;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+`;
+
 const Input = styled.input`
   padding: 10px;
-  width: 90%;
+  width: 100%;
   border-radius: 4px;
   border: 1px solid #ddd;
+  padding-right: 50px;
 `;
 
 const SendButton = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   padding: 10px 15px;
   border: none;
   background-color: rgba(41, 197, 85, 0.05);
@@ -89,7 +143,6 @@ const SendButton = styled.button`
   background-position: center;
   color: white;
   border-radius: 4px;
-  margin-left: 10px;
   cursor: pointer;
 `;
 
@@ -105,7 +158,6 @@ const CloseButton = styled.button`
 `;
 
 const AdminChatting = () => {
-  const [socketConnected, setSocketConnected] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
   const [sender, setSender] = useState("");
   const [messages, setMessages] = useState([]);
@@ -164,12 +216,14 @@ const AdminChatting = () => {
 
   const onClickMsgSend = () => {
     if (ws.current && inputMsg.trim() !== "") {
+      const currentTime = new Date().toISOString();
       ws.current.send(
         JSON.stringify({
           type: "TALK",
           roomId: roomId,
           sender: sender,
           message: inputMsg,
+          localDateTime: currentTime,
         })
       );
       setInputMsg("");
@@ -207,7 +261,6 @@ const AdminChatting = () => {
           sender: sender,
         })
       );
-      setSocketConnected(true);
     };
 
     ws.current.onmessage = (evt) => {
@@ -219,7 +272,6 @@ const AdminChatting = () => {
 
     ws.current.onclose = () => {
       console.log("WebSocket disconnected");
-      setSocketConnected(false);
     };
 
     return () => {
@@ -240,20 +292,36 @@ const AdminChatting = () => {
             {messages.map((msg, index) => (
               <Contents key={index} isSender={msg.sender === sender}>
                 <Sender isSender={msg.sender === sender}>{msg.sender}</Sender>
-                <Message isSender={msg.sender === sender}>
-                  {msg.message}
-                </Message>
+                <MessageAndTime>
+                  <SendTime1 isSender={msg.sender === sender}>
+                    {new Date(msg.localDateTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </SendTime1>
+                  <Message isSender={msg.sender === sender}>
+                    {msg.message}
+                  </Message>
+                  <SendTime2 isSender={msg.sender === sender}>
+                    {new Date(msg.localDateTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </SendTime2>
+                </MessageAndTime>
               </Contents>
             ))}
             <div ref={messagesEndRef} />
           </MessagesContainer>
-          <Input
-            type="text"
-            value={inputMsg}
-            onChange={onChangMsg}
-            onKeyPress={onEnterKey}
-          />
-          <SendButton onClick={onClickMsgSend} />
+          <InputContainer>
+            <Input
+              placeholder="문자 전송"
+              value={inputMsg}
+              onChange={onChangMsg}
+              onKeyUp={onEnterKey}
+            />
+            <SendButton onClick={onClickMsgSend} />
+          </InputContainer>
         </ChatContainer>
       </RightContainer>
     </AllContainer>

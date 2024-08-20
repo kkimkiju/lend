@@ -6,14 +6,31 @@ import AxiosApi from "../../axios/AxiosApi";
 import Back from "../../image/backbutton.png";
 import Send from "../../image/sendbutton.png";
 
+const Container = styled.div`
+  width: 100%;
+  height: 70vh;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  @media (max-width: 1024px) {
+    font-size: 14px;
+  }
+  @media (max-width: 400px) {
+    font-size: 12px;
+  }
+`;
+
 const ChatContainer = styled.div`
+  width: 100%;
+  height: 80%;
   padding: 20px;
-  max-width: 800px;
+  max-width: 60%;
   margin: 0 auto;
   background-color: rgba(41, 197, 85, 0.4);
   border-radius: 8px;
   border: 3px solid #29c555;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: center;
 `;
 
 const ChatHeader = styled.div`
@@ -25,13 +42,18 @@ const ChatHeader = styled.div`
 
 const RoomName = styled.div`
   font-size: 1.5em;
-  text-align: center;
+  @media (max-width: 1024px) {
+    font-size: 1.3em;
+  }
+  @media (max-width: 400px) {
+    font-size: 1.2em;
+  }
 `;
 
 const MessagesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 70%;
   overflow-y: auto;
   border-top: 2px solid #29c555;
   border-bottom: 2px solid #29c555;
@@ -41,7 +63,7 @@ const MessagesContainer = styled.div`
 
 const Contents = styled.div`
   align-self: ${(props) => (props.isSender ? "flex-end" : "flex-start")};
-  max-width: 60%;
+  max-width: 480px;
   display: flex;
   flex-direction: column;
 `;
@@ -52,22 +74,52 @@ const Sender = styled.div`
 
 const Message = styled.div`
   padding: 10px;
-  margin: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   border-radius: 20px;
   background-color: ${(props) => (props.isSender ? "#29c555" : "#ffffff")};
   border: ${(props) =>
     props.isSender ? "1px solid #29c555" : "1px solid #ffffff"};
   color: ${(props) => (props.isSender ? "#ffffff" : "#000000")};
 `;
+const MessageAndTime = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+const SendTime1 = styled.div`
+  display: ${(props) => (props.isSender ? "block" : "none")};
+  align-self: flex-end;
+  margin-bottom: 10px;
+  margin-right: 2px;
+  white-space: nowrap;
+`;
+const SendTime2 = styled.div`
+  display: ${(props) => (props.isSender ? "none" : "block")};
+  align-self: flex-end;
+  margin-bottom: 10px;
+  margin-left: 2px;
+  white-space: nowrap;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  position: relative;
+  width: 100%;
+`;
 
 const Input = styled.input`
   padding: 10px;
-  width: 90%;
+  width: 100%;
   border-radius: 4px;
   border: 1px solid #ddd;
+  padding-right: 50px;
 `;
 
 const SendButton = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   padding: 10px 15px;
   border: none;
   background-color: rgba(41, 197, 85, 0.05);
@@ -76,7 +128,6 @@ const SendButton = styled.button`
   background-position: center;
   color: white;
   border-radius: 4px;
-  margin-left: 10px;
   cursor: pointer;
 `;
 
@@ -152,12 +203,14 @@ const Chatting = () => {
 
   const onClickMsgSend = () => {
     if (ws.current && inputMsg.trim() !== "") {
+      const currentTime = new Date().toISOString();
       ws.current.send(
         JSON.stringify({
           type: "TALK",
           roomId: roomId,
           sender: sender,
           message: inputMsg,
+          localDateTime: currentTime,
         })
       );
       setInputMsg("");
@@ -231,32 +284,48 @@ const Chatting = () => {
   }, [socketConnected, sender]);
 
   return (
-    <ChatContainer>
-      <ChatHeader>
-        <CloseButton onClick={onClickMsgClose} />
-        <RoomName>Lend와 채팅</RoomName>
-      </ChatHeader>
-      <MessagesContainer>
-        {messages.map((msg, index) => (
-          <Contents key={index} isSender={msg.sender === sender}>
-            {msg.sender !== sender && <Sender>Lend 상담원</Sender>}
-            <Message isSender={msg.sender === sender}>
-              {`${msg.message}`}
-            </Message>
-          </Contents>
-        ))}
-        <div ref={messagesEndRef} />
-      </MessagesContainer>
-      <div>
-        <Input
-          placeholder="문자 전송"
-          value={inputMsg}
-          onChange={onChangMsg}
-          onKeyUp={onEnterKey}
-        />
-        <SendButton onClick={onClickMsgSend} />
-      </div>
-    </ChatContainer>
+    <Container>
+      <ChatContainer>
+        <ChatHeader>
+          <CloseButton onClick={onClickMsgClose} />
+          <RoomName>Lend와 채팅</RoomName>
+        </ChatHeader>
+        <MessagesContainer>
+          {messages.map((msg, index) => (
+            <Contents key={index} isSender={msg.sender === sender}>
+              {msg.sender !== sender && <Sender>Lend 상담원</Sender>}
+              <MessageAndTime>
+                <SendTime1 isSender={msg.sender === sender}>
+                  {new Date(msg.localDateTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </SendTime1>
+                <Message isSender={msg.sender === sender}>
+                  {msg.message}
+                </Message>
+                <SendTime2 isSender={msg.sender === sender}>
+                  {new Date(msg.localDateTime).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </SendTime2>
+              </MessageAndTime>
+            </Contents>
+          ))}
+          <div ref={messagesEndRef} />
+        </MessagesContainer>
+        <InputContainer>
+          <Input
+            placeholder="문자 전송"
+            value={inputMsg}
+            onChange={onChangMsg}
+            onKeyUp={onEnterKey}
+          />
+          <SendButton onClick={onClickMsgSend} />
+        </InputContainer>
+      </ChatContainer>
+    </Container>
   );
 };
 

@@ -60,6 +60,7 @@ public class ChatController {
             dto.setSender(msg.getSender().getEmail());
             dto.setMessage(msg.getMessage());
             dto.setRoomId(msg.getChatId().toString());
+            dto.setLocalDateTime(msg.getLocalDateTime());
             return dto;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(messageDtos);

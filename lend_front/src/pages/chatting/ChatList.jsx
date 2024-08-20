@@ -4,9 +4,16 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../../utils/Common";
 const Container = styled.div`
+  min-width: 400px;
   width: 100%;
   display: flex;
   justify-content: center;
+  @media (max-width: 1024px) {
+    font-size: 14px;
+  }
+  @media (max-width: 400px) {
+    font-size: 12px;
+  }
 `;
 
 const ChatListContainer = styled.div`
@@ -40,18 +47,32 @@ const HeaderText = styled.h1`
   color: #333;
   text-align: center;
   margin-bottom: 20px;
+  white-space: nowrap;
 `;
 
 const ChatName = styled.p`
   font-size: 1.5em;
   margin: 0 0 10px 0;
   color: #444;
+  @media (max-width: 1024px) {
+    font-size: 1.3em;
+  }
+  @media (max-width: 400px) {
+    font-size: 1.2em;
+  }
 `;
 const ChatDate = styled.p`
   font-size: 1em;
   color: #666;
   margin: 0;
   text-align: right;
+  white-space: nowrap;
+  @media (max-width: 1024px) {
+    font-size: 0.8em;
+  }
+  @media (max-width: 400px) {
+    font-size: 0.7em;
+  }
 `;
 
 function ChatList() {

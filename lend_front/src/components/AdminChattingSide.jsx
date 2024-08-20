@@ -8,6 +8,12 @@ const ChatListContainer = styled.div`
   width: 20%;
   padding: 30px;
   border-right: 3px solid #29c555;
+  @media (max-width: 1024px) {
+    font-size: 1.3em;
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const ChatUl = styled.ul`
@@ -32,12 +38,25 @@ const HeaderText = styled.h1`
   color: #333;
   text-align: center;
   margin-bottom: 20px;
+  white-space: nowrap;
+  @media (max-width: 1024px) {
+    font-size: 1.3em;
+  }
+  @media (max-width: 700px) {
+    font-size: 1em;
+  }
 `;
 
 const ChatName = styled.p`
   font-size: 1.5em;
   margin: 0 0 10px 0;
   color: #444;
+  @media (max-width: 1024px) {
+    font-size: 1.2em;
+  }
+  @media (max-width: 400px) {
+    font-size: 1.2em;
+  }
 `;
 
 const ChatDate = styled.p`
@@ -45,6 +64,12 @@ const ChatDate = styled.p`
   color: #666;
   margin: 0;
   text-align: right;
+  @media (max-width: 1024px) {
+    font-size: 0.8em;
+  }
+  @media (max-width: 400px) {
+    font-size: 0.7em;
+  }
 `;
 
 function AdminChattingSide() {
