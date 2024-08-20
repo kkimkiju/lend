@@ -3,7 +3,8 @@ import "moment/locale/ko"; // 한글 로컬라이제이션
 moment.locale("ko"); // 한글 설정 적용
 
 const Common = {
-  SOCKET_URL: "ws://192.168.10.6:8118/ws/chat",
+  // SOCKET_URL: "ws://192.168.10.6:8118/ws/chat",
+  SOCKET_URL: "ws://localhost:8118/ws/chat",
 
   timeFromNow: (timestamp) => {
     return moment(timestamp).fromNow();
