@@ -52,7 +52,6 @@ const ModalStyle = styled.div`
   }
 `;
 const Input = styled.input`
-  all: unset;
   text-align: start;
   width: 80%;
   height: 16px;

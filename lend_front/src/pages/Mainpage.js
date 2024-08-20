@@ -48,24 +48,24 @@ const Mainpage = () => {
     console.log("loginStatus", loginStatus);
   }, []);
   // 네이버
-  // useEffect(() => {
-  //   const code = new URL(window.location.href).searchParams.get("code");
-  //   console.log("네이버 ", code);
-  // });
-  // const NaverToken = async () => {
-  //   const code = new URL(window.location.href).searchParams.get("code");
-  //   if (!code || accToken) return; // code가 없거나 이미 토큰이 존재하면 반환
+  useEffect(() => {
+    const code = new URL(window.location.href).searchParams.get("code");
+    console.log("네이버 ", code);
+  });
+  const NaverToken = async () => {
+    const code = new URL(window.location.href).searchParams.get("code");
+    if (!code || accToken) return; // code가 없거나 이미 토큰이 존재하면 반환
 
-  //   try {
-  //     const res = await KakaoApi.getToken(code);
-  //     if (res.data) {
-  //       setAccToken(res.data.access_token); // 토큰을 상태에 저장
-  //       kakaoUser(res.data.access_token);
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+    try {
+      const res = await KakaoApi.getToken(code);
+      if (res.data) {
+        setAccToken(res.data.access_token); // 토큰을 상태에 저장
+        kakaoUser(res.data.access_token);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const kakaoUser = async (token) => {
     try {
       const res = await KakaoApi.getInfo(token);

@@ -1,8 +1,8 @@
 // axiosInstance.js
 import axios from "axios";
 import AxiosApi from "./AxiosApi";
-// const LEND_DOMAIN = "http://localhost:8118";
-const LEND_DOMAIN = "http://192.168.10.6:8118";
+const LEND_DOMAIN = "http://localhost:8118";
+//const LEND_DOMAIN = "http://192.168.10.6:8118";
 const AxiosInstance = axios.create({
   // axios 인스턴스 생성
   baseURL: LEND_DOMAIN,

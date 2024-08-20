@@ -185,7 +185,8 @@ const LoginMain = ({ isSignIn }) => {
   // const ref = useRef(null);
   const kakaoLogin = () => {
     const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
-    const redirect_uri = "http://192.168.10.6:3000/lend"; //Redirect URI
+    //const redirect_uri = "http://192.168.10.6:3000/lend"; //Redirect URI
+    const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
     // oauth 요청 URL
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
     window.location.href = kakaoURL;
@@ -276,9 +277,10 @@ const LoginMain = ({ isSignIn }) => {
       <KaKaoBtt onClick={() => kakaoLogin()}>
         <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
       </KaKaoBtt>
-      {/* <KaKaoBtt onClick={() => NaverLgoin()}>
-        <KaKaoLogo src={NaverImg}></KaKaoLogo>
-      </KaKaoBtt> */}
+      <KaKaoBtt onClick={() => NaverLgoin()}>
+        {/* <KaKaoLogo src={NaverImg}></KaKaoLogo> */}
+        <div id="naver_id_login">1</div>
+      </KaKaoBtt>
     </Container>
   );
 };
