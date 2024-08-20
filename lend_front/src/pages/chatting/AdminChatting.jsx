@@ -5,8 +5,21 @@ import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
 import Back from "../../image/backbutton.png";
 import Send from "../../image/sendbutton.png";
+import AdminChattingSide from "../../components/AdminChattingSide";
+
+const AllContainer = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+`;
+
+const RightContainer = styled.div`
+  width: 80%;
+`;
 
 const ChatContainer = styled.div`
+  width: 100%;
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
@@ -91,7 +104,7 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const Chatting = () => {
+const AdminChatting = () => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [inputMsg, setInputMsg] = useState("");
   const [sender, setSender] = useState("");
@@ -106,7 +119,6 @@ const Chatting = () => {
     const getMember = async () => {
       try {
         const rsp = await AxiosApi.getMemberInfo();
-        console.log(rsp.data);
         setSender(rsp.data.email);
       } catch (error) {
         console.log(error);
@@ -124,7 +136,6 @@ const Chatting = () => {
           localDateTime: new Date(msg.localDateTime),
         }));
         setMessages(fetchedMessages);
-        console.log("Messages fetched:", fetchedMessages);
       } catch (error) {
         console.error("Error fetching messages", error);
       }
@@ -167,21 +178,12 @@ const Chatting = () => {
 
   const onClickMsgClose = () => {
     if (ws.current) {
-      ws.current.send(
-        JSON.stringify({
-          type: "CLOSE",
-          roomId: roomId,
-          sender: sender,
-          message: "종료 합니다.",
-        })
-      );
       ws.current.close();
+      navigate("/lend/chatlist");
     }
-    navigate(-1);
   };
 
   useEffect(() => {
-    // 채팅방 정보 가져 오기
     const getChatRoom = async () => {
       try {
         const rsp = await AxiosApi.chatDetail(roomId);
@@ -191,89 +193,71 @@ const Chatting = () => {
       }
     };
     getChatRoom();
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
-    const connectWebSocket = () => {
-      ws.current = new WebSocket(Common.SOCKET_URL);
+    ws.current = new WebSocket(Common.SOCKET_URL);
 
-      ws.current.onopen = () => {
-        console.log("connected to " + Common.SOCKET_URL);
-        setSocketConnected(true);
-      };
-
-      ws.current.onmessage = (evt) => {
-        const data = JSON.parse(evt.data);
-        console.log("Received message: ", data.message);
-        setMessages((prevItems) => [...prevItems, data]);
-      };
-
-      ws.current.onclose = () => {
-        console.log("WebSocket closed, attempting to reconnect...");
-        setSocketConnected(false);
-        setTimeout(() => {
-          connectWebSocket(); // 일정 시간 후 재연결 시도
-        }, 5000);
-      };
-
-      ws.current.onerror = (error) => {
-        console.error("WebSocket error: ", error);
-        ws.current.close();
-      };
-    };
-
-    connectWebSocket();
-
-    return () => {
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (socketConnected && sender) {
+    ws.current.onopen = () => {
+      console.log("WebSocket connected");
       ws.current.send(
         JSON.stringify({
           type: "ENTER",
           roomId: roomId,
           sender: sender,
-          message: "처음으로 접속 합니다.",
         })
       );
-    }
-  }, [socketConnected, sender]);
+      setSocketConnected(true);
+    };
+
+    ws.current.onmessage = (evt) => {
+      const data = JSON.parse(evt.data);
+      if (data.type === "TALK") {
+        setMessages((prevMessages) => [...prevMessages, data]);
+      }
+    };
+
+    ws.current.onclose = () => {
+      console.log("WebSocket disconnected");
+      setSocketConnected(false);
+    };
+
+    return () => {
+      ws.current.close();
+    };
+  }, [roomId, sender]);
 
   return (
-    <>
-      <ChatContainer>
-        <ChatHeader>
-          <CloseButton onClick={onClickMsgClose} />
-          <RoomName>{requestMember}와 채팅</RoomName>
-        </ChatHeader>
-        <MessagesContainer>
-          {messages.map((msg, index) => (
-            <Contents key={index} isSender={msg.sender === sender}>
-              {msg.sender !== sender && <Sender>{`${msg.sender}`}</Sender>}
-              <Message isSender={msg.sender === sender}>
-                {`${msg.message}`}
-              </Message>
-            </Contents>
-          ))}
-          <div ref={messagesEndRef} />
-        </MessagesContainer>
-        <div>
+    <AllContainer>
+      <AdminChattingSide />
+      <RightContainer>
+        <ChatContainer>
+          <ChatHeader>
+            <CloseButton onClick={onClickMsgClose} />
+            <RoomName>{requestMember}와 채팅</RoomName>
+          </ChatHeader>
+          <MessagesContainer>
+            {messages.map((msg, index) => (
+              <Contents key={index} isSender={msg.sender === sender}>
+                <Sender isSender={msg.sender === sender}>{msg.sender}</Sender>
+                <Message isSender={msg.sender === sender}>
+                  {msg.message}
+                </Message>
+              </Contents>
+            ))}
+            <div ref={messagesEndRef} />
+          </MessagesContainer>
           <Input
-            placeholder="문자 전송"
+            type="text"
             value={inputMsg}
             onChange={onChangMsg}
-            onKeyUp={onEnterKey}
+            onKeyPress={onEnterKey}
           />
           <SendButton onClick={onClickMsgSend} />
-        </div>
-      </ChatContainer>
-    </>
+        </ChatContainer>
+      </RightContainer>
+    </AllContainer>
   );
 };
 
-export default Chatting;
+export default AdminChatting;
