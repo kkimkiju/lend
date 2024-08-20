@@ -65,13 +65,9 @@ function ConditionalHeader() {
   const location = useLocation();
 
   const isLoginPage = location.pathname === "/lend/login";
-  const isChatListPage = location.pathname === "/lend/chatlist";
-  const isAdminChattingPage = useMatch("/lend/admin/chatting/:roomId");
 
   // 로그인 페이지와 채팅 리스트 페이지에서는 헤더를 숨김
-  return (
-    <>{!isLoginPage && !isChatListPage && !isAdminChattingPage && <Header />}</>
-  );
+  return <>{!isLoginPage && <Header />}</>;
 }
 
 function SlideWrapper({ children }) {
