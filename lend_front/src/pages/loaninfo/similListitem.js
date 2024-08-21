@@ -18,12 +18,9 @@ const TiContain = styled.div`
   margin: 0px 0% 9px 0%;
   text-align: center;
   @media (max-width: 500px) {
-    margin-right: 5%;
-    width: 16%;
-  }
-  @media (max-width: 429px) {
-    margin: 0;
     width: 33%;
+    color: black;
+    margin: 0;
   }
 `;
 
@@ -31,6 +28,12 @@ const DetTitle = styled.h3`
   width: 450px;
   color: white;
   margin: 0px 4% 0px 0%;
+  @media (max-width: 500px) {
+    color: black;
+    font-size: 13px;
+    margin: 0px 0% 0px 17%;
+    width: 250px;
+  }
 `;
 
 const Detdate = styled.p`
@@ -38,16 +41,18 @@ const Detdate = styled.p`
   font-size: 13px;
   text-align: center;
   width: 180px;
-  @media (max-width: 429px) {
-    font-size: 11px;
+  @media (max-width: 500px) {
+    color: black;
+    width: 130px;
   }
 `;
 const Detamo = styled.p`
   color: white;
   font-size: 13px;
   text-align: center;
-  @media (max-width: 429px) {
+  @media (max-width: 500px) {
     width: 13%;
+    color: black;
   }
 `;
 
@@ -59,7 +64,7 @@ const SimilListitem = ({ loanitem, handleDetailClick, category }) => {
 
   const truncateTitle = (title) => {
     if (!title) return "No title available";
-    return title.length > 25 ? title.substring(0, 25) + "..." : title;
+    return title.length > 9 ? title.substring(0, 9) + "..." : title;
   };
 
   // Use the property directly from loanitem
@@ -74,9 +79,8 @@ const SimilListitem = ({ loanitem, handleDetailClick, category }) => {
     <DetLi onClick={() => handleDetailClick(loanitem["순번"])}>
       <TiContain>
         <Detdate>
-          {loanValue
-            ? truncateTitle(loanValue.toString())
-            : "최대상환기간" + truncateTitle(loanPeriod) + "년"}
+          {truncateTitle(loanValue.toString()) ||
+            "최대상환기간" + truncateTitle(loanPeriod) + "년"}
         </Detdate>
       </TiContain>
       <DetTitle>{truncateTitle(loanTitle)}</DetTitle>

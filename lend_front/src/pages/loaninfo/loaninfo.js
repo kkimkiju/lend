@@ -79,6 +79,20 @@ const Categbut = styled.button`
     display: none;
   }
 `;
+const Mbutton = styled.button`
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: white;
+  height: 38px;
+  width: 134px;
+  cursor: pointer;
+  @media (min-width: 500px) {
+    display: none;
+  }
+`;
 const CategorySelect = styled.select`
   padding: 10px;
   border: 1px solid #ccc;
@@ -99,6 +113,11 @@ const Pagbox = styled.div`
   width: 87%;
 
   @media (min-width: 500px) {
+    display: none;
+  }
+`;
+const MaxPagbox = styled.div`
+  @media (max-width: 500px) {
     display: none;
   }
 `;
@@ -209,6 +228,7 @@ const Loaninfo = () => {
         </Categbut>
         <Sububox>
           <Categbut onClick={sugopen}>내게 맞는 대출 상품 추천 받기</Categbut>
+          <Mbutton onClick={sugopen}>내게 맞는 대출 상품 추천 받기</Mbutton>
         </Sububox>
         <CategorySelect
           value={categorybu}
@@ -230,14 +250,23 @@ const Loaninfo = () => {
         <Loan>
           <LoaninfoList loanitem={loanitem} onClickde={onClickde} />
         </Loan>
-        {/* <Pagbox> */}
-        <Paging
-          page={page}
-          itemsCountPerPage={itemsCountPerPage}
-          totalItemsCount={totalItemsCount}
-          onPageChange={handlePageChange}
-        />
-        {/* </Pagbox> */}
+        <MaxPagbox>
+          <Paging
+            page={page}
+            itemsCountPerPage={itemsCountPerPage}
+            totalItemsCount={totalItemsCount}
+            onPageChange={handlePageChange}
+          />
+        </MaxPagbox>
+
+        <Pagbox>
+          <Paging
+            page={page}
+            itemsCountPerPage={itemsCountPerPage}
+            totalItemsCount={totalItemsCount}
+            onPageChange={handlePageChange}
+          />
+        </Pagbox>
       </Loanbox>
       <Detail
         open={deOpen}

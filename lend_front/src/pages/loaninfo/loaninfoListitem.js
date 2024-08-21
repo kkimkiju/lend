@@ -72,11 +72,9 @@ const LoaninfoListitem = ({ loanitem, onClickde }) => {
         <Detdate>
           {loanitem._source["금융회사 명"] || "No company name"}
         </Detdate>
-        {/* 기본값 설정 */}
       </TiContain>
       <DetTitle>{truncateTitle(loanitem._source["금융 상품명"])}</DetTitle>
       <Detamo>{loanitem._source["대출종류명"] || "No loan type"}</Detamo>{" "}
-      {/* 기본값 설정 */}
     </DetLi>
   );
 };

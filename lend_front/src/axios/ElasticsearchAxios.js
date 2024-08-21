@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const ELASTIC = "http://192.168.10.6:9200";
+// const ELASTIC = "http://192.168.10.6:9200";
+const ELASTIC = "http://localhost:9200";
 
 const ElasticsearchAxios = {
   // 합본 불러오는건데 안쓰는것

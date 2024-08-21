@@ -7,6 +7,9 @@ import "slick-carousel/slick/slick-theme.css";
 import loan1 from "../image/대출광고1.png";
 import loan2 from "../image/대출광고2.png";
 import loan3 from "../image/대출광고3.png";
+import moloan1 from "../image/모바일대출광고1.png";
+import moloan2 from "../image/모바일대출광고2.jpg";
+import moloan3 from "../image/모바일대출광고3.jpg";
 
 export default function SimpleSlider() {
   const navigate = useNavigate();
@@ -74,6 +77,9 @@ const SlideBox = styled.div`
     background-size: cover; // 이미지가 슬라이드 박스를 덮도록 설정
     background-repeat: no-repeat; // 이미지 반복 방지
     background-position: center; // 이미지 중앙 정렬
+    @media (max-width: 500px) {
+      background-image: url(${moloan1});
+    }
   }
 
   // 두 번째 슬라이드 스타일
@@ -82,6 +88,9 @@ const SlideBox = styled.div`
     background-size: cover; // 이미지가 슬라이드 박스를 덮도록 설정
     background-repeat: no-repeat; // 이미지 반복 방지
     background-position: center; // 이미지 중앙 정렬
+    @media (max-width: 500px) {
+      background-image: url(${moloan2});
+    }
   }
 
   // 세 번째 슬라이드 스타일
@@ -90,6 +99,9 @@ const SlideBox = styled.div`
     background-size: cover; // 이미지가 슬라이드 박스를 덮도록 설정
     background-repeat: no-repeat; // 이미지 반복 방지
     background-position: center; // 이미지 중앙 정렬
+    @media (max-width: 500px) {
+      background-image: url(${moloan3});
+    }
   }
   @media (max-width: 500px) {
     width: 50%;

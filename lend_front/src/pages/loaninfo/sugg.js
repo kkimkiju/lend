@@ -12,11 +12,9 @@ const Container = styled.div`
   flex-direction: column;
   text-align: center;
   position: relative;
-`;
-const Test1 = styled.div`
-  width: 100%;
-  height: 35%;
-  background-color: red;
+  @media (max-width: 500px) {
+    width: 100%;
+  }
 `;
 
 const Grayline = styled.div`
@@ -118,6 +116,11 @@ const Bbox = styled.div`
   overflow-y: auto;
   display: flex;
   justify-content: center;
+  @media (max-width: 500px) {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+  }
 `;
 
 const Sugg = () => {
@@ -308,7 +311,6 @@ const Sugg = () => {
     <>
       <Bbox>
         <Container>
-          <Test1 />
           <h2>{loanitem["금융 상품명"] || "정보 없음"}</h2>
           <Grayline />
           <Gbox>
@@ -386,7 +388,7 @@ const Sugg = () => {
           <Button onClick={wishlistsave}>장바구니 담기</Button>
         </Container>
       </Bbox>
-      <Footer />
+      <Footer isCPage={true} />
     </>
   );
 };

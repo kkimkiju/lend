@@ -21,7 +21,7 @@ const SuggestList = ({ loanitems = [], handleDetailClick, category }) => {
           />
         ))
       ) : (
-        <p>No items available</p>
+        <p>사용자 정보를 입력해주세요</p>
       )}
     </LoanUl>
   );

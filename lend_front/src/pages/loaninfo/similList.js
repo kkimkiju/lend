@@ -10,7 +10,7 @@ const SimilUl = styled.ul`
 
 const SimilList = ({ loanitems = [], handleDetailClick, category }) => {
   return (
-    <ul>
+    <SimilUl>
       {loanitems.length > 0 ? (
         loanitems.map((item, index) => (
           <SimilListitem
@@ -23,7 +23,7 @@ const SimilList = ({ loanitems = [], handleDetailClick, category }) => {
       ) : (
         <li>No loan items available</li>
       )}
-    </ul>
+    </SimilUl>
   );
 };
 

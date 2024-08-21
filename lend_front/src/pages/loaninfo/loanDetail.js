@@ -34,6 +34,14 @@ const ModalStyle = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
+
+    @media (max-width: 500px) {
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      overflow-x: hidden; /* x축 스크롤을 숨김 */
+      border-radius: 0;
+    }
   }
 
   main {
@@ -41,13 +49,13 @@ const ModalStyle = styled.div`
     border-top: 1px solid #dee2e6;
     overflow-y: auto; /* Enable vertical scrolling */
     flex-grow: 1; /* Allow main to grow and take available space */
-    overflow-x: hidden;
+    overflow-x: hidden; /* x축 스크롤을 숨김 */
   }
 
   footer {
     padding: 12px 16px;
     text-align: right;
-    border-top: 1px solid #dee2e6; /* Add top border for separation */
+    border-top: 1px solid #dee2e6;
   }
 
   @keyframes modal-show {
@@ -72,7 +80,7 @@ const ModalStyle = styled.div`
 
   /* Custom scrollbar styles */
   main::-webkit-scrollbar {
-    width: 8px; /* Make the scrollbar thinner */
+    width: 8px;
   }
 
   main::-webkit-scrollbar-thumb {
@@ -188,6 +196,15 @@ const Sugbox = styled.div`
   width: 450px;
   height: 50%;
   margin-right: 10%;
+  @media (max-width: 500px) {
+    display: none;
+  }
+`;
+const Minsugbox = styled.div`
+  width: 100%;
+  @media (min-width: 500px) {
+    display: none;
+  }
 `;
 const Sugtextbox = styled.div`
   width: 100%;
@@ -195,6 +212,9 @@ const Sugtextbox = styled.div`
   font-weight: bold;
   font-size: 17px;
   color: white;
+  @media (max-width: 500px) {
+    color: black;
+  }
 `;
 const LoanDetail = ({ open, close, loan, categorybu }) => {
   const [similarLoans, setSimilarLoans] = useState([]);
@@ -251,7 +271,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
   useEffect(() => {
     if (categorybu == "일반신용대출") {
       if (open && loan) {
-        fetch(`http://192.168.10.6:5000/api/recommendations`, {
+        fetch(`http://localhost:5000/api/recommendations`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -545,6 +565,14 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
                   <strong>보증기관:</strong>
                   {ww1(categorybu, loan)}
                 </p>
+                <Minsugbox>
+                  <Sugtextbox>비슷한 대출 상품</Sugtextbox>
+                  <SimilList
+                    loanitems={similarLoans}
+                    handleDetailClick={handleDetailClick}
+                    category={categorybu}
+                  />
+                </Minsugbox>
               </main>
               <footer>
                 <Button onClick={close}>취소</Button>

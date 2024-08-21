@@ -2,6 +2,16 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SuggestList from "./suggestList";
 import { useNavigate } from "react-router-dom";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
 const ModalStyle = styled.div`
   .modal {
@@ -31,6 +41,13 @@ const ModalStyle = styled.div`
     overflow: hidden;
     position: relative;
     overflow-y: auto;
+    @media (max-width: 500px) {
+      width: 100%;
+      height: 100%;
+      max-height: 100%;
+      overflow-x: hidden; /* x축 스크롤을 숨김 */
+      border-radius: 0;
+    }
 
     main {
       padding: 16px;
@@ -109,6 +126,9 @@ const CategorySelect = styled.select`
   width: 20%;
   height: 40px;
   background-color: #fff;
+  @media (max-width: 500px) {
+    width: 60%;
+  }
 `;
 
 const Textbox = styled.div`
@@ -144,8 +164,7 @@ const Suggestmodal = (props) => {
   const [age, setAge] = useState("");
   const [annincome, setAnnincome] = useState("");
   const [selectedsiLoan, setSelectedsiLoan] = useState("");
-  const loan_no = selectedsiLoan["금융회사 명"];
-  const navigate = useNavigate();
+  const [forecast, setForecast] = useState("");
 
   const handleDetailClick = (loan_no) => {
     console.log(loan_no);
@@ -202,10 +221,39 @@ const Suggestmodal = (props) => {
     setPawn(event.target.value);
   };
 
+  const Rateforecast = async () => {
+    if (open) {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/rate_forecast_endpoint",
+          {
+            method: "POST", // POST 요청
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        // 응답이 성공적인지 확인
+        if (response.ok) {
+          const data = await response.json(); // JSON 응답 데이터 파싱
+          console.log("예측 로그:", data.predicted_rate); // 예측된 금리 로그 출력
+          setForecast(data.predicted_rate);
+
+          // 여기서 data.predicted_rate를 사용하여 UI를 업데이트할 수 있습니다.
+        } else {
+          console.error("예측을 가져오지 못했습니다.:", response.status);
+        }
+      } catch (error) {
+        console.error("예측을 가져오는 중에 오류가 발생했습니다.:", error);
+      }
+    }
+  };
+
   const Recommexe = async () => {
     if (category === "일반신용대출") {
       if (open) {
-        fetch(`http://192.168.10.6:5000/api/recommend_loan_products`, {
+        fetch(`http://localhost:5000/api/recommend_loan_products`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -284,7 +332,7 @@ const Suggestmodal = (props) => {
           .then((response) => response.json())
           .then((data) => {
             console.log("서버에서 받은 데이터:", data);
-            setSelectedsiLoan(data); // 데이터가 예상한 구조인지 확인한 후 이 부분을 업데이트하세요.
+            setSelectedsiLoan(data);
           })
           .catch((error) => {
             console.error("추천 데이터 로딩 실패:", error);
@@ -460,6 +508,7 @@ const Suggestmodal = (props) => {
               <footer>
                 <Button onClick={modalclose}>취소</Button>
                 <Button onClick={Recommexe}>확인</Button>
+                <Button onClick={Rateforecast}>테스트 버튼</Button>
               </footer>
             </section>
           )}

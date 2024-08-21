@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { FaGithub, FaInstagram } from "react-icons/fa";
-const Footer = () => {
+const Footer = ({ isCPage }) => {
   return (
-    <Container>
+    <Container isCPage={isCPage}>
       <Box>
         <NameSNSBOX>
           <IconContainer>
@@ -47,7 +47,7 @@ const Container = styled.div`
   align-items: center;
   height: auto;
   @media (max-width: 500px) {
-    margin-top: 500px;
+    margin-top: ${(props) => (props.isCPage ? "230px" : "500px")};
     width: 100vw;
     height: 10vw;
   }
