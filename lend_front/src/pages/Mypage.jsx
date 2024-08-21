@@ -173,7 +173,7 @@ const Mypage = () => {
   const [name, setName] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [identityNumber, setIdentityNumber] = useState("");
-  const [isKaKao, setIsKaKao] = useState(false);
+  const [isSocial, setIsSocial] = useState(false);
   const navigate = useNavigate();
   const context = useContext(UserContext);
   const { loginStatus } = context;
@@ -220,7 +220,7 @@ const Mypage = () => {
     const rsp = await AxiosApi.getMemberInfo();
     setName(rsp.data.name);
     setLoginEmail(rsp.data.email);
-    setIsKaKao(rsp.data.isKaKao);
+    setIsSocial(rsp.data.isSocial);
     setIdentityNumber(rsp.data.identityNumber);
   };
 
@@ -244,9 +244,6 @@ const Mypage = () => {
     const user = {
       email: loginEmail,
       password: newPassword,
-      // identityNumber: identityNumber,
-      // name: name,
-      // isKaKao: false,
     };
     if (pwdValid) {
       try {
@@ -297,7 +294,7 @@ const Mypage = () => {
             <span>{name}</span>
             <span>{loginEmail}</span>
           </MyinfoContainer>
-          {isKaKao ? (
+          {isSocial ? (
             <span className="kakaolog">
               소셜 로그인 상태에선 비밀번호 수정이 불가능합니다.
             </span>
@@ -331,7 +328,7 @@ const Mypage = () => {
             </>
           )}
           <ButtonContainer>
-            {isKaKao ? null : <Button onClick={() => modify()}>수정</Button>}
+            {isSocial ? null : <Button onClick={() => modify()}>수정</Button>}
 
             <div className="delete" onClick={() => deleteMember()}>
               회원탈퇴 &gt;

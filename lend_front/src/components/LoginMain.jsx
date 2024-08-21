@@ -189,17 +189,17 @@ const LoginMain = ({ isSignIn }) => {
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
   const kakaoLogin = () => {
-    const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
-    //const redirect_uri = "http://192.168.10.6:3000/lend"; //Redirect URI
-    const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
+    const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+    //const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
+    const REDIRECT_URI = "http://localhost:3000/lend";
     // oauth 요청 URL
+    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
     localStorage.setItem("loginMethod", "kakao");
-    const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
     window.location.href = kakaoURL;
   };
   const NaverLgoin = () => {
-    const NAVER_CLIENT_ID = "ZA8r5FN2jztp7YcszStq"; // 발급받은 클라이언트 아이디
-    //const REDIRECT_URI = "http://192.168.10.6:3000/lend"; // Callback URL
+    const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
+    //const REDIRECT_URI = "process.env.REACT_APP_REDIRECT_URI";
     const REDIRECT_URI = "http://localhost:3000/lend"; // Callback URL
     const STATE = uuidv4();
     localStorage.setItem("loginMethod", "naver");

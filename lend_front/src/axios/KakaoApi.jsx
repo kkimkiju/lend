@@ -1,19 +1,17 @@
 import axios from "axios";
 //const LEND_DOMAIN = "http://192.168.10.6:8118";
 const LEND_DOMAIN = "http://localhost:8118";
-const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
-//const redirect_uri = "http://192.168.10.6:3000/lend"; //Redirect URI
-const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
+const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+//const REDIRECT_URI = "process.env.REACT_APP_REDIRECT_URI";
+const REDIRECT_URI = "http://localhost:3000/lend";
 const KakaoApi = {
   getToken: async (code) => {
-    console.log("getToken 실행");
     const data = {
       grant_type: "authorization_code",
-      client_id: Rest_api_key,
-      redirect_uri: redirect_uri,
+      client_id: REST_API_KEY,
+      redirect_uri: REDIRECT_URI,
       code: code,
     };
-    console.log("data", data);
     return await axios.post("https://kauth.kakao.com/oauth/token", data, {
       headers: {
         "content-type": "application/x-www-form-urlencoded;charset=utf-8",
