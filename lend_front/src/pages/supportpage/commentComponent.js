@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
 import { useNavigate } from "react-router-dom";
-
+import useModal from "../../components/customModalHook";
 export default function CommentComponent({
   currentPostId,
   showDetailedPost,
@@ -14,7 +14,21 @@ export default function CommentComponent({
     parentId: null,
     content: "",
   });
-
+  // 모달 커스텀훅 사용
+  const { Modal, openModal, closeModal } = useModal();
+  // 유저정보 갱신
+  const [myEmail, setMyEmail] = useState(null);
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        const response = await AxiosApi.getMemberInfo();
+        setMyEmail(response.data.email);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchMemberInfo();
+  }, [myEmail]);
   // fetchCommentList 함수를 컴포넌트 내부에서 정의
   const fetchCommentList = async (id) => {
     try {
@@ -66,13 +80,13 @@ export default function CommentComponent({
       id: editState.id,
       content: editState.content,
       memberResDto: {
-        email: localStorage.getItem("email"),
+        email: myEmail,
       },
     };
     try {
       const response = await AxiosApi.modifyCommnet(commentDto);
       if (response.data) {
-        alert("댓글 수정 완료.");
+        openModal("댓글 수정 완료");
         setCommentList((prevComments) =>
           prevComments.map((comment) =>
             comment.id === editState.id
@@ -96,22 +110,27 @@ export default function CommentComponent({
   };
 
   const handleSaveCommnet = async () => {
-    const commentDto = {
-      questionId: currentPostId,
-      content: contentOfComment,
-      memberResDto: {
-        email: localStorage.getItem("email"),
-      },
-    };
-    try {
-      const response = await AxiosApi.createComment(commentDto);
-      if (response.data) {
-        alert("댓글등록완료.");
-        setContentOfComment("");
-        fetchCommentList(currentPostId); // 댓글 목록을 다시 불러오기
+    // 입력값 유효성 검사
+    if (!contentOfComment) {
+      openModal("내용을 입력하세요.");
+    } else {
+      const commentDto = {
+        questionId: currentPostId,
+        content: contentOfComment,
+        memberResDto: {
+          email: myEmail,
+        },
+      };
+      try {
+        const response = await AxiosApi.createComment(commentDto);
+        if (response.data) {
+          openModal("댓글 등록 완료.");
+          setContentOfComment("");
+          fetchCommentList(currentPostId); // 댓글 목록을 다시 불러오기
+        }
+      } catch (error) {
+        console.error(error.response);
       }
-    } catch (error) {
-      console.error(error.response);
     }
   };
 
@@ -125,13 +144,13 @@ export default function CommentComponent({
       parentId: nestedCommentWriteMode.parentId,
       content: nestedCommentWriteMode.content,
       memberResDto: {
-        email: localStorage.getItem("email"),
+        email: myEmail,
       },
     };
     try {
       const response = await AxiosApi.createComment(commentDto);
       if (response.data) {
-        alert("댓글 등록 완료.");
+        openModal("댓글 등록 완료");
         fetchCommentList(currentPostId); // 댓글 목록을 다시 불러오기
         setNestedCommentWriteMode({ parentId: null, content: "" });
       }
@@ -144,16 +163,16 @@ export default function CommentComponent({
     const commentDto = {
       questionId: currentPostId,
       id: id,
-      content: "삭제된 댓글 입니다.",
+      content: "삭제된 댓글 입니다",
       deletedStatus: true,
       memberResDto: {
-        email: localStorage.getItem("email"),
+        email: myEmail,
       },
     };
     try {
       const response = await AxiosApi.deleteComment(commentDto);
       if (response.data) {
-        alert("댓글 삭제 완료.");
+        openModal("댓글 삭제 완료");
         setCommentList((prevComments) =>
           prevComments.map((comment) =>
             comment.id === editState.id
@@ -172,16 +191,14 @@ export default function CommentComponent({
   // 계층형 댓글 렌더링
   const renderComments = (comments) => {
     return comments.map((comment) => {
-      const isOwner =
-        localStorage.getItem("email") === comment.memberResDto.email;
+      const isOwner = myEmail === comment.memberResDto.email;
       return (
-        <div
-          key={comment.id}
-          style={{ marginLeft: comment.parentId ? "2vw" : "0" }}
-        >
-          <Name authority={comment.memberResDto.authority}>{comment.memberResDto.name}</Name>
+        <CommentBox key={comment.id} parentId={comment.parentId}>
+          <Name authority={comment.memberResDto.authority}>
+            {comment.memberResDto.name}
+          </Name>
           {comment.deletedStatus ? (
-            <div>삭제된 댓글입니다.</div>
+            <Content>삭제된 댓글입니다.</Content>
           ) : (
             <>
               {editState.id === comment.id ? (
@@ -192,7 +209,7 @@ export default function CommentComponent({
                   }
                 />
               ) : (
-                <div style={{ display: "block" }}>{comment.content}</div>
+                <Content style={{ display: "block" }}>{comment.content}</Content>
               )}
               <CommentButtonBox>
                 {isOwner && (
@@ -237,7 +254,7 @@ export default function CommentComponent({
           )}
           {/* 자식 댓글을 항상 렌더링 */}
           {comment.replies.length > 0 && renderComments(comment.replies)}
-        </div>
+        </CommentBox>
       );
     });
   };
@@ -253,7 +270,7 @@ export default function CommentComponent({
                 <Box>
                   <textarea
                     type="text"
-                    placeholder="댓글을 입력하세요."
+                    placeholder="댓글을 입력하세요"
                     maxlength="100"
                     value={contentOfComment}
                     onChange={(e) => setContentOfComment(e.target.value)}
@@ -266,6 +283,7 @@ export default function CommentComponent({
               </Item>
             </Box>
           </Container>
+          <Modal />
         </Body>
       )}
     </>
@@ -287,18 +305,28 @@ const Box = styled.div`
   display: flex;
   flex-direction: column;
   width: 70vw;
+  @media (max-width: 500px) {
+    width: 90vw;
+  }
   > textarea {
-    margin: 20px 50px;
-    @media (max-width : 500px){
-      width: 50vw
+    margin: 2vh 4vw;
+    @media (max-width: 500px) {
+      width: 82vw;
     }
+  }
+`;
+const CommentBox = styled.div`
+  margin-left: ${(props) => (props.parentId ? "2vw" : "0")};
+
+  @media (max-width: 500px) {
+    margin-left: ${(props) => (props.parentId ? "3vw" : "0")};
   }
 `;
 const ButtonBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  padding-bottom: 10px;
+  padding-bottom: 1vw;
   :hover {
     background-color: #29c555;
   }
@@ -307,27 +335,28 @@ const CommentButtonBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  margin: 5px 0;
+  margin: 1vh 0;
   :hover {
     background-color: #29c555;
   }
 `;
 const Button = styled.button`
-  width: 10%;
+  width: 3.5vw;
   height: auto;
   border: 0;
   border-radius: 5vw;
   white-space: nowrap;
-  font-size: 15px;
+  font-size: 1vw;
   color: white;
   background-color: #ddd;
   transition: background-color 0.3s ease; /* 부드러운 호버 효과 */
-  margin: 0 10px;
-  padding: 5px 0;
-  @media (max-width : 500px){
-    width: 6vw;
-    height: 6vw;
-    font-size: 2vw;
+  margin: 0 0.3vw;
+  padding: 0.4vh 0;
+  @media (max-width: 500px) {
+    width: 8vw;
+    height: 4vw;
+    font-size: 2.3vw;
+    margin: 0 1vw;
   }
 `;
 const Item = styled.div`
@@ -339,7 +368,21 @@ const Item = styled.div`
 `;
 
 const Name = styled.div`
-border-left: ${(props) => (props.authority === "ROLE_ADMIN" ?  "5px solid orange": "5px solid gray")};
-margin: 10px 0;
-padding: 0 5px;
+font-size: 1.2vw;
+  border-left: ${(props) =>
+    props.authority === "ROLE_ADMIN" ? ".3vw solid orange" : ".3vw solid gray"};
+  margin: 1vh 0;
+  padding: 0 .5vw;
+  @media (max-width: 500px){
+    border-left: ${(props) =>
+    props.authority === "ROLE_ADMIN" ? ".7vw solid orange" : ".7vw solid gray"};
+    padding: 0 1.5vw;
+    font-size: 3vw;
+  }
+`;
+const Content = styled.div`
+font-size: 1vw;
+@media (max-width: 500px){
+  font-size: 3vw;
+}
 `

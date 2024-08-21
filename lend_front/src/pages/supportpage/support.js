@@ -7,6 +7,7 @@ import AxiosApi from "../../axios/AxiosApi";
 import WritePost from "./writepost";
 import CommentComponent from "./commentComponent";
 import { Toggle } from "./toggleComponent";
+import useModal from "../../components/customModalHook";
 
 export default function Support() {
   const [questionBoard, showQuestionBoard] = useState(true);
@@ -15,6 +16,21 @@ export default function Support() {
   const [commentMode, setCommentMode] = useState(false);
   const [answerState, setAnswerState] = useState(false); //관리자 답변 여부 관리
   const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
+  // 모달 커스텀훅 사용
+  const { Modal, openModal, closeModal } = useModal();
+  // 유저정보 갱신
+  const [myEmail, setMyEmail] = useState(null);
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        const response = await AxiosApi.getMemberInfo();
+        setMyEmail(response.data.email);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchMemberInfo();
+  }, [myEmail]);
   const BoardHandler = (number) => () => {
     if (number === 1) {
       showQuestionBoard(true);
@@ -107,7 +123,7 @@ export default function Support() {
     // 권한 확인
     try{
       const memberResDto = {
-        email: localStorage.getItem("email"),
+        email: myEmail,
       }
       const response = await AxiosApi.getAuthority(memberResDto);
       console.log("Authority info: ", response.data);
@@ -121,7 +137,7 @@ export default function Support() {
         //비밀글인지 확인
         if(response.data.isPrivate) {
           // 작성자이거나 authority가 ROLL_ADMIN 인지 확인
-          if(response.data.memberResDto.email === localStorage.getItem("email")
+          if(response.data.memberResDto.email === myEmail
             || authority === "ROLE_ADMIN") {
               showDetailedPost(true);
               showQuestionBoard(false);
@@ -129,7 +145,7 @@ export default function Support() {
               setCurrentPostId(id);
               console.log(response.data);
           } else { // 비밀글인데 작성자가 아닐 때
-            alert("비밀글 입니다.")
+            openModal("비밀글 입니다.")
             showDetailedPost(false);
           }
         } else { // 비밀글이 아닐때
@@ -171,14 +187,14 @@ export default function Support() {
       content: editedContent,
       isPrivate: switchState,
       memberResDto: {
-        email: localStorage.getItem("email"),
+        email: myEmail,
       },
     };
     // 입력값 유효성검사
     if (!editedTitle) {
-      alert("제목을 입력하세요");
+      openModal("제목을 입력하세요");
     } else if (!editedContent) {
-      alert("내용을 입력하세요.");
+      openModal("내용을 입력하세요.");
     } else {
       try {
         const response = await AxiosApi.modifyQuestion(questionDto);
@@ -208,7 +224,7 @@ export default function Support() {
       const response = await AxiosApi.deleteQuestion(currentPost.id);
 
       if (response.data) {
-        alert("게시글이 삭제되었습니다.");
+        openModal("게시글이 삭제되었습니다.");
         // 삭제 후 게시판 목록으로 돌아가기
         showDetailedPost(false);
         showQuestionBoard(true);
@@ -221,8 +237,7 @@ export default function Support() {
     }
   };
   // 현재 로그인된 사용자의 이메일과 글 작성자의 이메일 비교  + 관리자 계정인지 확인 기능 추가 필요
-  const isOwner =
-    localStorage.getItem("email") === currentPost?.memberResDto?.email;
+  const isOwner = myEmail === currentPost?.memberResDto?.email;
   return (
     <Body>
       <Container>
@@ -399,6 +414,7 @@ export default function Support() {
           </FAQBox>
         )}
       </Container>
+      <Modal/>
     </Body>
   );
 }
@@ -417,13 +433,11 @@ const Container = styled.div`
 `;
 const Box = styled.div`
   width: 60vw;
-  height: 60vh;
   flex-direction: row;
   justify-content: center;
   margin-bottom: 2vh;
   @media (max-width: 500px){
     width: 95vw;
-    height: 85vh;
   }
 `;
 const SearchBox = styled.div`
@@ -447,6 +461,7 @@ const ButtonBox = styled.div`
   }
   @media (max-width:500px){
     width: 95vw;
+    margin-top: 1vh;
   }
   > .writepost {
     // 질문하기 글작성 버튼
@@ -463,22 +478,24 @@ const ButtonBox = styled.div`
   > .editpost {
     // 글 수정 관련 버튼
     justify-content: flex-end;
-    margin-bottom: 10px;
+    margin-bottom: 1.5vh;
   }
 `;
 const Button = styled.button`
   width: auto;
   height: auto;
   border: 0;
-  border-radius: .5vw;
+  border-radius: 1vw;
   white-space: nowrap;
   font-size: 1.5vw;
   color: white;
   background-color: #29c555;
   margin: .5vw 8vw;
+  padding: .5vw 1vw;
   @media (max-width:500px){
     width: 30vw;
     height: 4vh;
+    border-radius: 2vw;
     font-size: 3vw;
     margin: .5vh 3vw;
   }
@@ -489,13 +506,13 @@ const EditPostButton = styled.button`
   border: 0;
   border-radius: 1vw;
   white-space: nowrap;
-  font-size: 20px;
+  font-size: 1.5vw;
   background-color: white;
   margin: 0 5px;
   padding: 2px 20px;
   @media (max-width:500px){
     font-size: 3vw;
-    margin: 0 1vw;
+    margin: 0 2vw;
     padding: .2vh 1vw;
   }
 `;
@@ -536,8 +553,10 @@ const ListItem = styled.div`
 const Item = styled.div`
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
-  height: 60vh;
+  height: 35vw;
+  @media (max-width : 500px){
+    height: 60vh;
+  }
   & > button:hover {
     background-color: rgb(240, 240, 240);
   }
@@ -548,6 +567,7 @@ const Item = styled.div`
     padding: 0 15px;
     @media (max-width : 500px){
       font-size: 7vw;
+      margin: 1vh 3vw;
     }
   }
   .content {
@@ -555,8 +575,10 @@ const Item = styled.div`
     min-height: 40vh;
     white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
     @media (max-width : 500px){
+      min-height: 48vh;
       font-size: 4vw;
-      min-height: 20vh;
+      margin: 1vh 3vw;
+
     }
   }
   .boardArea:hover {
@@ -575,13 +597,13 @@ const PostInfoBox = styled.div`
   color: gray;
   margin: .5vw 0;
   @media (max-width : 500px){
-    margin: 1vh 0;
+    margin: 1vh 3vw;
   }
   & span {
     margin: 0 4px;
-    font-size: 1.5vw;
+    font-size: 1vw;
     @media (max-width : 500px){
-      font-size: 1.2vw;
+      font-size: 2.3vw;
     }
   }
   & span:nth-child(odd) {
@@ -599,11 +621,13 @@ const TitleOfPost = styled.div`
   align-items: center;
   text-align: center;
   white-space: nowrap;
-  border-bottom: 0.2vw solid;
+  border-bottom: 0.15vw solid;
   margin: 1vh 0;
   padding: 1vw 0 ;
   @media (max-width : 500px){
     width: 95vw;
+    border-bottom: .4vw solid;
+    padding: 2vw 0 ;
     }
   & div {
     width: 10vw;
