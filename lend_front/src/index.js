@@ -3,11 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-<script
-  type="text/javascript"
-  src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js"
-  charset="utf-8"
-></script>;
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<App />);
 

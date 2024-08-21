@@ -8,111 +8,101 @@ import { useContext, useEffect, useState } from "react";
 import KakaoApi from "../axios/KakaoApi";
 import AxiosApi from "../axios/AxiosApi";
 import KaKaoSignUpModal from "../components/KaKaoSignUpModal";
+import NaverApi from "../axios/NaverApi";
 
 const Mainpage = () => {
-  const context = useContext(UserContext);
-  const { loginStatus, setLoginStatus } = context;
+  const { loginStatus, setLoginStatus } = useContext(UserContext);
   const navigate = useNavigate();
   const [isMember, setIsMember] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [accToken, setAccToken] = useState("");
   const [pw, setPw] = useState("");
+
   const handleLogout = () => {
     setLoginStatus(false);
     localStorage.clear();
     navigate("/");
-    console.log("loginStatus in", loginStatus);
   };
 
-  const kakaoToken = async () => {
-    const code = new URL(window.location.href).searchParams.get("code");
-    if (!code || accToken) return; // code가 없거나 이미 토큰이 존재하면 반환
-
+  const handleLoginToken = async (loginMethod, code, state) => {
     try {
-      const res = await KakaoApi.getToken(code);
-      if (res.data) {
-        setAccToken(res.data.access_token); // 토큰을 상태에 저장
-        kakaoUser(res.data.access_token);
+      let response;
+      if (loginMethod === "kakao") {
+        response = await KakaoApi.getToken(code);
+        if (response.data) {
+          setAccToken(response.data.access_token);
+          await handleKakaoUser(response.data.access_token);
+        }
+      } else if (loginMethod === "naver") {
+        const token = { code, state };
+        response = await NaverApi.getNaverUserInfo(token);
+        if (response.data.isMember) {
+          setAccToken(response.data.accToken);
+          await login(
+            response.data.userInfo.response.email,
+            response.data.userInfo.response.id
+          );
+        } else {
+          setIsMember(true);
+          setPw(response.data.userInfo.response.id);
+          localStorage.setItem("email", response.data.userInfo.response.email);
+          setOpenModal(true);
+        }
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error(`${loginMethod} Token Error:`, error);
+      alert(`${loginMethod} 로그인 중 오류가 발생했습니다.`);
     }
   };
 
-  useEffect(() => {
-    if (!accToken) {
-      kakaoToken(); // 초기 렌더링 시에만 카카오 API 호출
-    }
-  }, [accToken]);
-  useEffect(() => {
-    console.log("loginStatus", loginStatus);
-  }, []);
-  // 네이버
-  useEffect(() => {
-    const code = new URL(window.location.href).searchParams.get("code");
-    console.log("네이버 ", code);
-  });
-  const NaverToken = async () => {
-    const code = new URL(window.location.href).searchParams.get("code");
-    if (!code || accToken) return; // code가 없거나 이미 토큰이 존재하면 반환
-
-    try {
-      const res = await KakaoApi.getToken(code);
-      if (res.data) {
-        setAccToken(res.data.access_token); // 토큰을 상태에 저장
-        kakaoUser(res.data.access_token);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const kakaoUser = async (token) => {
+  const handleKakaoUser = async (token) => {
     try {
       const res = await KakaoApi.getInfo(token);
-      console.log("kakaoUser", typeof res.data);
-      console.log("res", res.data);
-      console.log("res.data.isMember", res.data.isMember);
-
       if (res.data.isMember) {
-        console.log("ismember true", res.data.isMember);
-        login(res.data.userInfo.kakao_account.email, res.data.userInfo.id);
+        await login(
+          res.data.userInfo.kakao_account.email,
+          res.data.userInfo.id
+        );
       } else {
-        setIsMember(!res.data.isMember);
+        setIsMember(true);
         setPw(res.data.userInfo.id);
         localStorage.setItem("email", res.data.userInfo.kakao_account.email);
         setOpenModal(true);
       }
-    } catch (err) {
-      alert("카카오 로그인중 오류가 발생했습니다. ");
-      console.log("카카오 사용자 정보 가져오기 에러: " + err);
+    } catch (error) {
+      console.error("카카오 사용자 정보 가져오기 에러:", error);
+      alert("카카오 로그인 중 오류가 발생했습니다.");
     }
   };
 
   const login = async (email, password) => {
-    console.log("카카오 로그인!");
     try {
       const rsp = await AxiosApi.login(email, password);
-      console.log("rsp.data.grantType ", rsp.data);
       if (rsp.data.tokenDto.grantType === "Bearer") {
         setAccToken(rsp.data.accessToken);
         localStorage.setItem("accessToken", rsp.data.tokenDto.accessToken);
         localStorage.setItem("refreshToken", rsp.data.tokenDto.refreshToken);
 
-        console.log(accToken);
         setLoginStatus(true);
         setOpenModal(false);
         navigate("/");
       } else {
         setOpenModal(true);
       }
-    } catch (err) {
-      console.log("로그인 에러 : " + err);
+    } catch (error) {
+      console.error("로그인 에러:", error);
     }
   };
 
-  // const closeModal = () => {
-  //   setOpenModal(false);
-  // };
+  useEffect(() => {
+    const loginMethod = localStorage.getItem("loginMethod");
+    const code = new URL(window.location.href).searchParams.get("code");
+    const state = new URL(window.location.href).searchParams.get("state");
+
+    if (loginMethod && code && !accToken) {
+      handleLoginToken(loginMethod, code, state);
+    }
+  }, [accToken]);
 
   return (
     <>
@@ -126,11 +116,7 @@ const Mainpage = () => {
               ever lend
               <br />
               {loginStatus ? (
-                <TryBtn
-                  as={Link}
-                  to="/lend/login"
-                  onClick={() => handleLogout()}
-                >
+                <TryBtn as={Link} to="/lend/login" onClick={handleLogout}>
                   로그아웃
                 </TryBtn>
               ) : (
@@ -143,11 +129,7 @@ const Mainpage = () => {
           <Section />
           <Footer />
         </Container>
-        <KaKaoSignUpModal
-          open={openModal}
-          login={login}
-          pw={pw}
-        ></KaKaoSignUpModal>
+        <KaKaoSignUpModal open={openModal} login={login} pw={pw} />
       </Body>
     </>
   );

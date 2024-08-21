@@ -298,7 +298,9 @@ const Mypage = () => {
             <span>{loginEmail}</span>
           </MyinfoContainer>
           {isKaKao ? (
-            <span className="kakaolog">카카오 로그인 상태입니다</span>
+            <span className="kakaolog">
+              소셜 로그인 상태에선 비밀번호 수정이 불가능합니다.
+            </span>
           ) : (
             <>
               <WithMsg>

@@ -6,6 +6,8 @@ import LoginComponent from "./LoginComponent";
 import KaKaoImg from "../image/카카오btn.png";
 import NaverImg from "../image/네이버.png";
 import { UserContext } from "../context/UserStore";
+import { v4 as uuidv4 } from "uuid";
+
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -159,6 +161,10 @@ const WithMsg = styled.div`
     width: 80%;
   }
 `;
+const SocialBttContainer = styled.div`
+  display: flex;
+  gap: 10%;
+`;
 const KaKaoBtt = styled.div``;
 const KaKaoLogo = styled.img`
   width: 50px;
@@ -182,25 +188,23 @@ const LoginMain = ({ isSignIn }) => {
   const { setIsModalOpen } = context;
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
-  // const ref = useRef(null);
   const kakaoLogin = () => {
     const Rest_api_key = "8ec1c2d801a094cbc3c525fe5f6a53d4"; //REST API KEY
     //const redirect_uri = "http://192.168.10.6:3000/lend"; //Redirect URI
     const redirect_uri = "http://localhost:3000/lend"; //Redirect URI
     // oauth 요청 URL
+    localStorage.setItem("loginMethod", "kakao");
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
     window.location.href = kakaoURL;
   };
   const NaverLgoin = () => {
     const NAVER_CLIENT_ID = "ZA8r5FN2jztp7YcszStq"; // 발급받은 클라이언트 아이디
-    const REDIRECT_URI = "http://192.168.10.6:3000/lend"; // Callback URL
-    const STATE = "flase";
+    //const REDIRECT_URI = "http://192.168.10.6:3000/lend"; // Callback URL
+    const REDIRECT_URI = "http://localhost:3000/lend"; // Callback URL
+    const STATE = uuidv4();
+    localStorage.setItem("loginMethod", "naver");
     const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}`;
-    const Naver = () => {
-      window.location.href = NAVER_AUTH_URL;
-    };
-
-    Naver();
+    window.location.href = NAVER_AUTH_URL;
   };
 
   useEffect(() => {
@@ -221,9 +225,9 @@ const LoginMain = ({ isSignIn }) => {
       setIsId(true);
     }
   };
-  useEffect(() => {
-    console.log(pw, "pw");
-  }, [pw]);
+  // useEffect(() => {
+  //   console.log(pw, "pw");
+  // }, [pw]);
   const handleLogin = () => {
     setIsLogin(!isLogin);
     localStorage.setItem("email", inputEmail);
@@ -231,20 +235,7 @@ const LoginMain = ({ isSignIn }) => {
   const handleLoginFail = () => {
     setIsLogin(false);
   };
-  // // 다른 곳을 클릭하면 드롭다운 닫기
-  // const handleClickOutside = (event) => {
-  //   if (ref.current && !ref.current.contains(event.target)) {
-  //     setIsModalOpen(false);
-  //   }
-  // };
-  // // 이벤트 리스너 등록
-  // useEffect(() => {
-  //   document.addEventListener("mousedown", handleClickOutside);
-  //   return () => {
-  //     console.log("mouse down 실행");
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
+
   return (
     <Container isTrue={isTrue}>
       <Logo src={LogoImg} onClick={() => navigate("/lend")}></Logo>
@@ -274,13 +265,14 @@ const LoginMain = ({ isSignIn }) => {
           {/* <FindInfo open={isModalOpen} ref={ref}></FindInfo> */}
         </LoginEtc>
       </InputContainer>
-      <KaKaoBtt onClick={() => kakaoLogin()}>
-        <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
-      </KaKaoBtt>
-      <KaKaoBtt onClick={() => NaverLgoin()}>
-        {/* <KaKaoLogo src={NaverImg}></KaKaoLogo> */}
-        <div id="naver_id_login">1</div>
-      </KaKaoBtt>
+      <SocialBttContainer>
+        <KaKaoBtt onClick={() => kakaoLogin()}>
+          <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
+        </KaKaoBtt>
+        <KaKaoBtt onClick={() => NaverLgoin()}>
+          <KaKaoLogo src={NaverImg}></KaKaoLogo>
+        </KaKaoBtt>
+      </SocialBttContainer>
     </Container>
   );
 };
