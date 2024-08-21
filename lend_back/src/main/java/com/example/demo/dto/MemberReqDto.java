@@ -28,7 +28,7 @@ public class MemberReqDto {
                 .password(passwordEncoder.encode(password))
                 .identityNumber(identityNumber)
                 .name(name)
-                .isKakao(isKaKao)
+                .isSocial(isKaKao)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

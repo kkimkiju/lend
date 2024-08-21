@@ -15,7 +15,7 @@ public class MemberResDto {
     private String name;
     private String identityNumber;
     private Authority authority;
-    private Boolean isKaKao;
+    private Boolean isSocial;
 
 
     public static MemberResDto of(Member member) {
@@ -24,12 +24,9 @@ public class MemberResDto {
                 .name(member.getName())
                 .password(member.getPassword())
                 .identityNumber(member.getIdentityNumber())
-                .isKaKao(member.getIsKakao())
+                .isSocial(member.getIsSocial())
                 .authority(member.getAuthority())
-//                .nickname(member.getNickname())
-//                .profileImgPath(member.getProfileImgPath())
-//                .skill(member.getSkill())
-//                .myInfo(member.getMyInfo())
+
                 .build();
 
     }

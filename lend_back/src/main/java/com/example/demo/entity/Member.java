@@ -22,7 +22,7 @@ public class Member {
     private String name;
     @Column(nullable = false)
     private String password;
-    private Boolean isKakao;
+    private Boolean isSocial;
 
 //    @Column
 //    private String nickname;

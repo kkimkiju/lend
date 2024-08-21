@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.KakaoDto;
-import com.example.demo.entity.Kakao;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.KakaoRepository;
 import com.example.demo.repository.MemberRepository;
@@ -27,8 +26,8 @@ import java.util.Map;
 public class KakaoService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
-    private final KakaoRepository kakaoRepository;
     private final PasswordEncoder passwordEncoder;
+    private final KakaoRepository kakaoRepository;
 
     public Map<String, Object> kakaoUserInfo (String kakaoToken) {
         Map<String, Object> kakaoInfo = new HashMap<>();
@@ -51,7 +50,6 @@ public class KakaoService {
             boolean isExist = false;
             if (kakaoDto != null) {
                 isExist = memberRepository.existsByEmail(kakaoDto.getKakaoAccount().getEmail());
-
                 log.info("kakaoId exists? : {}",isExist);
                 String kakaoEmail = kakaoDto.getKakaoAccount().getEmail();
                 log.info("kakaoEmail? : {}",kakaoEmail);
@@ -71,7 +69,6 @@ public class KakaoService {
             }
             kakaoInfo.put("isMember", isExist);
             kakaoInfo.put("userInfo", kakaoDto);
-
             return kakaoInfo;
         }catch(Exception e) {
             log.error("카카오 가입 시도 중 오류 발생(카카오 서비스)");

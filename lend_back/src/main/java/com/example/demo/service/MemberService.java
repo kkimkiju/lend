@@ -29,7 +29,7 @@ public class MemberService {
             Member member = mem.get();
             member.setName(memberReqDto.getName());
             member.setIdentityNumber(memberReqDto.getIdentityNumber());
-            member.setIsKakao(memberReqDto.getIsKaKao());
+            member.setIsSocial(memberReqDto.getIsKaKao());
             return MemberResDto.of(memberRepository.save(member));
         }
         else {
