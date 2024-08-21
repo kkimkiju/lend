@@ -13,9 +13,8 @@ export default function InfoComponent ({ infoInput }){
       )}
       {infoInput === "info2" && (
         <ul>
-          <li>하위메뉴4</li>
-          <li>하위메뉴5</li>
-          <li>하위메뉴6</li>
+          <li>상단 대출상품 버튼 클릭{" > "} 대출종류 선택{" > "} 대출상품 선택 {" > "}</li>
+          <li>장바구니 담기 버튼 클릭{" > "} 찜목록 버튼 클릭{" > "} 신청 버튼 클릭</li>
         </ul>
       )}
       {infoInput === "info3" && (
@@ -54,16 +53,21 @@ export default function InfoComponent ({ infoInput }){
       )}
       {infoInput === "info9" && (
         <ul>
-          <li>하위메뉴25</li>
-          <li>하위메뉴26</li>
-          <li>하위메뉴27</li>
+          <li>대출 상품명과 오류 내용을 질문게시판 또는 상담사 채팅으로</li>
+          <li>전달하여 주시면 빠르게 도와 드리겠습니다.</li>
         </ul>
       )}
       {infoInput === "info10" && (
         <ul>
-          <li>하위메뉴25</li>
-          <li>하위메뉴26</li>
-          <li>하위메뉴27</li>
+          <li>인터넷 연결상황에 따라 연결이 지연될 수 있습니다.</li>
+          <li>오류가 지속될 경우 질문게시판 또는 상담전화 서비스를 이용 </li>
+          <li>바랍니다.</li>
+          <br></br>
+          <li>고객상담전화  </li>
+          <li>1644 - xxxx</li>
+          <li>전화 상담 가능시간</li>
+          <li>평일 9시 ~ 18시</li>
+          <li>{"("}점심시간 12시~13시 제외{")"}</li>
         </ul>
       )}
       {infoInput === "info11" && (

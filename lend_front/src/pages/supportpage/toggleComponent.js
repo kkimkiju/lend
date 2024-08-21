@@ -43,10 +43,10 @@ const Body = styled.div`
   align-items: center;
   width: auto;
   height: auto;
-  margin-left: .2vw;
+  margin: 0 0 0.5vw 0.1vw;
   @media (max-width: 500px){
       height: 4vw;
-      margin-left: .5vw;
+      margin: 0 0 0.1vw 4vw;
     }
 `;
 const ToggleContainer = styled.div`

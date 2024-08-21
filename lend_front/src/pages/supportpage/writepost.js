@@ -1,8 +1,11 @@
-import { useState } from "react";
+//writepost.js
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AxiosApi from "../../axios/AxiosApi";
 import { Toggle } from "./toggleComponent";
+import useModal from "../../components/customModalHook";
+
 
 export default function WritePost({
   writeMode,
@@ -14,6 +17,21 @@ export default function WritePost({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [switchState, setSwitchState] = useState(false); // 공개/비공개 상태 관리
+  // 모달 커스텀훅 사용
+  const { Modal, openModal, closeModal } = useModal();
+  // 유저정보 갱신
+  const [myEmail, setMyEmail] = useState(null);
+  useEffect(() => {
+    const fetchMemberInfo = async () => {
+      try {
+        const response = await AxiosApi.getMemberInfo();
+        setMyEmail(response.data.email);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchMemberInfo();
+  }, [myEmail]);
 
   const exitPost = async () => {
     setWriteMode(false);
@@ -23,16 +41,16 @@ export default function WritePost({
   const savePost = async () => {
     // 입력값 유효성검사
     if (!title) {
-      alert("제목을 입력하세요.");
+      openModal("제목을 입력하세요.");
     } else if (!content) {
-      alert("내용을 입력하세요.");
+      openModal("내용을 입력하세요.");
     } else {
       const questionDto = {
         title: title,
         content: content,
         isPrivate: switchState,
         memberResDto: {
-          email: localStorage.getItem("email"),
+          email: myEmail,
         },
       };
       try {
@@ -42,17 +60,20 @@ export default function WritePost({
           setWriteMode(false);
           showQuestionBoard(true);
           showFAQBoard(false);
-          alert("질문이 등록 되었습니다.");
-          setTitle("");
-          setContent("");
-          navigate("/lend/support");
+          // 모달 닫기 후 navigate 실행되도록
+          openModal("질문이 등록 되었습니다.", () =>{ 
+            setTitle("");
+            setContent("");
+            navigate("/lend/support");
+          }); 
+          
         }
       } catch (error) {
         console.error(error.response);
       }
     }
   };
-
+  
   return (
     <Body>
       <Container>
@@ -64,7 +85,7 @@ export default function WritePost({
                   className="TitleInput"
                   type="text"
                   placeholder="제목을 입력해주세요."
-                  maxlength="100"
+                  maxLength="100"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
@@ -76,7 +97,7 @@ export default function WritePost({
                   className="ContentInput"
                   type="text"
                   placeholder="500자 이내로 내용을 입력하세요."
-                  maxlength="500"
+                  maxLength="500"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                 />
@@ -91,6 +112,7 @@ export default function WritePost({
           )}
         </Box>
       </Container>
+      <Modal/>
     </Body>
   );
 }
@@ -151,10 +173,10 @@ const Item = styled.div`
   .TitleInput {
     width: 50vw;
     height: 3vw;
-    font-size: 30px;
+    font-size: 3vw;
     border-radius: 0.5vw;
     margin: 2vh 0;
-    padding: 0.1vw 0 0 0.5vw;
+    padding: 0.5vw 0 0 0.5vw;
     @media (max-width : 500px){
       width: 80vw;
       height: 20vh;
@@ -164,7 +186,7 @@ const Item = styled.div`
   .ContentInput {
     width: 50vw;
     height: 10vw;
-    font-size: 20px;
+    font-size: 2.5vw;
     text-align: left;
     white-space: pre-line;
     border-radius: 0.5vw;
