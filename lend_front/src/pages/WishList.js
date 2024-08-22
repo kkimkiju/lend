@@ -205,7 +205,7 @@ const WishList = () => {
   return (
     <Container>
       <Header>
-        <Title1>찜목록</Title1>
+        <Title1>찜 목록</Title1>
       </Header>
       <List>
         {wishList.length === 0 ? (

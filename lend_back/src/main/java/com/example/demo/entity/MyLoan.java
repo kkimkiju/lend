@@ -26,10 +26,13 @@ public class MyLoan {
     private Integer loanAmount;
     private String loanPeriod;
     private String usePurpose;
-
+    private String rate;
+    private Long loanId;
+    private String status; // 운영자 확인 중 , 신청 완료 , 신청 반려 3개로 나눔
     public MyLoan() {
     }
-    public MyLoan(String email, String loanName, String name, String phone, String income, String property, Integer loanAmount, String loanPeriod, String usePurpose) {
+
+    public MyLoan(String email, String loanName, String name, String phone, String income, String property, Integer loanAmount, String loanPeriod, String usePurpose, Long loanId, String rate ,String status) {
         this.email = email;
         this.loanName = loanName;
         this.name = name;
@@ -39,5 +42,8 @@ public class MyLoan {
         this.loanAmount = loanAmount;
         this.loanPeriod = loanPeriod;
         this.usePurpose = usePurpose;
+        this.loanId = loanId;
+        this.rate = rate;
+        this.status = status;
     }
 }

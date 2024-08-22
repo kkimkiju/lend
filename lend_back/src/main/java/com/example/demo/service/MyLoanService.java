@@ -20,6 +20,11 @@ public class MyLoanService {
         return myLoanRepository.save(myLoan);
     }
 
+    public boolean getAllApplyList(String email, Long loanId) {
+
+        return !myLoanRepository.existsByEmailAndLoanId(email, loanId);
+    }
+
     public List<MyLoan> getMyLoan(String email) {
         List<MyLoan> myLoans = myLoanRepository.findByEmail(email);
         if (myLoans.isEmpty()) {

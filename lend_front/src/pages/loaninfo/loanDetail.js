@@ -271,7 +271,7 @@ const LoanDetail = ({ open, close, loan, categorybu }) => {
   useEffect(() => {
     if (categorybu == "일반신용대출") {
       if (open && loan) {
-        fetch(`http://localhost:5000/api/recommendations`, {
+        fetch(`http://192.168.10.6:5000/api/recommendations`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

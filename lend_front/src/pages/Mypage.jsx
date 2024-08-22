@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AxiosApi from "../axios/AxiosApi";
 import { UserContext } from "../context/UserStore";
 import { useNavigate } from "react-router-dom";
+import DetailLoanApp from "./loaninfo/detailLoanApp";
 
 const Container = styled.div`
   display: flex;
@@ -122,17 +123,21 @@ const WithMsg = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 80%;
-  .delete {
-    width: 100%;
-    font-size: 12px;
-    color: #999999;
-  }
 `;
+const DeleteBtn = styled.div`
+  display: flex;
+  align-self: flex-end;
+  font-size: 13px;
+  color: #999999;
+
+  cursor: pointer;
+`;
+
 const Button = styled.button`
   cursor: pointer;
-  width: 70px;
+  width: 80px;
   height: 40px;
   border: none;
   border-radius: 10px;
@@ -141,7 +146,9 @@ const Button = styled.button`
   font-weight: bold;
 `;
 
-const LoanItem = styled.div`
+const LoanItemContainer = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 20vw;
   background-color: #fff;
   margin: 30px;
@@ -154,6 +161,12 @@ const LoanItem = styled.div`
   }
 `;
 
+const LoanItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
 const LoanName = styled.h3`
   margin: 0 0 10px 0;
   font-size: 18px;
@@ -164,6 +177,30 @@ const LoanInfo = styled.p`
   margin: 0;
   color: #555;
 `;
+
+const NoLoansMessage = styled.div`
+  color: #999;
+  font-size: 1.2rem;
+  text-align: center;
+`;
+
+const LoanStatus = styled.p`
+  margin: 10px 0;
+  font-size: 16px;
+  color: ${(props) => {
+    switch (props.status) {
+      case "운영자 확인 중":
+        return "#29c555"; // 초록색
+      case "신청 완료":
+        return "#1100ff"; // 노란색
+      case "신청 반려":
+        return "#d0021b"; // 빨간색
+      default:
+        return "#555"; // 기본 색상
+    }
+  }};
+`;
+
 const Mypage = () => {
   const [newPassword, setNewPassword] = useState("");
   const [pwdValid, setPwdValid] = useState(false); // 비밀번호 유효성 검사
@@ -178,7 +215,8 @@ const Mypage = () => {
   const context = useContext(UserContext);
   const { loginStatus } = context;
   const [loans, setLoans] = useState([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedLoan, setSelectedLoan] = useState(null);
   // 새로운 비밀번호 입력
   const onChangePassword = (e) => {
     const pw = e.target.value;
@@ -227,14 +265,22 @@ const Mypage = () => {
   const getLoan = async () => {
     try {
       const rsp = await AxiosApi.getMyLoan();
+      console.log(rsp.data);
       const loansData = rsp.data.map((loan) => ({
         id: loan.id,
         loanName: loan.loanName,
         loanAmount: loan.loanAmount,
         loanPeriod: loan.loanPeriod,
+        rate: loan.rate,
+        income: loan.income,
+        phone: loan.phone,
+        property: loan.property,
+        email: loan.email,
+        usePurpose: loan.usePurpose,
+        name: loan.name,
+        status: loan.status,
       }));
       setLoans(loansData);
-      console.log(loans);
     } catch (error) {
       console.error(error);
     }
@@ -283,6 +329,16 @@ const Mypage = () => {
     }
   };
 
+  const openModal = (loan) => {
+    console.log("Opening modal with item:", loan);
+    setIsModalOpen(true);
+    setSelectedLoan(loan);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Container>
       <Layout>
@@ -329,28 +385,40 @@ const Mypage = () => {
           )}
           <ButtonContainer>
             {isSocial ? null : <Button onClick={() => modify()}>수정</Button>}
-
-            <div className="delete" onClick={() => deleteMember()}>
-              회원탈퇴 &gt;
-            </div>
           </ButtonContainer>
+          <DeleteBtn className="delete" onClick={() => deleteMember()}>
+            회원탈퇴 &gt;
+          </DeleteBtn>
         </InputContainer>
       </Layout>
       <Layout>
         <Header>
-          <Title>나의 대출 신청</Title>
+          <Title>나의 대출 신청 목록</Title>
         </Header>
         <InputContainer>
-          {loans.map((loan) => (
-            <LoanItem key={loan.id}>
-              <LoanName>{loan.loanName}</LoanName>
-              <LoanInfo>대출 금액: {loan.loanAmount}</LoanInfo>
-              <LoanInfo>대출 기간: {loan.loanPeriod}</LoanInfo>
-              <button>자세히보기</button>
-            </LoanItem>
-          ))}
+          {loans.length > 0 ? (
+            loans.map((loan) => (
+              <LoanItemContainer key={loan.id}>
+                <LoanItem>
+                  <LoanName>{loan.loanName}</LoanName>
+                  <LoanInfo>대출 금액: {loan.loanAmount}</LoanInfo>
+                  <LoanInfo>대출 기간: {loan.loanPeriod}</LoanInfo>
+                  <LoanInfo>대출 금리: {loan.rate}</LoanInfo>
+                </LoanItem>
+                <LoanStatus status={loan.status}>{loan.status}</LoanStatus>
+                <ButtonContainer>
+                  <Button onClick={() => openModal(loan)}>자세히보기</Button>
+                </ButtonContainer>
+              </LoanItemContainer>
+            ))
+          ) : (
+            <NoLoansMessage>신청하신 대출이 없습니다.</NoLoansMessage>
+          )}
         </InputContainer>
       </Layout>
+      {isModalOpen && (
+        <DetailLoanApp loan={selectedLoan} onClose={closeModal} />
+      )}
     </Container>
   );
 };

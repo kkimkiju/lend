@@ -1,8 +1,8 @@
 import axios from "axios";
 import AxiosInstance from "./AxiosInstance";
 
-// const LEND_DOMAIN = "http://192.168.10.6:8118";
-const LEND_DOMAIN = "http://localhost:8118";
+const LEND_DOMAIN = "http://192.168.10.6:8118";
+// const LEND_DOMAIN = "http://localhost:8118";
 
 const AxiosApi = {
   // 발행된 토큰을 로컬에 저장
@@ -237,8 +237,13 @@ const AxiosApi = {
     });
   },
 
-  loanApp: async (loanData) => {
-    return await AxiosInstance.post("/wishlist/submit", loanData);
+  loanApp: async (loanData, loanId) => {
+    return await AxiosInstance.post(`/wishlist/submit/${loanId}`, loanData);
+  },
+
+  existLoanApp: async (email, loanId) => {
+    //중복된 신청을 못하게 하려는 것
+    return await AxiosInstance.get(`/wishlist/existsubmit/${email}/${loanId}`);
   },
 
   getMyLoan: async () => {

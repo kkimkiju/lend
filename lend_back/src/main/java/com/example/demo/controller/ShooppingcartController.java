@@ -27,14 +27,15 @@ public class ShooppingcartController {
     private final MyLoanService myLoanService;
 
     @PostMapping("/ssave")
-    public ResponseEntity<Boolean> saveWishlist(@RequestBody ShooppingcartDto shooppingcartDto){
+    public ResponseEntity<Boolean> saveWishlist(@RequestBody ShooppingcartDto shooppingcartDto) {
         boolean isTrue = shooppingcartService.saveWishlist(shooppingcartDto);
         return ResponseEntity.ok(isTrue);
     }
+
     // 전체 조회기능 (신청한 사람 재 신청 막기위해 생성 )
     @GetMapping("/all-list/{email}/{loanId}")
-    public  ResponseEntity<Boolean> allApplyList(@PathVariable String email,@PathVariable Long loanId){
-        boolean isTrue = shooppingcartService.getAllApplyList(email,loanId);
+    public ResponseEntity<Boolean> allApplyList(@PathVariable String email, @PathVariable Long loanId) {
+        boolean isTrue = shooppingcartService.getAllApplyList(email, loanId);
         return ResponseEntity.ok(isTrue);
     }
 
@@ -52,16 +53,20 @@ public class ShooppingcartController {
 
 
     @GetMapping("/delete")
-    public ResponseEntity<List<ShooppingcartDto>> deleteQuestion(@RequestParam Long loan_id){
-    String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<List<ShooppingcartDto>> deleteQuestion(@RequestParam Long loan_id) {
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Member member = new Member();
         member.setEmail(memberEmail);
         shooppingcartService.deletecart(member, loan_id);
         return ResponseEntity.noContent().build();
     }
-    @PostMapping("/submit")
-    public ResponseEntity<String> submitLoanApplication(@RequestBody MyLoan myLoan) {
+//위시리스트 > 대출신청(상세내역)추가하는 코드
+    @PostMapping("/submit/{loanId}")
+    public ResponseEntity<String> submitLoanApplication(@PathVariable("loanId") Long loanId,
+                                                        @RequestBody MyLoan myLoan) {
         try {
+            myLoan.setStatus("운영자 확인 중");
+            myLoan.setLoanId(loanId);
             myLoanService.saveLoanApplication(myLoan);
             return new ResponseEntity<>("대출 신청이 완료되었습니다.", HttpStatus.CREATED);
         } catch (Exception e) {
@@ -69,9 +74,16 @@ public class ShooppingcartController {
             return new ResponseEntity<>("서버 오류. 다시 시도해 주세요.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//중복된 상세신청이 있나 확인
+    @GetMapping("/existsubmit/{email}/{loanId}")
+    public ResponseEntity<Boolean> existSubmit(@PathVariable String email, @PathVariable Long loanId) {
+        boolean isTrue = myLoanService.getAllApplyList(email, loanId);
+        return ResponseEntity.ok(isTrue);
+    }
+
     @GetMapping("/loaninfo")
     public ResponseEntity<List<MyLoan>> memberInfo() {
-        List<MyLoan> myLoans =myLoanService.getMyLoan(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<MyLoan> myLoans = myLoanService.getMyLoan(SecurityContextHolder.getContext().getAuthentication().getName());
         return ResponseEntity.ok(myLoans);
     }
 }

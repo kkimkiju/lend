@@ -12,6 +12,7 @@ const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(5px);
 `;
 
 const ModalContainer = styled.div`
@@ -22,7 +23,7 @@ const ModalContainer = styled.div`
   max-width: 600px;
   height: 80%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow-y: auto; /* Add scrolling if content overflows */
+  overflow-y: auto;
 `;
 
 const CloseButton = styled.button`
@@ -90,6 +91,7 @@ const LoanApp = ({ onClose, Item }) => {
   const [formData, setFormData] = useState({
     email: Item.memberId || "",
     loanName: Item.loan_name || "",
+    rate: Item.rate || "",
     name: "",
     phone: "",
     income: "",
@@ -120,13 +122,25 @@ const LoanApp = ({ onClose, Item }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // 대출 신청 처리 로직 추가
     console.log("Submitted Data:", formData);
-    await AxiosApi.loanApp(formData);
-    alert("신청 접수가 완료되었습니다.");
-    await AxiosApi.deleteShopping(loan_id);
-    onClose(); // 폼 제출 후 모달 닫기
-    window.location.reload();
+    console.log(formData.email, loan_id);
+
+    const isRequest = await AxiosApi.existLoanApp(formData.email, loan_id);
+    if (!isRequest.data) {
+      alert("이미 신청한 상품입니다. 대출 상품을 삭제하여 주십시오");
+      return;
+    } else {
+      try {
+        await AxiosApi.loanApp(formData, loan_id);
+        alert("신청 접수가 완료되었습니다.");
+        await AxiosApi.deleteShopping(loan_id);
+        onClose(); // 폼 제출 후 모달 닫기
+        window.location.reload();
+      } catch (error) {
+        console.error("Error during submission:", error);
+        alert("신청 처리 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      }
+    }
   };
 
   // const Delete = async (loan_id) => {
@@ -158,8 +172,16 @@ const LoanApp = ({ onClose, Item }) => {
               id="loanName"
               name="loanName"
               value={formData.loanName}
-              onChange={handleChange}
-              placeholder="예: 주택담보대출"
+              readOnly
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label htmlFor="rate">금리</Label>
+            <Input
+              type="text"
+              id="rate"
+              name="rate"
+              value={formData.rate}
               readOnly
             />
           </FormGroup>
@@ -231,7 +253,7 @@ const LoanApp = ({ onClose, Item }) => {
               name="loanPeriod"
               value={formData.loanPeriod}
               onChange={handleChange}
-              placeholder="예: 1년, 5년"
+              placeholder="년까지 적어주세요 ex)1년, 2년"
               required
             />
           </FormGroup>
