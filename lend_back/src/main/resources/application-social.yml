@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    naver:
+      client-id: ZA8r5FN2jztp7YcszStq
+      client-secret: ION77W72Wk
+      redirect-uri: http://localhost:3000/lend
+      callback-url: https://nid.naver.com/oauth2.0/token
+      info-url: https://openapi.naver.com/v1/nid/me

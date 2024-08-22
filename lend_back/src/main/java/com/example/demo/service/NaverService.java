@@ -1,11 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.KakaoDto;
 import com.example.demo.dto.NaverDto;
 import com.example.demo.entity.Member;
+import com.example.demo.properties.NaverProperties;
 import com.example.demo.repository.MemberRepository;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -15,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,20 +24,17 @@ public class NaverService {
     private final MemberRepository memberRepository;
     private final RestTemplate restTemplate;
     private final PasswordEncoder passwordEncoder;
-    private final String CLIENT_ID = "ZA8r5FN2jztp7YcszStq";
-    private final String CLIENT_SECRET = "ION77W72Wk";
-    private final String REDIRECT_URI = "http://localhost:3000/lend";
+    private final NaverProperties naverProperties;
 
 
     // 접근코드 발급
     public String getAccessTokenFromCode(String code,String state) {
         try {
-        String url = "https://nid.naver.com/oauth2.0/token";
-
+        String url = naverProperties.getCallbackUrl();
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", CLIENT_ID);
-        body.add("client_secret",CLIENT_SECRET);
+        body.add("client_id", naverProperties.getClientId());
+        body.add("client_secret", naverProperties.getClientSecret());
         body.add("state", state);
         body.add("code", code);
 
@@ -61,7 +54,7 @@ public class NaverService {
     public Map<String, Object> naverLoginCode(String accessToken) {
         Map<String, Object> naverInfo = new HashMap<>();
         try {
-            String url = "https://openapi.naver.com/v1/nid/me";
+            String url = naverProperties.getInfoUrl();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
             headers.set("Authorization", "Bearer " + accessToken);
