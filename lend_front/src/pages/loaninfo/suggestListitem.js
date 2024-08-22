@@ -13,48 +13,49 @@ const DetLi = styled.li`
 `;
 
 const TiContain = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  margin: 0px 15% 9px 0%;
   text-align: center;
   @media (max-width: 500px) {
-    margin-right: 5%;
-    width: 16%;
-  }
-  @media (max-width: 429px) {
-    margin: 0;
-    width: 33%;
+    font-size: 13px;
   }
 `;
 
 const DetTitle = styled.h3`
-  width: 350px;
+  flex: 1;
   color: black;
-  margin: 0px 13% 0px 0%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   @media (max-width: 500px) {
-    margin-right: 17%;
-  }
-  @media (max-width: 429px) {
-    margin-right: 14%;
-    font-size: 17px;
+    font-size: 13px;
   }
 `;
 
 const Detamo = styled.p`
+  flex: 1;
   color: #444;
-  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  @media (max-width: 429px) {
-    width: 13%;
+  @media (max-width: 500px) {
+    font-size: 13px;
   }
 `;
 
 const Detdate = styled.p`
+  flex: 1;
   color: #777;
-  font-size: 13px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  width: 180px;
-  @media (max-width: 429px) {
-    font-size: 11px;
+  @media (max-width: 500px) {
+    font-size: 13px;
   }
 `;
 
@@ -65,7 +66,7 @@ const SuggestListitem = ({ loanitem, handleDetailClick, category }) => {
 
   const truncateTitle = (title) => {
     if (!title) return "No title available";
-    return title.length > 25 ? title.substring(0, 25) + "..." : title;
+    return title.length > 7 ? title.substring(0, 7) + "..." : title;
   };
 
   return (
