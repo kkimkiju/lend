@@ -1,8 +1,6 @@
 //customModalHook.js
-import React, { useCallback, useState } from 'react';
-import CustomModal from './customModalComponent';
-
-
+import React, { useCallback, useState } from "react";
+import CustomModal from "./customModalComponent";
 
 // `useBlur` props로 모달 외부를 클릭하면 모달을 닫을지 선택하도록 했다.
 const useModal = ({ useBlur = true } = {}) => {
@@ -23,16 +21,16 @@ const useModal = ({ useBlur = true } = {}) => {
   const closeModal = useCallback(() => {
     setIsOpen(false);
     if (onCloseCallback) {
-      onCloseCallback();  // 모달이 닫힐 때 onClose 콜백 호출
+      onCloseCallback(); // 모달이 닫힐 때 onClose 콜백 호출
     }
     setMessage(""); // 메시지 초기화
   }, [onCloseCallback]);
 
   // isOpen이 true라면 Modal 컴포넌트를 반환, false라면 null을 반환
   return {
-    Modal: isOpen ? () => (
-      <CustomModal onClose={closeModal} message={message} />
-    ) : () => <></>,
+    Modal: isOpen
+      ? () => <CustomModal onClose={closeModal} message={message} />
+      : () => <></>,
     openModal,
     closeModal,
     isOpen,

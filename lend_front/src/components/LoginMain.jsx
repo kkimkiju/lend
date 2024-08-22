@@ -184,10 +184,13 @@ const LoginMain = ({ isSignIn }) => {
   const [idMessage, setIdMessage] = useState("");
   const [isTrue, setIsTrue] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const [isId, setIsId] = useState("");
   const context = useContext(UserContext);
   const { setIsModalOpen } = context;
   const [pw, setPw] = useState("");
   const navigate = useNavigate();
+  const ref = useRef(null); // Ref를 추가합니다.
+
   const kakaoLogin = () => {
     const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
     //const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
@@ -197,7 +200,7 @@ const LoginMain = ({ isSignIn }) => {
     localStorage.setItem("loginMethod", "kakao");
     window.location.href = kakaoURL;
   };
-  const NaverLgoin = () => {
+  const NaverLogin = () => {
     const NAVER_CLIENT_ID = process.env.REACT_APP_NAVER_CLIENT_ID; // 발급받은 클라이언트 아이디
     //const REDIRECT_URI = "process.env.REACT_APP_REDIRECT_URI";
     const REDIRECT_URI = "http://localhost:3000/lend"; // Callback URL
@@ -206,34 +209,44 @@ const LoginMain = ({ isSignIn }) => {
     const NAVER_AUTH_URL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&state=${STATE}&redirect_uri=${REDIRECT_URI}`;
     window.location.href = NAVER_AUTH_URL;
   };
-
   useEffect(() => {
     setIsTrue(isSignIn);
   }, [isSignIn]);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsModalOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // 유효성 검사
-  const [isId, setIsId] = useState("");
+
   const onChangeEmail = (e) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     setInputEmail(e.target.value);
     if (!emailRegex.test(e.target.value)) {
       setIdMessage("이메일 형식이 올바르지 않습니다.");
-
       setIsId(false);
     } else {
       setIdMessage("");
       setIsId(true);
     }
   };
-  // useEffect(() => {
-  //   console.log(pw, "pw");
-  // }, [pw]);
+
   const handleLogin = () => {
     setIsLogin(!isLogin);
     localStorage.setItem("email", inputEmail);
   };
   const handleLoginFail = () => {
     setIsLogin(false);
+  };
+  const clickModalOpen = () => {
+    setIsModalOpen(true);
   };
 
   return (
@@ -261,7 +274,7 @@ const LoginMain = ({ isSignIn }) => {
           ></LoginComponent>
         </LoginBtt>
         <LoginEtc>
-          <div onClick={() => setIsModalOpen(true)}>비밀번호 찾기</div>
+          <div onClick={() => clickModalOpen()}>비밀번호 찾기</div>
           {/* <FindInfo open={isModalOpen} ref={ref}></FindInfo> */}
         </LoginEtc>
       </InputContainer>
@@ -269,7 +282,7 @@ const LoginMain = ({ isSignIn }) => {
         <KaKaoBtt onClick={() => kakaoLogin()}>
           <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
         </KaKaoBtt>
-        <KaKaoBtt onClick={() => NaverLgoin()}>
+        <KaKaoBtt onClick={() => NaverLogin()}>
           <KaKaoLogo src={NaverImg}></KaKaoLogo>
         </KaKaoBtt>
       </SocialBttContainer>

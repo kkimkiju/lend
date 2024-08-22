@@ -16,7 +16,7 @@ const UserStore = (props) => {
   );
   // 비밀번호찾기 모달 상태
   const [isModalOpen, setIsModalOpen] = useState(
-    localStorage.getItem("isModalOpen") || false
+    localStorage.getItem("isModalOpen") === "true" || false
   );
 
   useEffect(() => {

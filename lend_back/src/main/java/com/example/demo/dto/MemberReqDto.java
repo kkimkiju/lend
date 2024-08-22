@@ -20,7 +20,7 @@ public class MemberReqDto {
     private String password;
     private String name;
     private String identityNumber;
-    private Boolean isKaKao;
+    private Boolean isSocial;
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
@@ -28,7 +28,7 @@ public class MemberReqDto {
                 .password(passwordEncoder.encode(password))
                 .identityNumber(identityNumber)
                 .name(name)
-                .isSocial(isKaKao)
+                .isSocial(isSocial)
                 .authority(Authority.ROLE_USER)
                 .build();
     }

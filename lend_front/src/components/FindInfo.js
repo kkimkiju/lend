@@ -256,6 +256,7 @@ const FindInfo = forwardRef(({ open }, ref) => {
       alert("유효하지 않은 비밀번호입니다.");
     }
   };
+
   return (
     <ModalStyle>
       <div className={open ? "openModal modal" : "modal"}>

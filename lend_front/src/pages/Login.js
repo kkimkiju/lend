@@ -25,16 +25,14 @@ const LoginContainer = styled.div`
 `;
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-
   const context = useContext(UserContext);
   const { isModalOpen, setIsModalOpen } = context;
   const ref = useRef(null);
+
   const toggleForm = () => {
     setIsSignIn(!isSignIn);
   };
-  useEffect(() => {
-    setIsModalOpen(false);
-  }, []);
+
   // 다른 곳을 클릭하면 드롭다운 닫기
   const handleClickOutside = (event) => {
     if (ref.current && !ref.current.contains(event.target)) {
@@ -45,10 +43,10 @@ const Login = () => {
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      console.log("isModalOpen", isModalOpen);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   return (
     <>
       <GlobalStyle />

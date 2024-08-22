@@ -21,8 +21,8 @@ const ModalStyle = styled.div`
     display: flex;
     align-items: center;
 
-    /* 팝업이 열릴때 스르륵 열리는 효과 */
-    /* animation: modal-bg-show 0.8s; */
+    /* 팝업이 열릴때 스르륵 열리는 효과  */
+    //animation: modal-bg-show 0.8s;
   }
 
   section {

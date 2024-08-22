@@ -319,7 +319,7 @@ const SingUpContainer = ({ isSignIn }) => {
   useEffect(() => {
     setIsTrue(isSignIn);
   }, [isSignIn]);
-
+  // 인증번호 이메일 보내는 함수
   const onClickCert = async () => {
     setIsClicked(true);
     if (isId) {
@@ -348,11 +348,9 @@ const SingUpContainer = ({ isSignIn }) => {
       setCertMessage("");
       // 인증번호 성공시 true
       setIsCerCheck(true);
-      //alert("성공");
     } else {
       setIsCerCheck(false);
       setCertMessage("인증번호를 정확하게 다시 입력해 주세요.");
-      //alert("실패");
     }
   };
 

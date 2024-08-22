@@ -13,17 +13,20 @@ const Header = () => {
   const [findAdmin, setFindAdmin] = useState("");
 
   useEffect(() => {
-    const userinfo = async () => {
-      try {
-        const rsp = await AxiosApi.getMemberInfo();
-        setFindAdmin(rsp.data.email);
-        console.log(rsp.data);
-      } catch (e) {
-        console.log(e);
-      }
-    };
-    userinfo();
-  }, []);
+    if (loginStatus === true && loginStatus !== "") {
+      const userinfo = async () => {
+        try {
+          const rsp = await AxiosApi.getMemberInfo();
+          setFindAdmin(rsp.data.email);
+        } catch (e) {
+          console.log(e);
+          alert("로그인중 오류가 발생하였습니다.");
+          return;
+        }
+      };
+      userinfo();
+    }
+  }, [loginStatus]);
 
   return (
     <Body>

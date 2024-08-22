@@ -17,7 +17,30 @@ const Mainpage = () => {
   const [openModal, setOpenModal] = useState(false);
   const [accToken, setAccToken] = useState("");
   const [pw, setPw] = useState("");
+  useEffect(() => {
+    if (accToken === "") {
+      const initializeLogin = async () => {
+        const storedToken = localStorage.getItem("accessToken");
+        if (storedToken) {
+          setLoginStatus(true);
+        } else {
+          setLoginStatus(false);
+        }
 
+        const loginMethod = localStorage.getItem("loginMethod");
+        const code = new URL(window.location.href).searchParams.get("code");
+        const state = new URL(window.location.href).searchParams.get("state");
+
+        if (loginMethod && code && !accToken) {
+          await handleLoginToken(loginMethod, code, state);
+        }
+      };
+      initializeLogin();
+    } else {
+      navigate("/");
+      return;
+    }
+  }, [accToken]);
   const handleLogout = () => {
     setLoginStatus(false);
     localStorage.clear();
@@ -29,6 +52,7 @@ const Mainpage = () => {
       let response;
       if (loginMethod === "kakao") {
         response = await KakaoApi.getToken(code);
+
         if (response.data) {
           setAccToken(response.data.access_token);
           await handleKakaoUser(response.data.access_token);
@@ -54,20 +78,37 @@ const Mainpage = () => {
       alert(`${loginMethod} 로그인 중 오류가 발생했습니다.`);
     }
   };
+  // 회원정보 중복체크
+  const [isReg, setIsReg] = useState(false);
+  const checkMem = async (email) => {
+    try {
+      const rsp = await AxiosApi.userCheck(email);
+      if (rsp.data === true) {
+        setIsReg(true);
+      }
+    } catch (e) {}
+  };
 
   const handleKakaoUser = async (token) => {
     try {
       const res = await KakaoApi.getInfo(token);
-      if (res.data.isMember) {
-        await login(
-          res.data.userInfo.kakao_account.email,
-          res.data.userInfo.id
-        );
+      checkMem(res.data.userInfo.kakao_account.email);
+      if (isReg) {
+        if (res.data.isMember) {
+          await login(
+            res.data.userInfo.kakao_account.email,
+            res.data.userInfo.id
+          );
+          console.log(res.data.userInfo.kakao_account.email, "dlapdlf");
+        } else {
+          setIsMember(true);
+          setPw(res.data.userInfo.id);
+          localStorage.setItem("email", res.data.userInfo.kakao_account.email);
+          setOpenModal(true);
+        }
       } else {
-        setIsMember(true);
-        setPw(res.data.userInfo.id);
-        localStorage.setItem("email", res.data.userInfo.kakao_account.email);
-        setOpenModal(true);
+        alert("이미 가입된 아이디 입니다.");
+        return;
       }
     } catch (error) {
       console.error("카카오 사용자 정보 가져오기 에러:", error);
@@ -93,16 +134,6 @@ const Mainpage = () => {
       console.error("로그인 에러:", error);
     }
   };
-
-  useEffect(() => {
-    const loginMethod = localStorage.getItem("loginMethod");
-    const code = new URL(window.location.href).searchParams.get("code");
-    const state = new URL(window.location.href).searchParams.get("state");
-
-    if (loginMethod && code && !accToken) {
-      handleLoginToken(loginMethod, code, state);
-    }
-  }, [accToken]);
 
   return (
     <>

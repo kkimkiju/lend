@@ -88,39 +88,32 @@ const AxiosApi = {
   },
   // 회원 가입 여부 체크
   userCheck: async (email) => {
-    console.log(email, "email");
     return await axios.get(`${LEND_DOMAIN}/auth/check?email=${email}`);
   },
 
   //회원 정보 조회
   getMemberInfo: async () => {
-    console.log("getMemberInfo 실행");
     return await AxiosInstance.get(`/members/memberinfo`);
   },
   //회원 탈퇴
   deleteMember: async () => {
-    console.log("deleteMember 실행");
     return await AxiosInstance.get(`/members/delmember`);
   },
   // 비밀번호 찾기
   findPw: async (name, email) => {
-    console.log(email, "email , name", name);
     return await axios.get(`${LEND_DOMAIN}/auth/pw/${name}/${email}`);
   },
   // 비밀번호 찾기
   findNewPw: async (user) => {
-    console.log(user, "findNewPw");
     return await axios.post(`${LEND_DOMAIN}/auth/pw/new`, user);
   },
 
   //회원 정보 수정(비밀번호 수정)
   modifyMyinfo: async (user) => {
-    console.log(user, "user");
     return await AxiosInstance.post(`/members/membermodify`, user);
   },
   //카카오 가입시 추가정보 입력
   extraInfo: async (user) => {
-    console.log(user, "user");
     return await axios.post(`${LEND_DOMAIN}/auth/membermodify`, user);
   },
   // 문의게시판 ----------------------
