@@ -6,12 +6,13 @@ import LogoImg from "../image/로고.png";
 import { useNavigate } from "react-router-dom";
 const Container = styled.div`
   width: 80%;
-  height: 650px;
+  //height: 650px;
   @media only screen and (max-width: 1024px) {
-    height: 550px;
+    //height: 550px;
   }
   @media only screen and (max-width: 500px) {
-    height: 350px;
+    width: 100%;
+    //height: 350px;
     border-radius: 50px;
   }
   .error {
@@ -28,13 +29,24 @@ const SignContainer = styled.div`
   align-items: center;
   width: 100%;
   height: 100%;
-  border-radius: 100px;
+  opacity: ${(props) => (props.isTrue ? "0" : "1")};
+  border-radius: 70px;
   border: solid 0.75px #c7c7c7;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   transition: 0.5s ease-in-out;
   transform: ${(props) => (props.isTrue ? "scale(0)" : "scale(1)")};
+  padding: 100px 0;
+  height: 100%;
+  @media only screen and (max-width: 1024px) {
+    font-size: 12px;
+    padding: 70px 0;
+  }
   @media only screen and (max-width: 500px) {
     border-radius: 50px;
+    box-shadow: none;
+    border: none;
+    transition: none;
+    transform: none;
     height: 97%;
   }
 `;
@@ -43,10 +55,11 @@ const InputContainer = styled.div`
   flex-direction: column;
   gap: 1rem;
   align-items: center;
-  width: 50%;
+  width: 70%;
   input:focus {
     outline: 2px solid #29c555;
   }
+
   @media only screen and (max-width: 500px) {
     gap: 0.5rem;
   }
@@ -72,6 +85,9 @@ const InfoInput = styled.input`
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  @media only screen and (max-width: 768px) {
+    height: 12px;
+  }
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     padding: 7px;
@@ -102,9 +118,18 @@ const DateOfBirth = styled.div`
   gap: 1rem;
   padding: 0 27px;
   span {
-    @media only screen and (max-width: 500px) {
+    @media only screen and (max-width: 768px) {
       display: none;
     }
+  }
+  span {
+    @media only screen and (max-width: 1024px) {
+      font-size: 12px;
+    }
+  }
+  @media only screen and (max-width: 1024px) {
+    padding: 0 10px;
+    gap: 0.1rem;
   }
   @media only screen and (max-width: 500px) {
     font-size: 8px;
@@ -129,6 +154,7 @@ const CertificationInput = styled.input`
     padding: 7px;
   }
 `;
+// 가입하기 버튼 복사해야되면 하기
 const Button = styled.div`
   display: flex;
   justify-content: center;
@@ -185,6 +211,10 @@ const BackButton = styled.div`
   color: #fff;
   background-color: #29c555;
   cursor: pointer;
+  @media only screen and (max-width: 768px) {
+    width: 80%;
+    height: 40px;
+  }
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     width: auto;
@@ -205,6 +235,10 @@ const CompelteButton = styled.div`
   background-color: ${(props) => (props.isComplete ? "#29c555" : "#c3cbd1")};
   cursor: pointer;
   user-select: none;
+  @media only screen and (max-width: 768px) {
+    width: 80%;
+    height: 40px;
+  }
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     width: auto;
@@ -223,7 +257,7 @@ const AgreementContainer = styled.div`
       font-size: 6px;
     }
   }
-  @media only screen and (max-width: 500px) {
+  @media only screen and (max-width: 768px) {
     padding: 0;
   }
 `;

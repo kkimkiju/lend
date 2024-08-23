@@ -9,6 +9,8 @@ import {
   GlobalStyle,
   PointerBox,
   TextAnimation,
+  WelComeCol,
+  SignCol,
 } from "../style/LoginStyle";
 import LoginMain from "../components/LoginMain";
 import styled from "styled-components";
@@ -54,13 +56,15 @@ const Login = () => {
         <FindInfo open={isModalOpen} ref={ref}></FindInfo>
         <Row>
           <Col isSignIn={!isSignIn}>
-            <SingUpContainer isSignIn={isSignIn}></SingUpContainer>
-            <PointerBox isSignIn={!isSignIn}>
-              <p>
-                <span> 이미 계정이 있나요? </span>
-                <Pointer onClick={toggleForm}> 여기서 로그인 </Pointer>
-              </p>
-            </PointerBox>
+            <LoginContainer>
+              <SingUpContainer isSignIn={isSignIn}></SingUpContainer>
+              <PointerBox isSignIn={!isSignIn}>
+                <p>
+                  <span> 이미 계정이 있나요? </span>
+                  <Pointer onClick={toggleForm}> 여기서 로그인 </Pointer>
+                </p>
+              </PointerBox>
+            </LoginContainer>
           </Col>
           <Col isSignIn={isSignIn}>
             <LoginContainer>
@@ -75,7 +79,7 @@ const Login = () => {
           </Col>
         </Row>
         <Row className="content-row">
-          <Col>
+          <Col className="media-col">
             <Text isSignIn={isSignIn}>
               <div className="sign-in">
                 <TextAnimation>

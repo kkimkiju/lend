@@ -24,7 +24,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   gap: 2rem;
-  border-radius: 100px;
+  border-radius: 70px;
   border: solid 0.75px #c7c7c7;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   transition: 0.5s ease-in-out;
@@ -40,6 +40,11 @@ const Container = styled.div`
     height: 75%;
     border-radius: 50px;
     gap: 0.5rem;
+    box-shadow: none;
+    border: none;
+    animation: none;
+    transition: none;
+    opacity: 1;
   }
   .error {
     @media only screen and (max-width: 500px) {

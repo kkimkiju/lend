@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import AxiosApi from "../axios/AxiosApi";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +45,10 @@ const ModalStyle = styled.div`
       text-align: center;
       color: #000;
     }
+    @media (max-width: 500px) {
+      padding: 32px 12px;
+      width: 80%;
+    }
   }
   .confirm {
     color: #fff;
@@ -72,6 +76,11 @@ const DateOfBirth = styled.div`
   align-items: center;
   gap: 8px;
   padding: 0 32px;
+  @media (max-width: 500px) {
+    width: 98%;
+    padding: 0;
+    gap: 2px;
+  }
 `;
 const Input = styled.input`
   text-align: start;
@@ -80,6 +89,10 @@ const Input = styled.input`
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+
+  @media (max-width: 500px) {
+    width: 90%;
+  }
 `;
 const KaKaoSignUpModal = ({ open, login, pw }) => {
   const [date, setDate] = useState("");
@@ -98,6 +111,9 @@ const KaKaoSignUpModal = ({ open, login, pw }) => {
       .replace(/(\..*)\./g, "$1");
     setDate(value);
   };
+  useEffect(() => {
+    console.log("open:", open);
+  }, [open]);
   // 주민번호 뒷자리
   const handleIDNumChange = (e) => {
     const value = e.target.value.replace(/[^0-9.]/g, "");

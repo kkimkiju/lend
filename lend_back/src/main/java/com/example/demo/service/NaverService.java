@@ -71,14 +71,14 @@ public class NaverService {
                 String email = naverDto.getResponse().getEmail();
                 isExist = checkIfEmailExists(email); // Implement this method
                 if(memberRepository.existsByEmail(email) && !isExist) {
-                    log.error("카카오 : 이미 가입된 이메일 입니다.");
-                    throw new RuntimeException("카카오 : 이미 가입된 이메일 입니다");
+                    log.error("네이버 : 이미 가입된 이메일 입니다.");
+                    throw new RuntimeException("네이버 : 이미 가입된 이메일 입니다");
                 }
                 if(!isExist){
                     saveNaverEntity(naverDto);
                 }
                 else {
-                    log.info("kakaoDto.getKakaoAccount().getEmail() :" + naverDto.getResponse().getEmail());
+                    log.info("NaverDto.getNaverAccount().getEmail() :" + naverDto.getResponse().getEmail());
                     isExist = memberRepository.existsByEmail(naverDto.getResponse().getEmail());
                 }
             }

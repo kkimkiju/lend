@@ -26,6 +26,9 @@ export const Container = styled.div`
     border-top-left-radius: max(50vw, 50vh);
 
     @media only screen and (max-width: 500px) {
+      width: 0px;
+
+      height: 0px;
     }
   }
 
@@ -42,6 +45,12 @@ export const Container = styled.div`
             transform: translate(100%, 0);
             right: 50%;
           `}
+  @media only screen and (max-width: 500px) {
+    &::before {
+      transform: none;
+      transition: none;
+    }
+  }
 `;
 
 export const Row = styled.div`
@@ -57,26 +66,52 @@ export const Col = styled.div`
   justify-content: center;
   text-align: center;
   flex-direction: column;
+
   ${(props) =>
     props.isSignIn &&
     css`
       transform: translateX(0);
     `}
 
-  @media only screen and (max-width: 425px) {
-    width: 100%;
+  @media only screen and (max-width: 500px) {
+    width: ${(props) => (props.isSignIn ? "100%" : "0px")};
     position: absolute;
-    padding: 2rem;
+    padding: 0;
+    z-index: 99;
+    height: 30%;
     background-color: var(--white);
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
     transform: translateY(100%);
-    transition: 1s ease-in-out;
-  }
-  @media only screen and (max-width: 500px) {
+    transition: none;
     background-color: inherit;
   }
 `;
+// export const Col = styled.div`
+//   width: 50%;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   text-align: center;
+//   flex-direction: column;
+//   ${(props) =>
+//     props.isSignIn &&
+//     css`
+//       transform: translateX(0);
+//     `}
+
+//   @media only screen and (max-width: 501px) {
+//     width: 0px;
+//     position: absolute;
+//     padding: 0;
+//     background-color: var(--white);
+//     border-top-left-radius: 2rem;
+//     border-top-right-radius: 2rem;
+//     transform: translateY(100%);
+//     transition: 1s ease-in-out;
+//     background-color: inherit;
+//   }
+// `;
 
 export const FormWrapper = styled.div`
   width: 100%;
@@ -221,6 +256,9 @@ export const PointerBox = styled.div`
       font-size: 8px;
     }
   }
+  @media only screen and (max-width: 500px) {
+    transition: none;
+  }
 `;
 export const Pointer = styled.b`
   cursor: pointer;
@@ -271,6 +309,7 @@ export const GlobalStyle = createGlobalStyle`
     pointer-events: none;
     z-index: 6;
     width: 100%;
+  
   }
 
 `;

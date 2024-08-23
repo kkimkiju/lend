@@ -126,7 +126,6 @@ const FindInfo = forwardRef(({ open }, ref) => {
         setName("");
         alert("인증번호를 발송했습니다.");
         setIsCollect(true);
-        console.log(rsp.data);
       } else {
         alert("아이디가 없습니다.");
         return;
@@ -136,8 +135,8 @@ const FindInfo = forwardRef(({ open }, ref) => {
       console.error(e);
     }
   };
+
   const handleSearch = () => {
-    console.log("name, email", name, email);
     findPw(name, email);
     onClickCert();
   };
@@ -183,7 +182,6 @@ const FindInfo = forwardRef(({ open }, ref) => {
       email: email,
       certification: certification,
     };
-    console.log("eamiljs , ", templateParams);
     try {
       await emailjs.send(
         "service_fu65d2x",
@@ -193,12 +191,11 @@ const FindInfo = forwardRef(({ open }, ref) => {
       );
       // setCheckEmail(email);
     } catch (e) {
-      console.log(e);
+      console.err(e);
     }
   };
   const handleChange = (event) => {
     setInputCert(event.target.value);
-    // 숫자만 입력받기
     const value = event.target.value
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*)\./g, "$1");
@@ -222,7 +219,6 @@ const FindInfo = forwardRef(({ open }, ref) => {
       email: email,
       password: newPassword,
     };
-    console.log(user, "user");
     try {
       const rsp = await AxiosApi.findNewPw(user);
       if (rsp.data) {
@@ -244,12 +240,10 @@ const FindInfo = forwardRef(({ open }, ref) => {
         const response = await AxiosApi.extraInfo(user);
         if (response.data) {
           alert("수정에 성공했습니다.");
-
-          console.log(response.data);
           navigate("/lend/login");
         }
       } catch (e) {
-        console.log(e);
+        console.err(e);
         alert("수정에 실패했습니다.");
       }
     } else {
@@ -299,6 +293,7 @@ const FindInfo = forwardRef(({ open }, ref) => {
                       type="text"
                       placeholder="4자리의 인증번호를 입력해주세요"
                       onChange={(e) => handleChange(e)}
+                      value={inputCert}
                       maxLength="4"
                     />
                   </>
@@ -307,13 +302,15 @@ const FindInfo = forwardRef(({ open }, ref) => {
                     <Input
                       type="text"
                       placeholder="이름"
-                      onChange={(e) => handleName(e)}
-                    ></Input>
+                      value={name} // 이름 상태를 바인딩
+                      onChange={handleName}
+                    />
                     <Input
                       type="text"
                       placeholder="이메일"
-                      onChange={(e) => handleEmail(e)}
-                    ></Input>
+                      value={email} // 이메일 상태를 바인딩
+                      onChange={handleEmail}
+                    />
                   </>
                 )}
               </>
