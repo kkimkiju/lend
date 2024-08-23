@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import InfoComponent from "./infocomponent";
 
 export default function DropdownComponent({ number }) {
@@ -78,12 +78,6 @@ export default function DropdownComponent({ number }) {
         <List>
           <ul><span>사용 오류 문의</span> 
             <li>
-              <InfoButton onClick={() => InfoButtonHandler("info8")}>
-                대출정보가 나오지 않아요
-              </InfoButton>
-              {infoNumber === "info8" && <InfoComponent infoInput={infoNumber} />}
-            </li>
-            <li>
               <InfoButton onClick={() => InfoButtonHandler("info9")}>
                 대출 신청 중 오류가 발생했어요.
               </InfoButton>
@@ -108,11 +102,23 @@ export default function DropdownComponent({ number }) {
     </>
   );
 }
+
+const FadeIn = keyframes`
+  from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+`
+
 const List = styled.div`
 width: 59vw;
 & ul{
   font-size: 2vw;
   list-style: none;
+  animation: ${FadeIn} 0.6s ease; /* 페이드인 애니메이션 적용 */
+  
   @media (max-width:500px){
     font-size: 6vw;
     padding-left: 2vw;
@@ -124,6 +130,8 @@ li> button:hover {
 span{
   padding: 0 1vw;
   border-left: .4vw solid #29c555;
+
+  
 }
 `
 const InfoButton = styled.button`

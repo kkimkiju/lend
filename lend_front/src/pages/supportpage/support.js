@@ -1,6 +1,6 @@
 //support/js
 import { useEffect, useState, useId } from "react";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 import DropdownComponent from "./dropdowncomponent";
 import ChatRoomCreate from "../chatting/ChatRoomCreate";
 import AxiosApi from "../../axios/AxiosApi";
@@ -418,7 +418,14 @@ export default function Support() {
     </Body>
   );
 }
-
+const FadeIn = keyframes`
+  from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+`
 const Body = styled.div`
   width: auto;
   height: auto;
@@ -436,8 +443,10 @@ const Box = styled.div`
   flex-direction: row;
   justify-content: center;
   margin-bottom: 2vh;
+  
   @media (max-width: 500px){
     width: 95vw;
+    animation: ${FadeIn} 0.5s ease; /* 페이드인 애니메이션 적용 */
   }
 `;
 const SearchBox = styled.div`
@@ -553,7 +562,7 @@ const ListItem = styled.div`
 const Item = styled.div`
   display: flex;
   flex-direction: column;
-  height: 35vw;
+  height: 30vw;
   @media (max-width : 500px){
     height: 60vh;
   }
@@ -572,7 +581,7 @@ const Item = styled.div`
   }
   .content {
     font-size: 1.5vw;
-    min-height: 40vh;
+    min-height: 39vh;
     white-space: pre-wrap; //textArea에서 엔터친부분이 줄바꿈되도록 설정
     @media (max-width : 500px){
       min-height: 48vh;
@@ -600,17 +609,21 @@ const PostInfoBox = styled.div`
     margin: 1vh 3vw;
   }
   & span {
-    margin: 0 4px;
     font-size: 1vw;
+    
     @media (max-width : 500px){
       font-size: 2.3vw;
+      margin: 0 .6vw;
     }
   }
   & span:nth-child(odd) {
     color: white;
     border-radius: 5vw;
     background-color: #29c555;
-    padding: 2px 10px;
+    padding: .3vw .5vw;
+    @media (max-width : 500px){
+      padding: .5vw 1vw;
+    }
   }
 `;
 const TitleOfPost = styled.div`
