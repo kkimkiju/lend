@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import React, { useState } from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../../context/UserStore";
 import { useNavigate } from "react-router-dom";
 import AxiosApi from "../../axios/AxiosApi";
 
@@ -31,6 +32,8 @@ const Button = styled.button`
 function ChatRoomCreate() {
   const navigate = useNavigate();
   const email = localStorage.getItem("email");
+  const context = useContext(UserContext);
+  const { setCreateChattingStatus } = context;
 
   const handleCreateChatRoom = async () => {
     const response = await AxiosApi.getChatroomName(email);
@@ -38,6 +41,7 @@ function ChatRoomCreate() {
       const rsp = await AxiosApi.chatCreate(email);
       console.log(rsp.data.roomId);
       navigate(`/lend/chatting/${rsp.data.roomId}`);
+      setCreateChattingStatus(true);
     } else if (response.data !== null) {
       console.log(response.data);
       navigate(`/lend/chatting/${response.data}`);

@@ -18,6 +18,10 @@ const UserStore = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(
     localStorage.getItem("isModalOpen") === "true" || false
   );
+  // 채팅방 생성 여부
+  const [createChattingStatus, setCreateChattingStatus] = useState(
+    localStorage.getItem("createChattingStatus") === "true" || "false"
+  );
 
   useEffect(() => {
     localStorage.setItem("loginStatus", loginStatus);
@@ -31,6 +35,9 @@ const UserStore = (props) => {
   useEffect(() => {
     localStorage.setItem("isModalOpen", isModalOpen);
   }, [isModalOpen]);
+  useEffect(() => {
+    localStorage.setItem("setCreateChattingStatus", createChattingStatus);
+  }, [createChattingStatus]);
   return (
     <UserContext.Provider
       value={{
@@ -42,6 +49,8 @@ const UserStore = (props) => {
         setProfileChange,
         isModalOpen,
         setIsModalOpen,
+        createChattingStatus,
+        setCreateChattingStatus,
       }}
     >
       {props.children}

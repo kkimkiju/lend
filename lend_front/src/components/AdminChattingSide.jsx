@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import AxiosApi from "../axios/AxiosApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../utils/Common";
+import { UserContext } from "../context/UserStore";
 
 const ChatListContainer = styled.div`
   width: 20%;
@@ -76,6 +77,8 @@ function AdminChattingSide() {
   const [chatRooms, setChatRooms] = useState([]);
   const wsConnections = useRef({}); // 각 방의 웹소켓 연결을 저장할 객체
   const navigate = useNavigate();
+  const context = useContext(UserContext);
+  const { createChattingStatus, setCreateChattingStatus } = context;
 
   useEffect(() => {
     const getChatRoom = async () => {
@@ -88,6 +91,19 @@ function AdminChattingSide() {
     };
     getChatRoom();
   }, []);
+
+  useEffect(() => {
+    const getChatRoom = async () => {
+      try {
+        const rsp = await AxiosApi.chatList();
+        setChatRooms(rsp.data);
+        setCreateChattingStatus(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getChatRoom();
+  }, [createChattingStatus]);
 
   useEffect(() => {
     chatRooms.forEach((room) => {
