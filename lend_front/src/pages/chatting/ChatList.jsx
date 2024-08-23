@@ -3,11 +3,14 @@ import AxiosApi from "../../axios/AxiosApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../../utils/Common";
+
 const Container = styled.div`
   min-width: 400px;
   width: 100%;
   display: flex;
   justify-content: center;
+  padding: 30px;
+  background-color: #e5f8ea;
   @media (max-width: 1024px) {
     font-size: 14px;
   }
@@ -17,62 +20,94 @@ const Container = styled.div`
 `;
 
 const ChatListContainer = styled.div`
-  width: 60%;
+  width: 100%;
+  max-width: 700px;
   padding: 30px;
-  background-color: rgba(41, 197, 85, 0.4);
-  border: 3px solid #29c555;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #dcdcdc;
 `;
 
 const ChatUl = styled.ul`
   list-style-type: none;
   padding: 0;
+  margin: 0;
 `;
 
 const ChatRoom = styled.li`
-  background-color: #fff;
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border: 2px solid #29c555;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.3s ease, transform 0.3s ease,
+    box-shadow 0.3s ease;
+  position: relative;
 
   &:hover {
-    background-color: #e9e9e9;
+    background-color: #eafaf2;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
   }
 `;
-const HeaderText = styled.h1`
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-  white-space: nowrap;
+
+const ChatAvatar = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #29c555;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 2em;
+  font-weight: bold;
+  margin-right: 20px;
+`;
+
+const ChatDetails = styled.div`
+  flex: 1;
+  position: relative;
 `;
 
 const ChatName = styled.p`
-  font-size: 1.5em;
-  margin: 0 0 10px 0;
-  color: #444;
+  font-size: 1.6em;
+  color: #333;
+  margin: 0 0 5px;
+  font-weight: 600;
   @media (max-width: 1024px) {
-    font-size: 1.3em;
+    font-size: 1.4em;
   }
   @media (max-width: 400px) {
     font-size: 1.2em;
   }
 `;
+
 const ChatDate = styled.p`
-  font-size: 1em;
-  color: #666;
+  font-size: 1.1em;
+  color: #999;
   margin: 0;
   text-align: right;
-  white-space: nowrap;
   @media (max-width: 1024px) {
-    font-size: 0.8em;
+    font-size: 1em;
   }
   @media (max-width: 400px) {
-    font-size: 0.7em;
+    font-size: 0.9em;
   }
+`;
+
+const HeaderText = styled.h1`
+  color: #333;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2em;
+  font-weight: bold;
+  border-bottom: 2px solid #29c555;
+  padding-bottom: 10px;
 `;
 
 function ChatList() {
@@ -97,24 +132,25 @@ function ChatList() {
   };
 
   return (
-    <>
-      <Container>
-        <ChatListContainer>
-          <HeaderText>상담 요청 목록</HeaderText>
-          <ChatUl>
-            {chatRooms.map((room) => (
-              <ChatRoom
-                key={room.roomId}
-                onClick={() => enterChatRoom(room.roomId)}
-              >
+    <Container>
+      <ChatListContainer>
+        <HeaderText>상담 요청 목록</HeaderText>
+        <ChatUl>
+          {chatRooms.map((room) => (
+            <ChatRoom
+              key={room.roomId}
+              onClick={() => enterChatRoom(room.roomId)}
+            >
+              <ChatAvatar>{room.roomName.charAt(0)}</ChatAvatar>
+              <ChatDetails>
                 <ChatName>{room.roomName}</ChatName>
                 <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
-              </ChatRoom>
-            ))}
-          </ChatUl>
-        </ChatListContainer>
-      </Container>
-    </>
+              </ChatDetails>
+            </ChatRoom>
+          ))}
+        </ChatUl>
+      </ChatListContainer>
+    </Container>
   );
 }
 

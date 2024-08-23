@@ -13,19 +13,18 @@ const Header = () => {
   const [findAdmin, setFindAdmin] = useState("");
 
   useEffect(() => {
-    if (loginStatus === true && loginStatus !== "") {
-      const userinfo = async () => {
+    const fetchData = async () => {
+      if (loginStatus) {
         try {
           const rsp = await AxiosApi.getMemberInfo();
           setFindAdmin(rsp.data.email);
         } catch (e) {
           console.log(e);
-          alert("로그인중 오류가 발생하였습니다.");
-          return;
+          alert("로그인 중 오류가 발생하였습니다.");
         }
-      };
-      userinfo();
-    }
+      }
+    };
+    fetchData();
   }, [loginStatus]);
 
   return (
@@ -34,21 +33,32 @@ const Header = () => {
         <LOGO src={Logo} onClick={() => navigate("/lend")}></LOGO>
         {loginStatus ? (
           <Box>
-            <Menu as={Link} to="/lend/Loaninfo">
-              대출 상품
-            </Menu>
+            {findAdmin !== "admin" && (
+              <Menu as={Link} to="/lend/Loaninfo">
+                대출 상품
+              </Menu>
+            )}
             <Menu as={Link} to="/lend/support">
               문의 게시판
             </Menu>
-            <Menu as={Link} to="/lend/wishlist">
-              찜 목록
-            </Menu>
-            <Menu as={Link} to="/lend/mypage">
-              마이 페이지
-            </Menu>
+            {findAdmin !== "admin" && (
+              <Menu as={Link} to="/lend/wishlist">
+                찜 목록
+              </Menu>
+            )}
+            {findAdmin !== "admin" && (
+              <Menu as={Link} to="/lend/mypage">
+                마이 페이지
+              </Menu>
+            )}
             {findAdmin === "admin" && (
               <Menu as={Link} to="/lend/chatlist">
                 실시간 문의
+              </Menu>
+            )}
+            {findAdmin === "admin" && (
+              <Menu as={Link} to="/lend/loanapp">
+                대출 신청 목록
               </Menu>
             )}
           </Box>

@@ -129,6 +129,10 @@ const DetailLoanApp = ({ onClose, loan }) => {
                 <TableCell>이메일</TableCell>
                 <TableCell>{loan.email}</TableCell>
               </TableRow>
+              <TableRow>
+                <TableCell>신청일</TableCell>
+                <TableCell>{loan.appDate}</TableCell>
+              </TableRow>
             </tbody>
           </Table>
         </Section>

@@ -23,6 +23,7 @@ import WishList from "./pages/WishList";
 import UserStore from "./context/UserStore";
 import Mypage from "./pages/Mypage";
 import Sugg from "./pages/loaninfo/sugg";
+import AdminLoanApp from "./pages/loaninfo/adminLoanApp";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
               path="/lend/admin/chatting/:roomId"
               element={<AdminChatting />}
             />
+            <Route path="/lend/loanapp" element={<AdminLoanApp />} />
             <Route path="/lend/chatlist" element={<ChatList />} />
             <Route path="/lend/Loaninfo" element={<Loaninfo />} />
             <Route path="/lend/wishlist" element={<WishList />} />

@@ -24,7 +24,7 @@ const LoginComponent = ({ isLogin, email, pw, handleLoginFail }) => {
       setLoginStatus(true); // 로그인 상태 업데이트
 
       if (authorities.includes("ROLE_ADMIN")) {
-        navigate("/lend/chatlist");
+        navigate("/lend");
       } else {
         navigate("/lend");
       }

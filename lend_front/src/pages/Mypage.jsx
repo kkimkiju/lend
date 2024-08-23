@@ -279,6 +279,7 @@ const Mypage = () => {
         usePurpose: loan.usePurpose,
         name: loan.name,
         status: loan.status,
+        appDate: loan.appDate,
       }));
       setLoans(loansData);
     } catch (error) {
@@ -404,6 +405,7 @@ const Mypage = () => {
                   <LoanInfo>대출 금액: {loan.loanAmount}</LoanInfo>
                   <LoanInfo>대출 기간: {loan.loanPeriod}</LoanInfo>
                   <LoanInfo>대출 금리: {loan.rate}</LoanInfo>
+                  <LoanInfo>신청일: {loan.appDate}</LoanInfo>
                 </LoanItem>
                 <LoanStatus status={loan.status}>{loan.status}</LoanStatus>
                 <ButtonContainer>

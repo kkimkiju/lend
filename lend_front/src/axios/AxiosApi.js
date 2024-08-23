@@ -242,6 +242,26 @@ const AxiosApi = {
   getMyLoan: async () => {
     return await AxiosInstance.get(`/wishlist/loaninfo`);
   },
+
+  getAllLoan: async () => {
+    return await AxiosInstance.get("/wishlist/allloaninfo");
+  },
+
+  approvalsubmit: async (loanId) => {
+    return await AxiosInstance.post(`/wishlist/approvalsubmit/`, loanId, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  },
+
+  rejectsubmit: async (loanId) => {
+    return await AxiosInstance.post(`/wishlist/rejectsubmit/`, loanId, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  },
 };
 // 문의게시판 ----------------------
 

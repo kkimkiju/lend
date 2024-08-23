@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.MemberResDto;
 import com.example.demo.dto.ShooppingcartDto;
 import com.example.demo.entity.Member;
 import com.example.demo.entity.MyLoan;
@@ -85,5 +84,23 @@ public class ShooppingcartController {
     public ResponseEntity<List<MyLoan>> memberInfo() {
         List<MyLoan> myLoans = myLoanService.getMyLoan(SecurityContextHolder.getContext().getAuthentication().getName());
         return ResponseEntity.ok(myLoans);
+    }
+
+    @GetMapping("/allloaninfo") //관리자 유저 대출 신청 목록 다보게
+    public ResponseEntity<List<MyLoan>> getAllLoan() {
+        List<MyLoan> allLoans = myLoanService.getAllLoan();
+        return ResponseEntity.ok(allLoans);
+    }
+
+    @PostMapping("/approvalsubmit")
+    public ResponseEntity<String> approvalsubmit (@RequestBody Long id) {
+
+            myLoanService.updateStatus(id, "신청 완료");
+            return ResponseEntity.ok("Loan status updated to 신청 완료");
+    }
+    @PostMapping("/rejectsubmit")
+    public ResponseEntity<String> rejectsubmit (@RequestBody Long id) {
+        myLoanService.updateStatus(id, "신청 반려");
+        return ResponseEntity.ok("Loan status updated to 신청 반려");
     }
 }
