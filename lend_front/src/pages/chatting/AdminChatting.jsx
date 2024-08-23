@@ -83,6 +83,8 @@ const Contents = styled.div`
 
 const Sender = styled.div`
   display: ${(props) => (props.isSender ? "none" : "block")};
+  margin-bottom: -10px;
+  margin-left: -10px;
 `;
 
 const MessageAndTime = styled.div`

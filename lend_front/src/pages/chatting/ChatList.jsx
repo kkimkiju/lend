@@ -4,12 +4,18 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../../utils/Common";
 
+const Container1 = styled.div`
+  width: 100%;
+`;
+
 const Container = styled.div`
   min-width: 400px;
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  margin: 0;
   background-color: #e5f8ea;
   @media (max-width: 1024px) {
     font-size: 14px;
@@ -20,9 +26,10 @@ const Container = styled.div`
 `;
 
 const ChatListContainer = styled.div`
-  width: 100%;
+  width: 70%;
   max-width: 700px;
   padding: 30px;
+  /* margin: auto 0; */
   background-color: #ffffff;
   border-radius: 15px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -132,25 +139,27 @@ function ChatList() {
   };
 
   return (
-    <Container>
-      <ChatListContainer>
-        <HeaderText>상담 요청 목록</HeaderText>
-        <ChatUl>
-          {chatRooms.map((room) => (
-            <ChatRoom
-              key={room.roomId}
-              onClick={() => enterChatRoom(room.roomId)}
-            >
-              <ChatAvatar>{room.roomName.charAt(0)}</ChatAvatar>
-              <ChatDetails>
-                <ChatName>{room.roomName}</ChatName>
-                <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
-              </ChatDetails>
-            </ChatRoom>
-          ))}
-        </ChatUl>
-      </ChatListContainer>
-    </Container>
+    <Container1>
+      <Container>
+        <ChatListContainer>
+          <HeaderText>상담 요청 목록</HeaderText>
+          <ChatUl>
+            {chatRooms.map((room) => (
+              <ChatRoom
+                key={room.roomId}
+                onClick={() => enterChatRoom(room.roomId)}
+              >
+                <ChatAvatar>{room.roomName.charAt(0)}</ChatAvatar>
+                <ChatDetails>
+                  <ChatName>{room.roomName}</ChatName>
+                  <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
+                </ChatDetails>
+              </ChatRoom>
+            ))}
+          </ChatUl>
+        </ChatListContainer>
+      </Container>
+    </Container1>
   );
 }
 
