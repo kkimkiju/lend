@@ -17,10 +17,12 @@ const Header = () => {
       if (loginStatus) {
         try {
           const rsp = await AxiosApi.getMemberInfo();
-          setFindAdmin(rsp.data.email);
+          if (rsp.data) {
+            setFindAdmin(rsp.data.email);
+          }
         } catch (e) {
-          console.log(e);
-          alert("로그인 중 오류가 발생하였습니다.");
+          console.log(e, "1");
+          alert("서버 연결이 되어있지 않습니다.");
         }
       }
     };

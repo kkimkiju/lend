@@ -30,9 +30,7 @@ const SignContainer = styled.div`
   width: 100%;
   height: 100%;
   opacity: ${(props) => (props.isTrue ? "0" : "1")};
-  border-radius: 70px;
-  border: solid 0.75px #c7c7c7;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+
   transition: 0.5s ease-in-out;
   transform: ${(props) => (props.isTrue ? "scale(0)" : "scale(1)")};
   padding: 100px 0;
@@ -42,9 +40,6 @@ const SignContainer = styled.div`
     padding: 70px 0;
   }
   @media only screen and (max-width: 500px) {
-    border-radius: 50px;
-    box-shadow: none;
-    border: none;
     transition: none;
     transform: none;
     height: 97%;

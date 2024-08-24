@@ -87,32 +87,6 @@ export const Col = styled.div`
     background-color: inherit;
   }
 `;
-// export const Col = styled.div`
-//   width: 50%;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   text-align: center;
-//   flex-direction: column;
-//   ${(props) =>
-//     props.isSignIn &&
-//     css`
-//       transform: translateX(0);
-//     `}
-
-//   @media only screen and (max-width: 501px) {
-//     width: 0px;
-//     position: absolute;
-//     padding: 0;
-//     background-color: var(--white);
-//     border-top-left-radius: 2rem;
-//     border-top-right-radius: 2rem;
-//     transform: translateY(100%);
-//     transition: 1s ease-in-out;
-//     background-color: inherit;
-//   }
-// `;
-
 export const FormWrapper = styled.div`
   width: 100%;
   max-width: 28rem;
@@ -219,7 +193,7 @@ export const Text = styled.div`
   text {
     transition: 1s ease-in-out;
   }
-  @media only screen and (max-width: 425px) {
+  @media only screen and (max-width: 500px) {
     margin: 0;
 
     p {
@@ -256,6 +230,10 @@ export const PointerBox = styled.div`
       font-size: 8px;
     }
   }
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+  }
+
   @media only screen and (max-width: 500px) {
     transition: none;
   }

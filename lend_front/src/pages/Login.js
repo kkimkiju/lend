@@ -18,6 +18,9 @@ import SingUpContainer from "../components/SingUpContainer";
 import FindInfo from "../components/FindInfo";
 import { UserContext } from "../context/UserStore";
 const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0 10%;
   width: 80%;
   // height: 650px;
@@ -32,7 +35,9 @@ const Login = () => {
   const ref = useRef(null);
 
   const toggleForm = () => {
-    setIsSignIn(!isSignIn);
+    setTimeout(() => {
+      setIsSignIn(!isSignIn);
+    }, 100); // 100ms 딜레이 추가
   };
 
   // 다른 곳을 클릭하면 드롭다운 닫기
