@@ -8,7 +8,12 @@ const LoanUl = styled.ul`
   margin: 0;
 `;
 
-const SuggestList = ({ loanitems = [], handleDetailClick, category }) => {
+const SuggestList = ({
+  loanitems = [],
+  handleDetailClick,
+  category,
+  isAgeBasedRecommendation,
+}) => {
   return (
     <LoanUl>
       {loanitems.length > 0 ? (
@@ -18,6 +23,7 @@ const SuggestList = ({ loanitems = [], handleDetailClick, category }) => {
             loanitem={item}
             handleDetailClick={handleDetailClick}
             category={category}
+            isAgeBasedRecommendation={isAgeBasedRecommendation}
           />
         ))
       ) : (

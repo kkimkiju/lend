@@ -59,27 +59,45 @@ const Detdate = styled.p`
   }
 `;
 
-const SuggestListitem = ({ loanitem, handleDetailClick, category }) => {
-  if (!loanitem) {
-    return <p>No loan item data available</p>;
-  }
+const SuggestListitem = ({
+  loanitem,
+  handleDetailClick,
+  category,
+  isAgeBasedRecommendation,
+}) => {
+  if (!loanitem) return null;
 
   const truncateTitle = (title) => {
-    if (!title) return "No title available";
+    if (!title) return "";
     return title.length > 7 ? title.substring(0, 7) + "..." : title;
   };
+  const loan_no =
+    isAgeBasedRecommendation && loanitem["loan_id"]
+      ? loanitem["loan_id"]
+      : loanitem["순번"];
 
+  const category1 =
+    isAgeBasedRecommendation && loanitem["loan_category"]
+      ? loanitem["loan_category"]
+      : category;
   return (
-    <DetLi onClick={() => handleDetailClick(loanitem["순번"])}>
+    <DetLi onClick={() => handleDetailClick(loan_no, category1)}>
       <TiContain>
         <Detdate>
           {loanitem["금융회사 명"] ||
+            loanitem["loan_category"] ||
             "데이터를 불러오고 있습니다. 기다려주세요"}
         </Detdate>
       </TiContain>
-      <DetTitle>{truncateTitle(loanitem["금융 상품명"])}</DetTitle>
+      <DetTitle>
+        {truncateTitle(loanitem["금융 상품명"]) ||
+          truncateTitle(loanitem["loan_name"]) ||
+          "데이터를 불러오고 있습니다"}
+      </DetTitle>
       <Detamo>
-        {loanitem["대출종류명"] || "데이터를 불러오고 있습니다. 기다려주세요"}
+        {loanitem["대출종류명"] ||
+          loanitem["rate"] ||
+          "데이터를 불러오고 있습니다. 기다려주세요"}
       </Detamo>
     </DetLi>
   );

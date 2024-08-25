@@ -3,6 +3,7 @@ import styled from "styled-components";
 import SuggestList from "./suggestList";
 import { useNavigate } from "react-router-dom";
 import { Line } from "react-chartjs-2";
+import AxiosApi from "../../axios/AxiosApi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -203,9 +204,48 @@ const Suggestmodal = (props) => {
   const [annincome, setAnnincome] = useState("");
   const [selectedsiLoan, setSelectedsiLoan] = useState([]);
   const [forecast, setForecast] = useState([]);
+  const [useidentityNumber, setUseidentityNumber] = useState("");
+  const [useage, setUseage] = useState("");
 
-  const handleDetailClick = (loan_no) => {
-    console.log(loan_no);
+  const ageser = async () => {
+    try {
+      const rsp = await AxiosApi.getMemberInfo();
+      setUseidentityNumber(rsp.data.identityNumber);
+      const identityNumber = rsp.data.identityNumber;
+      const birthYearPrefix = identityNumber.substring(0, 2);
+      const currentYear = new Date().getFullYear();
+      const currentYearPrefix = Math.floor(currentYear / 100) * 100;
+
+      // 연도 보정: 50 이상이면 1900년대, 그렇지 않으면 2000년대
+      const birthYear =
+        parseInt(birthYearPrefix, 10) >= 50
+          ? currentYearPrefix - 100 + parseInt(birthYearPrefix, 10)
+          : currentYearPrefix + parseInt(birthYearPrefix, 10);
+
+      // 현재 나이 계산
+      const currentYearFull = new Date().getFullYear();
+      let calculatedAge = currentYearFull - birthYear;
+
+      // 생일이 아직 지나지 않았으면 나이 -1
+      const birthMonth = parseInt(identityNumber.substring(2, 4), 10); // 월
+      const birthDay = parseInt(identityNumber.substring(4, 6), 10); // 일
+
+      const today = new Date();
+      if (
+        today.getMonth() + 1 < birthMonth ||
+        (today.getMonth() + 1 === birthMonth && today.getDate() < birthDay)
+      ) {
+        calculatedAge--;
+      }
+
+      setUseage(calculatedAge);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDetailClick = (loan_no, category) => {
+    console.log(loan_no, category);
     const url = `/lend/Sugg/${loan_no}/${category}`;
     window.open(url, "_blank");
   };
@@ -263,7 +303,7 @@ const Suggestmodal = (props) => {
     if (open) {
       try {
         const response = await fetch(
-          "http://192.168.10.6:5000/api/rate_forecast_endpoint",
+          "http://localhost:5000/api/rate_forecast_endpoint",
           {
             method: "POST",
             headers: {
@@ -307,7 +347,41 @@ const Suggestmodal = (props) => {
 
   useEffect(() => {
     Rateforecast();
+    agesuggestionEndpoint();
   }, [open]);
+
+  const agesuggestionEndpoint = async () => {
+    ageser();
+    if (open) {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/agesuggestion_endpoint",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              age: useage,
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("추천 대출 데이터:", data);
+
+          // 배열로 반환된 추천 대출 상품을 상태에 저장
+          setSelectedsiLoan(data.recommended_loans || []);
+          console.log("연령추천", data.recommended_loans);
+        } else {
+          console.error("추천 대출을 가져오지 못했습니다.", response.status);
+        }
+      } catch (error) {
+        console.error("추천 대출을 가져오는 중에 오류가 발생했습니다.", error);
+      }
+    }
+  };
 
   const chartData = {
     labels: forecast.map((item) => {
@@ -396,9 +470,10 @@ const Suggestmodal = (props) => {
   };
 
   const Recommexe = async () => {
+    setSelectedsiLoan("");
     if (category === "일반신용대출") {
       if (open) {
-        fetch(`http://192.168.10.6:5000/api/recommend_loan_products`, {
+        fetch(`http://localhost:5000/api/recommend_loan_products`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -663,6 +738,7 @@ const Suggestmodal = (props) => {
                   loanitems={selectedsiLoan}
                   handleDetailClick={handleDetailClick}
                   category={category}
+                  isAgeBasedRecommendation={true}
                 />
               </main>
               <footer>
