@@ -18,6 +18,14 @@ const UserStore = (props) => {
   const [isModalOpen, setIsModalOpen] = useState(
     localStorage.getItem("isModalOpen") === "true" || false
   );
+  // 첫번째 약관 모달 상태
+  const [fisrtPrivacyModal, setFirstPrivacyModal] = useState(
+    localStorage.getItem("fisrtPrivacyModal") === "true" || false
+  );
+  // 두번째 약관 모달 상태
+  const [secondPrivacyModal, setSecondPrivacyModal] = useState(
+    localStorage.getItem("secondPrivacyModal") === "true" || false
+  );
   // 채팅방 생성 여부
   const [createChattingStatus, setCreateChattingStatus] = useState(
     localStorage.getItem("createChattingStatus") === "true" || "false"
@@ -36,6 +44,12 @@ const UserStore = (props) => {
     localStorage.setItem("isModalOpen", isModalOpen);
   }, [isModalOpen]);
   useEffect(() => {
+    localStorage.setItem("fisrtPrivacyModal", fisrtPrivacyModal);
+  }, [fisrtPrivacyModal]);
+  useEffect(() => {
+    localStorage.setItem("secondPrivacyModal", secondPrivacyModal);
+  }, [secondPrivacyModal]);
+  useEffect(() => {
     localStorage.setItem("setCreateChattingStatus", createChattingStatus);
   }, [createChattingStatus]);
   return (
@@ -51,6 +65,10 @@ const UserStore = (props) => {
         setIsModalOpen,
         createChattingStatus,
         setCreateChattingStatus,
+        fisrtPrivacyModal,
+        setFirstPrivacyModal,
+        secondPrivacyModal,
+        setSecondPrivacyModal,
       }}
     >
       {props.children}

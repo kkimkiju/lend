@@ -1,8 +1,9 @@
-import { useEffect, forwardRef, useState } from "react";
+import { useEffect, forwardRef, useState, useContext } from "react";
 import styled from "styled-components";
 import AxiosApi from "../axios/AxiosApi";
 import { useNavigate } from "react-router-dom";
 import emailjs from "@emailjs/browser";
+import { UserContext } from "../context/UserStore";
 const ModalStyle = styled.div`
   .modal {
     display: none;
@@ -40,6 +41,7 @@ const ModalStyle = styled.div`
     overflow: hidden;
     @media only screen and (max-width: 500px) {
       width: 80%;
+      padding: 24px 16px;
     }
     div {
       padding: 16px;
@@ -75,6 +77,11 @@ const Button = styled.div`
   color: #fff;
   background-color: #29c555;
   cursor: pointer;
+  @media only screen and (max-width: 500px) {
+    min-width: 96px;
+    height: 36px;
+    font-size: 12px;
+  }
 `;
 const WithMsg = styled.div`
   display: flex;
@@ -86,9 +93,14 @@ const WithMsg = styled.div`
     display: none;
   }
   .error {
+    border: none;
     color: red;
     text-align: start;
     width: 80%;
+    @media only screen and (max-width: 500px) {
+      font-size: 10px;
+      padding: 8px;
+    }
   }
 `;
 const FindInfo = forwardRef(({ open }, ref) => {
@@ -213,7 +225,8 @@ const FindInfo = forwardRef(({ open }, ref) => {
       alert("실패");
     }
   };
-
+  const context = useContext(UserContext);
+  const { setIsModalOpen } = context;
   const newPw = async () => {
     const user = {
       email: email,
@@ -222,34 +235,36 @@ const FindInfo = forwardRef(({ open }, ref) => {
     try {
       const rsp = await AxiosApi.findNewPw(user);
       if (rsp.data) {
-        alert("수정성공!");
+        alert("비밀번호 수정이 완료됐습니다.");
+        setIsModalOpen(false);
+        navigate("/lend/login");
       } else {
-        alert("수정실패");
+        alert("비밀번호 수정중 오류가 발생했습니다.");
       }
     } catch (e) {
       console.error(e);
     }
   };
-  const modify = async () => {
-    const user = {
-      email: email,
-      password: newPassword,
-    };
-    if (pwdValid) {
-      try {
-        const response = await AxiosApi.extraInfo(user);
-        if (response.data) {
-          alert("수정에 성공했습니다.");
-          navigate("/lend/login");
-        }
-      } catch (e) {
-        console.err(e);
-        alert("수정에 실패했습니다.");
-      }
-    } else {
-      alert("유효하지 않은 비밀번호입니다.");
-    }
-  };
+  // const modify = async () => {
+  //   const user = {
+  //     email: email,
+  //     password: newPassword,
+  //   };
+  //   if (pwdValid) {
+  //     try {
+  //       const response = await AxiosApi.extraInfo(user);
+  //       if (response.data) {
+  //         alert("수정에 성공했습니다.");
+  //         navigate("/lend/login");
+  //       }
+  //     } catch (e) {
+  //       console.err(e);
+  //       alert("수정에 실패했습니다.");
+  //     }
+  //   } else {
+  //     alert("유효하지 않은 비밀번호입니다.");
+  //   }
+  // };
 
   return (
     <ModalStyle>

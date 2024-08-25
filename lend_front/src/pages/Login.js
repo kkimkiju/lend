@@ -9,14 +9,14 @@ import {
   GlobalStyle,
   PointerBox,
   TextAnimation,
-  WelComeCol,
-  SignCol,
 } from "../style/LoginStyle";
 import LoginMain from "../components/LoginMain";
 import styled from "styled-components";
 import SingUpContainer from "../components/SingUpContainer";
 import FindInfo from "../components/FindInfo";
 import { UserContext } from "../context/UserStore";
+import FirstPrivacyModal from "../components/member/FirstPrivacyModal";
+import SecondPrivacyModal from "../components/member/SecondPrivacyModal";
 const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -31,7 +31,8 @@ const LoginContainer = styled.div`
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   const context = useContext(UserContext);
-  const { isModalOpen, setIsModalOpen } = context;
+  const { isModalOpen, setIsModalOpen, fisrtPrivacyModal, secondPrivacyModal } =
+    context;
   const ref = useRef(null);
 
   const toggleForm = () => {
@@ -59,6 +60,14 @@ const Login = () => {
       <GlobalStyle />
       <Container isSignIn={isSignIn}>
         <FindInfo open={isModalOpen} ref={ref}></FindInfo>
+        <FirstPrivacyModal
+          open={fisrtPrivacyModal}
+          header="개인정보취급방침"
+        ></FirstPrivacyModal>
+        <SecondPrivacyModal
+          open={secondPrivacyModal}
+          header="이용약관"
+        ></SecondPrivacyModal>
         <Row>
           <Col isSignIn={!isSignIn}>
             <LoginContainer>

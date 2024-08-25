@@ -1,23 +1,24 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import emailjs from "@emailjs/browser";
 import AxiosApi from "../axios/AxiosApi";
 import LogoImg from "../image/로고.png";
 import { useNavigate } from "react-router-dom";
+import FirstPrivacyModal from "./member/FirstPrivacyModal";
+import SecondPrivacyModal from "./member/SecondPrivacyModal";
+import { UserContext } from "../context/UserStore";
 const Container = styled.div`
   width: 80%;
-  //height: 650px;
   @media only screen and (max-width: 1024px) {
-    //height: 550px;
   }
   @media only screen and (max-width: 500px) {
     width: 100%;
-    //height: 350px;
     border-radius: 50px;
   }
   .error {
     @media only screen and (max-width: 500px) {
       font-size: 8px;
+      width: auto;
     }
   }
 `;
@@ -43,6 +44,7 @@ const SignContainer = styled.div`
     transition: none;
     transform: none;
     height: 97%;
+    padding: 16px 0;
   }
 `;
 const InputContainer = styled.div`
@@ -70,6 +72,7 @@ const Input = styled.input`
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     padding: 7px;
+    width: 45%;
   }
 `;
 const InfoInput = styled.input`
@@ -86,7 +89,7 @@ const InfoInput = styled.input`
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     padding: 7px;
-    width: 100%;
+    width: 75%;
     height: 8px;
     font-size: 8px;
   }
@@ -105,6 +108,9 @@ const WithMsg = styled.div`
     color: red;
     text-align: start;
     width: 80%;
+    @media only screen and (max-width: 500px) {
+      width: auto;
+    }
   }
 `;
 const DateOfBirth = styled.div`
@@ -130,7 +136,7 @@ const DateOfBirth = styled.div`
     font-size: 8px;
     gap: 0.1rem;
     padding: 0;
-    width: 115%;
+    width: 80%;
   }
 `;
 const CertificationInput = styled.input`
@@ -147,6 +153,7 @@ const CertificationInput = styled.input`
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     padding: 7px;
+    width: 45%;
   }
 `;
 // 가입하기 버튼 복사해야되면 하기
@@ -168,6 +175,12 @@ const Button = styled.div`
     props.isConfirmCer && props.emailExist ? "auto" : "none"};
   cursor: pointer;
   /* user-select: none; */
+  @media only screen and (max-width: 768px) {
+    font-size: 12px;
+    padding: 0px;
+    width: 70%;
+    height: 32px;
+  }
   @media only screen and (max-width: 500px) {
     font-size: 8px;
     width: auto;
@@ -248,15 +261,23 @@ const AgreementContainer = styled.div`
   text-align: start;
   padding: 0 24px;
   label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     @media only screen and (max-width: 500px) {
       font-size: 6px;
+      display: flex;
     }
   }
   @media only screen and (max-width: 768px) {
     padding: 0;
   }
 `;
-const CheckBox = styled.input``;
+const CheckBox = styled.input` 
+}`;
+const PrivacyBtt = styled.div` 
+
+}`;
 const Logo = styled.img`
   width: 180px;
   height: 110px;
@@ -270,6 +291,7 @@ const Logo = styled.img`
   @media only screen and (max-width: 500px) {
     width: 70px;
     height: 50px;
+    margin-bottom: 16px;
   }
 `;
 const SingUpContainer = ({ isSignIn }) => {
@@ -329,15 +351,12 @@ const SingUpContainer = ({ isSignIn }) => {
       const checkMem = async (email) => {
         try {
           const rsp = await AxiosApi.userCheck(email);
-          console.log("중복1", rsp.data);
           if (rsp.data === false) {
             setEmailError("가입 가능한 아이디입니다.");
             setEmailExist(true);
           } else if (rsp.data === true) {
             setEmailError("중복된 이메일 입니다.");
             setEmailExist(false);
-
-            console.log("중복2", emailExist, emailError);
           }
         } catch (e) {}
       };
@@ -434,7 +453,6 @@ const SingUpContainer = ({ isSignIn }) => {
   const handleIDNumChange = (e) => {
     const value = e.target.value.replace(/[^0-9.]/g, "");
     // .replace(/(\..*)\./g, "$1");
-    console.log(value, "vale");
     if (value === "" || (parseInt(value) > 0 && parseInt(value) < 5)) {
       setIdentifyNum(value);
     } else {
@@ -500,16 +518,13 @@ const SingUpContainer = ({ isSignIn }) => {
       name: name,
       isSocial: false,
     };
-    console.log(user, "user");
     try {
       const response = await AxiosApi.signup(user);
       if (response.data) {
         alert("회원가입에 성공했습니다.");
         window.location.reload();
-        console.log(response.data);
         // navigate("/apueda/login");
       } else {
-        console.log(response.data);
         alert("비밀번호, 주민번호, 이름, 스킬 필수 입력");
       }
     } catch (e) {
@@ -520,20 +535,29 @@ const SingUpContainer = ({ isSignIn }) => {
 
   const handleSignUp = () => {
     if (isComplete) {
-      console.log("성공", isComplete);
       regist();
-    } else {
-      console.log("실패", isComplete);
     }
   };
   const BackBtt = () => {
     const confirmMessage =
       "뒤로 가면 변경 사항이 저장되지 않습니다. 계속 하시겠습니까?";
     if (window.confirm(confirmMessage)) {
-      console.log("!");
       window.location.reload();
     } else {
     }
+  };
+  const context = useContext(UserContext);
+  const {
+    //fisrtPrivacyModal,
+    setFirstPrivacyModal,
+    // secondPrivacyModal,
+    setSecondPrivacyModal,
+  } = context;
+  const handlePrivacyModal1 = () => {
+    setFirstPrivacyModal(true);
+  };
+  const handlePrivacyModal2 = () => {
+    setSecondPrivacyModal(true);
   };
   return (
     <Container>
@@ -641,7 +665,7 @@ const SingUpContainer = ({ isSignIn }) => {
                 -
                 <InfoInput
                   maxLength="1"
-                  style={{ width: "10%" }}
+                  style={{ width: "10%", textAlign: "center" }}
                   onChange={(e) => handleIDNumChange(e)}
                   value={identifyNum}
                 />
@@ -668,7 +692,11 @@ const SingUpContainer = ({ isSignIn }) => {
                   onClick={handlePrivacyCheckboxChange}
                   checked={privacyIsChecked}
                 />
-                * 개인정보 수집 및 이용 동의
+                *
+                <PrivacyBtt onClick={() => handlePrivacyModal1()}>
+                  개인정보 수집
+                </PrivacyBtt>
+                및 이용 동의
               </label>
               <label>
                 <CheckBox
@@ -676,7 +704,11 @@ const SingUpContainer = ({ isSignIn }) => {
                   onClick={handlePrivacyCheckboxChange2}
                   checked={privacyIsChecked2}
                 />
-                * 서비스 이용약관 동의
+                *
+                <PrivacyBtt onClick={() => handlePrivacyModal2()}>
+                  서비스 이용약관
+                </PrivacyBtt>
+                &nbsp;동의
               </label>
               <label>
                 <CheckBox
@@ -697,6 +729,14 @@ const SingUpContainer = ({ isSignIn }) => {
           </InputContainer>
         </SignContainer>
       )}
+      {/* <FirstPrivacyModal
+        open={fisrtPrivacyModal}
+        close={fisrtPrivacyClose}
+      ></FirstPrivacyModal> */}
+      {/* <SecondPrivacyModal
+        open={secondPrivacyModal}
+        close={secondPrivacyClose}
+      ></SecondPrivacyModal> */}
     </Container>
   );
 };

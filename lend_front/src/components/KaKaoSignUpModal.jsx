@@ -111,14 +111,9 @@ const KaKaoSignUpModal = ({ open, login, pw }) => {
       .replace(/(\..*)\./g, "$1");
     setDate(value);
   };
-  useEffect(() => {
-    console.log("open:", open);
-  }, [open]);
   // 주민번호 뒷자리
   const handleIDNumChange = (e) => {
     const value = e.target.value.replace(/[^0-9.]/g, "");
-    // .replace(/(\..*)\./g, "$1");
-    console.log(value, "vale");
     if (value === "" || (parseInt(value) > 0 && parseInt(value) < 5)) {
       setIdentifyNum(value);
     } else {
@@ -134,21 +129,20 @@ const KaKaoSignUpModal = ({ open, login, pw }) => {
       identityNumber: date + identifyNum,
       isKaKao: true,
     };
-    console.log(name, "user + ", email);
     try {
       const response = await AxiosApi.extraInfo(user);
-      login(email, pw);
-      alert("회원가입에 성공했습니다.");
-      setLoginStatus(true);
-      console.log(response.data);
-      navigate("/");
+      if (response.data) {
+        login(email, pw);
+        alert("회원가입에 성공했습니다.");
+        setLoginStatus(true);
+        navigate("/");
+      }
     } catch (e) {
       console.log(e);
       alert("회원가입중 오류가 발생했습니다.");
     }
   };
   const handleSignUp = () => {
-    console.log(name, identifyNum, date);
     if (name === "" || date.length < 6 || identifyNum.length < 1) {
       alert("회원정보는 전부 작성해주셔야 합니다.");
       return;

@@ -166,6 +166,9 @@ const WithMsg = styled.div`
 const SocialBttContainer = styled.div`
   display: flex;
   gap: 10%;
+  opacity: 0;
+  animation: ${fadeIn} 0.8s ease-in-out forwards;
+  animation-delay: ${(props) => props.delay || "1s"};
 `;
 const KaKaoBtt = styled.div``;
 const KaKaoLogo = styled.img`
@@ -280,7 +283,7 @@ const LoginMain = ({ isSignIn }) => {
           {/* <FindInfo open={isModalOpen} ref={ref}></FindInfo> */}
         </LoginEtc>
       </InputContainer>
-      <SocialBttContainer>
+      <SocialBttContainer isTrue={isTrue}>
         <KaKaoBtt onClick={() => kakaoLogin()}>
           <KaKaoLogo src={KaKaoImg}></KaKaoLogo>
         </KaKaoBtt>

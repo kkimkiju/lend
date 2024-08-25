@@ -40,6 +40,9 @@ const MyinfoContainer = styled.div`
     font-size: 2rem;
     font-weight: bold;
     color: black;
+    @media only screen and (max-width: 500px) {
+      font-size: 1.5rem;
+    }
   }
   & span {
     color: #a1a1a1;
@@ -77,6 +80,12 @@ const Input = styled.input`
   padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 5px;
+  @media only screen and (max-width: 500px) {
+    font-size: 12px;
+    width: 75%;
+    height: 12px;
+    padding: 0.5rem;
+  }
 `;
 const Header = styled.div`
   background: #29c555;
@@ -298,8 +307,6 @@ const Mypage = () => {
 
         if (response.data) {
           alert("수정에 성공했습니다.");
-
-          console.log(response.data);
           navigate("/");
         }
       } catch (e) {

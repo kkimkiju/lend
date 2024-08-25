@@ -19,7 +19,6 @@ const LoginComponent = ({ isLogin, email, pw, handleLoginFail }) => {
       const rsp = await AxiosApi.login(email, pw);
       localStorage.setItem("accessToken", rsp.data.tokenDto.accessToken);
       localStorage.setItem("refreshToken", rsp.data.tokenDto.refreshToken);
-      console.log(rsp.data, "rsp 권한");
       const authorities = rsp.data.authorities;
       setLoginStatus(true); // 로그인 상태 업데이트
 

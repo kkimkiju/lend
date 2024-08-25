@@ -21,7 +21,8 @@ const Header = () => {
             setFindAdmin(rsp.data.email);
           }
         } catch (e) {
-          console.log(e, "1");
+          console.error(e);
+          // 여기 확인해보기 8/26
           alert("서버 연결이 되어있지 않습니다.");
         }
       }
