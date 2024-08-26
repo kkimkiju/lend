@@ -172,6 +172,12 @@ public class ChatService {
         chatMessageRepository.save(msg);
     }
 
+    @Transactional
+    public void markMessagesAsRead(String roomId) {
+        ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId);
+        chatMessageRepository.markMessagesAsReadByRoomId(chatRoom);
+    }
+
     public <T> void sendMessage(WebSocketSession session, T message) {
         try {
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));

@@ -65,4 +65,10 @@ public class ChatController {
         }).collect(Collectors.toList());
         return ResponseEntity.ok(messageDtos);
     }
+
+    @PutMapping("/rooms/{roomId}/read")
+    public void markMessagesAsRead(@PathVariable String roomId) {
+        chatService.markMessagesAsRead(roomId);
+    }
+
 }

@@ -56,6 +56,15 @@ const AxiosApi = {
   chatDetail: async (roomId) => {
     return await AxiosInstance.get(`/chat/room/${roomId}`);
   },
+
+  markMessagesAsRead: async (roomId) => {
+    try {
+      await AxiosInstance.put(`/chat/rooms/${roomId}/read`);
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+      throw error;
+    }
+  },
   // 채팅방 생성 전 유무 확인
   getChatroomName: async (email) => {
     return await AxiosInstance.get(`/chat/check`, {

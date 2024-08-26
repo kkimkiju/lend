@@ -32,7 +32,6 @@ const RightContainer = styled.div`
 const ChatContainer = styled.div`
   width: 80%;
   padding: 20px;
-  /* max-width: 800px; */
   margin: 0 auto;
   background-color: rgba(41, 197, 85, 0.4);
   border-radius: 8px;

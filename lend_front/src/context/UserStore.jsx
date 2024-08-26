@@ -26,10 +26,6 @@ const UserStore = (props) => {
   const [secondPrivacyModal, setSecondPrivacyModal] = useState(
     localStorage.getItem("secondPrivacyModal") === "true" || false
   );
-  // 채팅방 생성 여부
-  const [createChattingStatus, setCreateChattingStatus] = useState(
-    localStorage.getItem("createChattingStatus") === "true" || "false"
-  );
 
   useEffect(() => {
     localStorage.setItem("loginStatus", loginStatus);
@@ -49,9 +45,6 @@ const UserStore = (props) => {
   useEffect(() => {
     localStorage.setItem("secondPrivacyModal", secondPrivacyModal);
   }, [secondPrivacyModal]);
-  useEffect(() => {
-    localStorage.setItem("setCreateChattingStatus", createChattingStatus);
-  }, [createChattingStatus]);
   return (
     <UserContext.Provider
       value={{
@@ -63,8 +56,6 @@ const UserStore = (props) => {
         setProfileChange,
         isModalOpen,
         setIsModalOpen,
-        createChattingStatus,
-        setCreateChattingStatus,
         fisrtPrivacyModal,
         setFirstPrivacyModal,
         secondPrivacyModal,

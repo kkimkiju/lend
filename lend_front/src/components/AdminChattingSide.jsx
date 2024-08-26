@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import AxiosApi from "../axios/AxiosApi";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../utils/Common";
-import { UserContext } from "../context/UserStore";
 
 const ChatListContainer = styled.div`
   width: 20%;
@@ -29,6 +28,7 @@ const ChatRoom = styled.li`
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  position: relative;
 
   &:hover {
     background-color: rgba(41, 197, 85, 0.4);
@@ -73,37 +73,52 @@ const ChatDate = styled.p`
   }
 `;
 
+const LastMessage = styled.div``;
+
+const UnreadIndicator = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+`;
+
 function AdminChattingSide() {
   const [chatRooms, setChatRooms] = useState([]);
-  const wsConnections = useRef({}); // 각 방의 웹소켓 연결을 저장할 객체
+  const wsConnections = useRef({});
   const navigate = useNavigate();
-  const context = useContext(UserContext);
-  const { createChattingStatus, setCreateChattingStatus } = context;
+  const [sender, setSender] = useState("");
 
   useEffect(() => {
-    const getChatRoom = async () => {
+    const getMember = async () => {
       try {
-        const rsp = await AxiosApi.chatList();
-        setChatRooms(rsp.data);
+        const rsp = await AxiosApi.getMemberInfo();
+        setSender(rsp.data.email);
       } catch (error) {
         console.log(error);
       }
     };
-    getChatRoom();
+    getMember();
   }, []);
 
   useEffect(() => {
     const getChatRoom = async () => {
       try {
         const rsp = await AxiosApi.chatList();
-        setChatRooms(rsp.data);
-        setCreateChattingStatus(false);
+        const roomsWithMessages = rsp.data.map((room) => ({
+          ...room,
+          lastMessage: null,
+          isRead: false, // 읽음 상태 추가
+        }));
+        setChatRooms(roomsWithMessages);
       } catch (error) {
         console.log(error);
       }
     };
     getChatRoom();
-  }, [createChattingStatus]);
+  }, []);
 
   useEffect(() => {
     chatRooms.forEach((room) => {
@@ -117,7 +132,20 @@ function AdminChattingSide() {
       ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
         console.log(`Received message in room ${room.roomId}: `, data.message);
-        // 필요한 메시지 처리 로직 추가
+
+        // 해당 채팅방의 마지막 메시지를 업데이트
+        setChatRooms((prevRooms) =>
+          prevRooms.map((r) =>
+            r.roomId === room.roomId
+              ? {
+                  ...r,
+                  lastMessage: data.message,
+                  lastMessageSender: data.sender, // 메시지 송신자 추가
+                  isRead: false, // 새 메시지는 읽지 않은 상태로 설정
+                }
+              : r
+          )
+        );
       };
 
       ws.onclose = () => {
@@ -128,12 +156,18 @@ function AdminChattingSide() {
     });
 
     return () => {
-      // 컴포넌트가 언마운트될 때 모든 웹소켓 연결 닫기
       Object.values(wsConnections.current).forEach((ws) => ws.close());
     };
   }, [chatRooms]);
 
-  const enterChatRoom = (roomId) => {
+  const enterChatRoom = async (roomId) => {
+    // 메시지를 읽음으로 처리
+    await AxiosApi.markMessagesAsRead(roomId);
+
+    setChatRooms((prevRooms) =>
+      prevRooms.map((r) => (r.roomId === roomId ? { ...r, isRead: true } : r))
+    );
+
     navigate(`/lend/admin/chatting/${roomId}`);
   };
 
@@ -148,6 +182,13 @@ function AdminChattingSide() {
           >
             <ChatName>{room.roomName}</ChatName>
             <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
+            <LastMessage>
+              {room.lastMessage || "최근 메시지가 없습니다."}
+            </LastMessage>
+            {room.lastMessage &&
+              room.lastMessageSender !== sender &&
+              !room.isRead && <UnreadIndicator />}{" "}
+            {/* 본인이 보낸 메시지가 아니고, 읽지 않은 메시지에만 빨간불 표시 */}
           </ChatRoom>
         ))}
       </ChatUl>
