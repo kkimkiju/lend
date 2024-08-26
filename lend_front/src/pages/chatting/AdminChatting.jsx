@@ -72,12 +72,6 @@ const Contents = styled.div`
   max-width: 500px;
   display: flex;
   flex-direction: column;
-  @media (max-width: 1024px) {
-    max-width: 420px;
-  }
-  @media (max-width: 600px) {
-    max-width: 200px;
-  }
 `;
 
 const Sender = styled.div`
@@ -100,6 +94,15 @@ const Message = styled.div`
   border: ${(props) =>
     props.isSender ? "1px solid #29c555" : "1px solid #ffffff"};
   color: ${(props) => (props.isSender ? "#ffffff" : "#000000")};
+  max-width: 500px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  @media (max-width: 1024px) {
+    max-width: 420px;
+  }
+  @media (max-width: 600px) {
+    max-width: 100px;
+  }
 `;
 
 const SendTime1 = styled.div`

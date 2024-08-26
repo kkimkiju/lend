@@ -4,13 +4,12 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import Common from "../utils/Common";
 
+// 스타일 컴포넌트 정의
 const ChatListContainer = styled.div`
   width: 20%;
   padding: 30px;
   border-right: 3px solid #29c555;
-  @media (max-width: 1024px) {
-    font-size: 1.3em;
-  }
+
   @media (max-width: 600px) {
     display: none;
   }
@@ -26,6 +25,7 @@ const ChatRoom = styled.li`
   margin-bottom: 10px;
   padding: 15px;
   border-radius: 5px;
+  min-width: 100px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   position: relative;
@@ -60,20 +60,9 @@ const ChatName = styled.p`
   }
 `;
 
-const ChatDate = styled.p`
-  font-size: 1em;
-  color: #666;
-  margin: 0;
-  text-align: right;
-  @media (max-width: 1024px) {
-    font-size: 0.8em;
-  }
-  @media (max-width: 400px) {
-    font-size: 0.7em;
-  }
+const LastMessage = styled.div`
+  margin-left: 5px;
 `;
-
-const LastMessage = styled.div``;
 
 const UnreadIndicator = styled.div`
   position: absolute;
@@ -82,8 +71,15 @@ const UnreadIndicator = styled.div`
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: red;
+  background-color: #29c555;
 `;
+
+const truncateMessage = (message, maxLength) => {
+  if (message.length > maxLength) {
+    return message.substring(0, maxLength) + "...";
+  }
+  return message;
+};
 
 function AdminChattingSide() {
   const [chatRooms, setChatRooms] = useState([]);
@@ -110,7 +106,8 @@ function AdminChattingSide() {
         const roomsWithMessages = rsp.data.map((room) => ({
           ...room,
           lastMessage: null,
-          isRead: false, // 읽음 상태 추가
+          lastMessageSender: null,
+          isRead: false,
         }));
         setChatRooms(roomsWithMessages);
       } catch (error) {
@@ -140,8 +137,8 @@ function AdminChattingSide() {
               ? {
                   ...r,
                   lastMessage: data.message,
-                  lastMessageSender: data.sender, // 메시지 송신자 추가
-                  isRead: false, // 새 메시지는 읽지 않은 상태로 설정
+                  lastMessageSender: data.sender,
+                  isRead: false,
                 }
               : r
           )
@@ -181,14 +178,12 @@ function AdminChattingSide() {
             onClick={() => enterChatRoom(room.roomId)}
           >
             <ChatName>{room.roomName}</ChatName>
-            <ChatDate>{Common.formatDate(room.regDate)}</ChatDate>
             <LastMessage>
-              {room.lastMessage || "최근 메시지가 없습니다."}
+              {truncateMessage(room.lastMessage || "", 8)}
             </LastMessage>
             {room.lastMessage &&
               room.lastMessageSender !== sender &&
               !room.isRead && <UnreadIndicator />}{" "}
-            {/* 본인이 보낸 메시지가 아니고, 읽지 않은 메시지에만 빨간불 표시 */}
           </ChatRoom>
         ))}
       </ChatUl>
