@@ -303,7 +303,7 @@ const Suggestmodal = (props) => {
     if (open) {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/rate_forecast_endpoint",
+          "http://192.168.10.6:5000/api/rate_forecast_endpoint",
           {
             method: "POST",
             headers: {
@@ -355,7 +355,7 @@ const Suggestmodal = (props) => {
     if (open) {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/agesuggestion_endpoint",
+          "http://192.168.10.6:5000/api/agesuggestion_endpoint",
           {
             method: "POST",
             headers: {
@@ -473,7 +473,7 @@ const Suggestmodal = (props) => {
     setSelectedsiLoan("");
     if (category === "일반신용대출") {
       if (open) {
-        fetch(`http://localhost:5000/api/recommend_loan_products`, {
+        fetch(`http://192.168.10.6:5000/api/recommend_loan_products`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
