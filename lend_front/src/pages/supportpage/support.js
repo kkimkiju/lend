@@ -20,11 +20,13 @@ export default function Support() {
   const { Modal, openModal, closeModal } = useModal();
   // 유저정보 갱신
   const [myEmail, setMyEmail] = useState(null);
+  const [authority, setAuthority] = useState(null);
   useEffect(() => {
     const fetchMemberInfo = async () => {
       try {
         const response = await AxiosApi.getMemberInfo();
         setMyEmail(response.data.email);
+        setAuthority(response.data.authority);
       } catch (e) {
         console.log(e);
       }
@@ -118,19 +120,8 @@ export default function Support() {
   const [detailedPost, showDetailedPost] = useState(false);
   const [currentPost, setCurrentPost] = useState(null);
   const [currentPostId, setCurrentPostId] = useState(null);
-  const [authority, setAuthority] = useState(null);
   const handleOpenPost = async (id) => {
     // 권한 확인
-    try{
-      const memberResDto = {
-        email: myEmail,
-      }
-      const response = await AxiosApi.getAuthority(memberResDto);
-      console.log("Authority info: ", response.data);
-      setAuthority(response.data.authority);
-    } catch (error){
-      console.error(error.response);
-    }
     try {
       const response = await AxiosApi.getDetailedPost(id);
       if (response.data) {
