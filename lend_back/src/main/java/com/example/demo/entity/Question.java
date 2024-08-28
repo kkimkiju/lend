@@ -24,6 +24,7 @@ public class Question {
     private Boolean isPrivate; // 비공개 질문여부
     @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Comment> commentList;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

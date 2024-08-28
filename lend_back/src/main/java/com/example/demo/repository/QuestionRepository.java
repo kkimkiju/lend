@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.entity.Member;
 import com.example.demo.entity.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     Optional<Question> findById(Long id);
     // 페이지네이션
     Page<Question> findAll(Pageable pageable);
+
+    void deleteByMember(Member member);
 }

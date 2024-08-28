@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface MyLoanRepository extends JpaRepository<MyLoan, Long> {
     List<MyLoan> findByEmail(String email, Sort sort);
     boolean existsByEmailAndLoanId(String email, Long loan_id);
+
+    void deleteByEmail(String email);
 }

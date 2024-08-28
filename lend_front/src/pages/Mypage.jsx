@@ -8,9 +8,9 @@ import DetailLoanApp from "./loaninfo/detailLoanApp";
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  align-items: center;
+
   width: 100vw;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   background: linear-gradient(to right, #f9f9f9, #e0e0e0);
 

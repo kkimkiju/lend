@@ -26,7 +26,7 @@ public class Comment {
     private Boolean deletedStatus;
     private String createTime;
     private String modifyTime;
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY )
     @JoinColumn(name = "member_id")
     private Member member;
     @ManyToOne(fetch = LAZY)
