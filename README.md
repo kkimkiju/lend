@@ -12,7 +12,7 @@ __내가 원하고 나를 원하는 프로젝트 멤버를 찾기 위한 페이�
 
 ___Notion Link.___
 
-  <a href="https://www.notion.so/4-8d3233783e504829bf893df49516f764">
+  <a href="https://www.notion.so/3-Lend-7adfdbe9727b457bac634371a99238fb">
     <img src="https://img.shields.io/badge/TeamProject-A374DB?style=for-the-badge&logo=notion&logoColor=#ECD53F">
   </a>
 
@@ -26,7 +26,7 @@ ___Notion Link.___
 
 
 <br><br>
-  - 김기주TL (kkimkiju) : 
+  - 김기주TL (kkimkiju) : 문서 작업/ 대출(찜 목록)
   - 강인구 (dzface) : 문의사항 페이지
   - 김동환 (kimfjd) : 대출 상품 페이지(엘라스틱 서치)
   - 김세호 (tpgh1554) :  회원&관리자 1:1 대화 웹소켓
@@ -37,7 +37,7 @@ ___Notion Link.___
 ### 📌주요 기능
 __회원 관리__ - 로그인/ 회원가입 (메일 인증) / 아이디 찾기/ 비밀번호 찾기/ 3자 로그인 / 정보 수정/ 관리자 계정
 
-__Q&A__ - 질문하기(공개&비밀글,수정,댓글)/ 자주 묻는 질문 
+__문의 사항__ - 질문하기(공개&비밀글,수정,댓글)/ 자주 묻는 질문 
 
 __채팅 시스템__ - 회원과 관리자(admin)와의 WebSocket 실시간 통신
 
