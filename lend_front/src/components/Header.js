@@ -11,10 +11,9 @@ const Header = () => {
   const context = useContext(UserContext);
   const { loginStatus } = context;
   const [findAdmin, setFindAdmin] = useState("");
-
   useEffect(() => {
-    const fetchData = async () => {
-      if (loginStatus) {
+    if (loginStatus === true) {
+      const fetchData = async () => {
         try {
           const rsp = await AxiosApi.getMemberInfo();
           if (rsp.data) {
@@ -22,12 +21,11 @@ const Header = () => {
           }
         } catch (e) {
           console.error(e);
-          // 여기 확인해보기 8/26
-          alert("서버 연결이 되어있지 않습니다.");
+          alert("header");
         }
-      }
-    };
-    fetchData();
+      };
+      fetchData();
+    }
   }, [loginStatus]);
 
   return (
@@ -136,7 +134,7 @@ const Menu = styled.div`
   caret-color: transparent;
   color: black;
   cursor: pointer;
-  margin: 0 30px; /* Add some spacing between menu items */
+  margin: 0 30px;
   white-space: nowrap;
   text-decoration: none;
 

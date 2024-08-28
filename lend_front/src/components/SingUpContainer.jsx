@@ -273,11 +273,8 @@ const AgreementContainer = styled.div`
     padding: 0;
   }
 `;
-const CheckBox = styled.input` 
-}`;
-const PrivacyBtt = styled.div` 
-
-}`;
+const CheckBox = styled.input``;
+const PrivacyBtt = styled.div``;
 const Logo = styled.img`
   width: 180px;
   height: 110px;

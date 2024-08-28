@@ -19,29 +19,31 @@ const Mainpage = () => {
   const [pw, setPw] = useState("");
 
   useEffect(() => {
+    const initializeLogin = async () => {
+      const storedToken = localStorage.getItem("accessToken");
+      console.log("initializeLogin 실행", storedToken);
+
+      if (storedToken) {
+        setLoginStatus(true);
+        setAccToken(storedToken);
+      } else {
+        setLoginStatus(false);
+      }
+
+      const loginMethod = localStorage.getItem("loginMethod");
+      const code = new URL(window.location.href).searchParams.get("code");
+      const state = new URL(window.location.href).searchParams.get("state");
+
+      if (loginMethod && code) {
+        console.log("loginMethod", loginMethod);
+        await handleLoginToken(loginMethod, code, state);
+      }
+    };
+
     if (accToken === "") {
-      const initializeLogin = async () => {
-        const storedToken = localStorage.getItem("accessToken");
-        if (storedToken) {
-          setLoginStatus(true);
-        } else {
-          setLoginStatus(false);
-        }
-
-        const loginMethod = localStorage.getItem("loginMethod");
-        const code = new URL(window.location.href).searchParams.get("code");
-        const state = new URL(window.location.href).searchParams.get("state");
-
-        if (loginMethod && code) {
-          await handleLoginToken(loginMethod, code, state);
-        }
-      };
       initializeLogin();
-    } else {
-      navigate("/");
-      return;
     }
-  }, [accToken]);
+  }, [accToken, setLoginStatus]);
 
   const handleLogout = () => {
     setLoginStatus(false);
@@ -133,7 +135,6 @@ const Mainpage = () => {
         localStorage.setItem("accessToken", rsp.data.tokenDto.accessToken);
         localStorage.setItem("refreshToken", rsp.data.tokenDto.refreshToken);
         setLoginStatus(true);
-        console.log("이거ㅗㄴ가?ㄴ");
         setOpenModal(false);
         navigate("/");
       } else {
